@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">SetupTest</string>
+    <string name="login_test">Test Login</string>
+</resources>
