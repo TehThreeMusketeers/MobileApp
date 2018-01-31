@@ -1,4 +1,4 @@
-package com.example.kolev.setuptest;
+package com.sunicola.setapp;
 
 import org.junit.Test;
 

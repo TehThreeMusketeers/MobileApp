@@ -1,14 +1,16 @@
-package com.example.kolev.setuptest;
+package com.sunicola.setapp.activity;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 
+import com.sunicola.setapp.R;
+
 import io.particle.android.sdk.cloud.ParticleCloudSDK;
 import io.particle.android.sdk.devicesetup.ParticleDeviceSetupLibrary;
 
-public class MainActivity extends AppCompatActivity {
+public class NewPhotonActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,6 +28,6 @@ public class MainActivity extends AppCompatActivity {
 
         System.out.println("ACCESS TOKEN IS" +ParticleCloudSDK.getCloud().getAccessToken());
 
-        ParticleDeviceSetupLibrary.startDeviceSetup(this, MainActivity.class);
+        ParticleDeviceSetupLibrary.startDeviceSetup(this, NewPhotonActivity.class);
     }
 }

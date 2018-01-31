@@ -1,4 +1,4 @@
-package com.example.kolev.setuptest;
+package com.sunicola.setapp;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;
@@ -21,6 +21,6 @@ public class ExampleInstrumentedTest {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getTargetContext();
 
-        assertEquals("com.example.kolev.setuptest", appContext.getPackageName());
+        assertEquals("com.sunicola.setapp", appContext.getPackageName());
     }
 }
