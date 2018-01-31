@@ -192,4 +192,15 @@ public class LoginActivity extends Activity {
         if (pDialog.isShowing())
             pDialog.dismiss();
     }
+
+
+    //If devMode button is clicked, start a new intent for PhotonSetupActivity
+    public void onDevModeClick(View view) {
+
+        System.out.println("click");
+
+        Intent dev = new Intent(this, PhotonSetupActivity.class);
+        this.startActivity(dev);
+
+    }
 }

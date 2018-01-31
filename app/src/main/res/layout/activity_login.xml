@@ -66,4 +66,12 @@
             android:textSize="15sp" />
     </LinearLayout>
 
+    <Button
+        android:id="@+id/btnDev"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/btn_login_bg"
+        android:onClick="onDevModeClick"
+        android:text="@string/btn_dev" />
+
 </LinearLayout>
