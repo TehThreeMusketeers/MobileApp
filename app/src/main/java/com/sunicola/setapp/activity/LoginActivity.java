@@ -202,4 +202,18 @@ public class LoginActivity extends Activity {
         if (pDialog.isShowing())
             pDialog.dismiss();
     }
+
+
+    //If devMode button is clicked, skip login and go straight into main activity
+
+    //WARNING THIS WILL NOT WORK FOR CLAIMING PHOTONS ONCE WE GET ACCESS TOKENS FROM THE SERVER
+    public void onDevModeClick(View view) {
+
+        session.setLogin(true);
+        System.out.println("DEV MODE ON");
+
+        Intent dev = new Intent(this, MainActivity.class);
+        this.startActivity(dev);
+
+    }
 }

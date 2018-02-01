@@ -10,24 +10,28 @@ import com.sunicola.setapp.R;
 import io.particle.android.sdk.cloud.ParticleCloudSDK;
 import io.particle.android.sdk.devicesetup.ParticleDeviceSetupLibrary;
 
-public class NewPhotonActivity extends AppCompatActivity {
+//This activity will no longer be used. The setup button has been moved to main activity, to be accessed from there.
+public class PhotonSetupActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         ParticleDeviceSetupLibrary.init(this.getApplicationContext());
+        ParticleCloudSDK.init(this.getApplicationContext());
 
-        setContentView(R.layout.activity_new_photon);
+        setContentView(R.layout.activity_photon_setup);
     }
 
-    /** Called when the user touches the SetupDevice button */
+    /** Called when the user touches the SetupDevice button
+     * This sets the access token to whatever is needed, then calls the device setup library to start
+     * the setup process*/
     public void onSetupDevice(View view) {
         Log.d("MainActivity", "onSetupDevice called");
         ParticleCloudSDK.getCloud().setAccessToken("fcdcd6d331480f5039f926248ede06b989069fb3");
 
         System.out.println("ACCESS TOKEN IS" +ParticleCloudSDK.getCloud().getAccessToken());
 
-        ParticleDeviceSetupLibrary.startDeviceSetup(this, NewPhotonActivity.class);
+        ParticleDeviceSetupLibrary.startDeviceSetup(this, PhotonSetupActivity.class);
     }
 }
