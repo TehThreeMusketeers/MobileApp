@@ -117,7 +117,8 @@ public class MainActivity extends AppCompatActivity
      * */
     private void logoutUser() {
         session.setLogin(false);
-        db.deleteUsers();
+
+        //db.deleteUsers();
 
         // Launching the login activity
         Intent intent = new Intent(MainActivity.this, LoginActivity.class);
@@ -132,10 +133,7 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_addPhoton) {
-            // Launching the login activity
-            Intent intent = new Intent(MainActivity.this, NewPhotonActivity.class);
-            startActivity(intent);
-            finish();
+            // Handle the addition of new photons
         } else if (id == R.id.nav_manage) {
             //Will be used to code specific environments
         } else if (id == R.id.nav_share) {
