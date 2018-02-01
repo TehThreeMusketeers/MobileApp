@@ -40,7 +40,6 @@
             android:name=".activity.MainActivity"
             android:label="@string/title_activity_main"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".activity.PhotonSetupActivity"></activity>
     </application>
 
 </manifest>

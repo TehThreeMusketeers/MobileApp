@@ -1,0 +1,12 @@
+<component name="libraryTable">
+  <library name="io.particle:cloudsdk-0.4.8">
+    <CLASSES>
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/cloudsdk-0.4.8.aar/dc9b1aa5ad97b96ea0f5ac1e07d38a81/res" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/cloudsdk-0.4.8.aar/dc9b1aa5ad97b96ea0f5ac1e07d38a81/jars/classes.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/io.particle/cloudsdk/0.4.8/cc14fe28416dd94f31a9836e74afc8ac0844f083/cloudsdk-0.4.8-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
