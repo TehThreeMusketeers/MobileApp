@@ -19,7 +19,7 @@
     <string name="action_settings">Settings</string>
     <string name="title_activity_main">MainActivity</string>
 
-    <string name="login_test">Setup a photon</string>
+    <string name="login_test">Claim a device</string>
 
     <string name="btn_dev">Developer mode</string>
 </resources>

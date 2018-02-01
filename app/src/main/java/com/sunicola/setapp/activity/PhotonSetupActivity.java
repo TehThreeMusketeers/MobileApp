@@ -10,6 +10,7 @@ import com.sunicola.setapp.R;
 import io.particle.android.sdk.cloud.ParticleCloudSDK;
 import io.particle.android.sdk.devicesetup.ParticleDeviceSetupLibrary;
 
+//This activity will no longer be used. The setup button has been moved to main activity, to be accessed from there.
 public class PhotonSetupActivity extends AppCompatActivity {
 
     @Override
