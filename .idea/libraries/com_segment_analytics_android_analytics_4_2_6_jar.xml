@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="com.segment.analytics.android:analytics:4.2.6@jar">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.segment.analytics.android/analytics/4.2.6/2ef9e72795693240f6ebe3253ef6514d551de6f0/analytics-4.2.6.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.segment.analytics.android/analytics/4.2.6/725148c3137041d46d940ce7daca0e21835fb4d3/analytics-4.2.6-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

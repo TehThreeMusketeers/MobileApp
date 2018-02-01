@@ -33,6 +33,8 @@ public class MainActivity extends AppCompatActivity
     private SQLiteHandler db;
     private SessionManager session;
 
+    private String accessToken;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -72,7 +74,7 @@ public class MainActivity extends AppCompatActivity
         String lastName = user.get("last_name");
         String name = firstName + " " + lastName;
         String email = user.get("email");
-        String access_token = user.get("access_token");
+        accessToken = user.get("access_token");
 
         // Displaying the user details on the screen
         userName.setText(name);
@@ -117,8 +119,7 @@ public class MainActivity extends AppCompatActivity
      * */
     private void logoutUser() {
         session.setLogin(false);
-
-        //db.deleteUsers();
+        db.deleteUsers();
 
         // Launching the login activity
         Intent intent = new Intent(MainActivity.this, LoginActivity.class);
@@ -133,7 +134,7 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_addPhoton) {
-            // Handle the addition of new photons
+            // Launching the login activity
         } else if (id == R.id.nav_manage) {
             //Will be used to code specific environments
         } else if (id == R.id.nav_share) {
@@ -146,16 +147,17 @@ public class MainActivity extends AppCompatActivity
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
-
     /** Called when the user touches the SetupDevice button
      * This sets the access token to whatever is needed, then calls the device setup library to start
      * the setup process*/
     public void onSetupDevice(View view) {
         Log.d("MainActivity", "onSetupDevice called");
-        ParticleCloudSDK.getCloud().setAccessToken("fcdcd6d331480f5039f926248ede06b989069fb3");
+        ParticleCloudSDK.getCloud().setAccessToken(accessToken);
+
+        System.out.println("ACCCESS TOKEN ACCORDING TO SQL: " +accessToken);
 
         System.out.println("ACCESS TOKEN IS" +ParticleCloudSDK.getCloud().getAccessToken());
 
-        ParticleDeviceSetupLibrary.startDeviceSetup(this, PhotonSetupActivity.class);
+        ParticleDeviceSetupLibrary.startDeviceSetup(this, MainActivity.class);
     }
 }
