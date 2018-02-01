@@ -1,25 +1,18 @@
 package com.sunicola.setapp.activity;
 
-import android.os.Bundle;
-
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.util.Log;
+import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import org.json.*;
-import com.loopj.android.http.*;
-
+import com.loopj.android.http.RequestParams;
 import com.sunicola.setapp.R;
-import com.sunicola.setapp.app.SETRestClient;
 import com.sunicola.setapp.helper.SQLiteHandler;
 import com.sunicola.setapp.helper.SessionManager;
-
-import cz.msebera.android.httpclient.Header;
 
 public class RegisterActivity extends Activity {
     private static final String TAG = RegisterActivity.class.getSimpleName();
@@ -115,50 +108,6 @@ public class RegisterActivity extends Activity {
 
         pDialog.setMessage("Registering ...");
         showDialog();
-
-        SETRestClient.post("accounts", params, new JsonHttpResponseHandler() {
-
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                try {
-                    // Now store the user in sqlite
-                    String uid = response.getString("id");
-                    String first_name = response.getString("first_name");
-                    String last_name = response.getString("last_name");
-                    String email = response.getString("email");
-                    String access_token = response.getString("access_token");
-
-                    // Inserting row in users table
-                    db.addUser(uid, first_name, last_name, email, access_token);
-
-                    Toast.makeText(getApplicationContext(), "User successfully registered. Try login now!", Toast.LENGTH_LONG).show();
-
-                    // Launch login activity
-                    Intent intent = new Intent(
-                            RegisterActivity.this,
-                            LoginActivity.class);
-                    startActivity(intent);
-                    finish();
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            @Override
-            public void onFailure(int statusCode, Header[] headers,
-                                  Throwable throwable, JSONObject errorResponse) {
-                Log.w("myapp", "failure status code..." + statusCode);
-
-
-                try {
-                    //process JSONObject obj
-                    Log.w("myapp", "error ..."  + errorResponse.getString("message").toString());
-                } catch (JSONException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }
-            }
-        });
     }
 
     private void showDialog() {
