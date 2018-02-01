@@ -18,7 +18,7 @@ public class NewPhotonActivity extends AppCompatActivity {
 
         ParticleDeviceSetupLibrary.init(this.getApplicationContext());
 
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_new_photon);
     }
 
     /** Called when the user touches the SetupDevice button */

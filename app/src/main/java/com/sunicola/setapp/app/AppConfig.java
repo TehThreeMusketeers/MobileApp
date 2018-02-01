@@ -8,10 +8,12 @@ package com.sunicola.setapp.app;
 
 public class AppConfig {
     private static String address = "http://sccug-330-04.lancs.ac.uk:8000/api/v1/";
-
-    // Server user register url
-    public static String URL_REGISTER = address + "accounts";
+    //private static String address = "https://requestb.in/1jew9rk1";
 
     // Server user login url
-    public static String URL_LOGIN = address + "accounts/session";
+    public static String URL_LOGIN = address + "accounts/login";
+
+    // Server user register url
+    public static String URL_REGISTER = address+ "accounts";
+    //public static String URL_REGISTER = address+ "";
 }

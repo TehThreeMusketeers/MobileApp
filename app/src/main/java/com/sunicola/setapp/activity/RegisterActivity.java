@@ -11,15 +11,24 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import org.json.*;
-import com.loopj.android.http.*;
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request.Method;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.StringRequest;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import com.sunicola.setapp.R;
-import com.sunicola.setapp.app.SETRestClient;
+import com.sunicola.setapp.app.AppConfig;
+import com.sunicola.setapp.app.AppController;
 import com.sunicola.setapp.helper.SQLiteHandler;
 import com.sunicola.setapp.helper.SessionManager;
-
-import cz.msebera.android.httpclient.Header;
 
 public class RegisterActivity extends Activity {
     private static final String TAG = RegisterActivity.class.getSimpleName();
@@ -44,7 +53,6 @@ public class RegisterActivity extends Activity {
         inputPassword = (EditText) findViewById(R.id.password);
         btnRegister = (Button) findViewById(R.id.btnRegister);
         btnLinkToLogin = (Button) findViewById(R.id.btnLinkToLoginScreen);
-        RequestParams params = new RequestParams();
 
         // Progress dialog
         pDialog = new ProgressDialog(this);
@@ -73,9 +81,17 @@ public class RegisterActivity extends Activity {
                 String email = inputEmail.getText().toString().trim();
                 String password = inputPassword.getText().toString().trim();
 
-                //check for empty fields
                 if (!firstName.isEmpty() && !lastName.isEmpty() && !email.isEmpty() && !password.isEmpty()) {
-                    registerUser(firstName,lastName, email, password);
+                    JSONObject jsonBody = new JSONObject();
+                    try {
+                        jsonBody.put("first_name", firstName);
+                        jsonBody.put("last_name", lastName);
+                        jsonBody.put("email", email);
+                        jsonBody.put("password", password);
+                    }catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    registerUser(jsonBody);
                 } else {
                     Toast.makeText(getApplicationContext(),
                             "Please enter your details!", Toast.LENGTH_LONG)
@@ -101,26 +117,21 @@ public class RegisterActivity extends Activity {
      * Function to store user in MySQL database will post params(tag, name,
      * email, password) to register url
      * */
-    private void registerUser(final String firstName, final String lastName, final String email, final String password) {
-
-        //Set parameters for the request
-        RequestParams params = new RequestParams();
-        params.put("first_name", firstName);
-        params.put("last_name", lastName);
-        params.put("email", email);
-        params.put("password", password);
-
+    private void registerUser(JSONObject jsonBody) {
         // Tag used to cancel the request
         String tag_string_req = "req_register";
 
         pDialog.setMessage("Registering ...");
         showDialog();
 
-        SETRestClient.post("accounts", params, new JsonHttpResponseHandler() {
+        JsonObjectRequest objectRequest = new JsonObjectRequest(AppConfig.URL_REGISTER, jsonBody, new Response.Listener<JSONObject>() {
 
             @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                try {
+            public void onResponse(JSONObject response) {
+                Log.d(TAG, "Register Response: " + response.toString());
+                hideDialog();
+
+                try{
                     // Now store the user in sqlite
                     String uid = response.getString("id");
                     String first_name = response.getString("first_name");
@@ -129,36 +140,37 @@ public class RegisterActivity extends Activity {
                     String access_token = response.getString("access_token");
 
                     // Inserting row in users table
+                    db.deleteUsers();
                     db.addUser(uid, first_name, last_name, email, access_token);
-
-                    Toast.makeText(getApplicationContext(), "User successfully registered. Try login now!", Toast.LENGTH_LONG).show();
-
-                    // Launch login activity
-                    Intent intent = new Intent(
-                            RegisterActivity.this,
-                            LoginActivity.class);
-                    startActivity(intent);
-                    finish();
-                } catch (JSONException e) {
+                }catch (JSONException e) {
                     e.printStackTrace();
                 }
+
+                Toast.makeText(getApplicationContext(), "User successfully registered. Try login now!", Toast.LENGTH_LONG).show();
+
+                // Launch login activity
+                Intent intent = new Intent(
+                        RegisterActivity.this,
+                        LoginActivity.class);
+                startActivity(intent);
+                finish();
+
             }
+        }, new Response.ErrorListener() {
 
             @Override
-            public void onFailure(int statusCode, Header[] headers,
-                                  Throwable throwable, JSONObject errorResponse) {
-                Log.w("myapp", "failure status code..." + statusCode);
-
-
-                try {
-                    //process JSONObject obj
-                    Log.w("myapp", "error ..."  + errorResponse.getString("message").toString());
-                } catch (JSONException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }
+            public void onErrorResponse(VolleyError error) {
+                Log.e(TAG, "Registration Error: " + error.getMessage());
+                Toast.makeText(getApplicationContext(),
+                        "User Account Couldn't be created", Toast.LENGTH_LONG).show();
+                hideDialog();
             }
-        });
+        }) {
+
+        };
+
+        // Adding request to request queue
+        AppController.getInstance().addToRequestQueue(objectRequest, tag_string_req);
     }
 
     private void showDialog() {

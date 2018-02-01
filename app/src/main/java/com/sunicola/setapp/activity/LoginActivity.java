@@ -75,7 +75,8 @@ public class LoginActivity extends Activity {
                 // Check for empty data in the form
                 if (!email.isEmpty() && !password.isEmpty()) {
                     // login user
-                    checkLogin(email, password);
+                    //checkLogin(email, password); ** Uncomment once out of dev mode  **
+                    devLogin();//temp login using local db
                 } else {
                     // Prompt user to enter credentials
                     Toast.makeText(getApplicationContext(),
@@ -181,6 +182,15 @@ public class LoginActivity extends Activity {
 
         // Adding request to request queue
         AppController.getInstance().addToRequestQueue(strReq, tag_string_req);
+    }
+
+    //dev login checks if email exists and takes user to new window
+    private void devLogin(){
+        // Launching the Main activity
+        session.setLogin(true);
+        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+        startActivity(intent);
+        finish();
     }
 
     private void showDialog() {
