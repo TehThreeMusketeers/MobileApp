@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -21,6 +22,9 @@ import com.sunicola.setapp.helper.SessionManager;
 
 import java.util.HashMap;
 
+import io.particle.android.sdk.cloud.ParticleCloudSDK;
+import io.particle.android.sdk.devicesetup.ParticleDeviceSetupLibrary;
+
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     private TextView userName;
@@ -35,6 +39,10 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        //Initalise particle SDKs
+        ParticleDeviceSetupLibrary.init(this.getApplicationContext());
+        ParticleCloudSDK.init(this.getApplicationContext());
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -137,5 +145,17 @@ public class MainActivity extends AppCompatActivity
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    /** Called when the user touches the SetupDevice button
+     * This sets the access token to whatever is needed, then calls the device setup library to start
+     * the setup process*/
+    public void onSetupDevice(View view) {
+        Log.d("MainActivity", "onSetupDevice called");
+        ParticleCloudSDK.getCloud().setAccessToken("fcdcd6d331480f5039f926248ede06b989069fb3");
+
+        System.out.println("ACCESS TOKEN IS" +ParticleCloudSDK.getCloud().getAccessToken());
+
+        ParticleDeviceSetupLibrary.startDeviceSetup(this, PhotonSetupActivity.class);
     }
 }
