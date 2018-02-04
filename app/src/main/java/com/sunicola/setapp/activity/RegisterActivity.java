@@ -124,50 +124,48 @@ public class RegisterActivity extends Activity {
         pDialog.setMessage("Registering ...");
         showDialog();
 
-        JsonObjectRequest objectRequest = new JsonObjectRequest(AppConfig.URL_REGISTER, jsonBody, new Response.Listener<JSONObject>() {
+        JsonObjectRequest objectRequest = new JsonObjectRequest(AppConfig.URL_REGISTER, jsonBody,
+                new Response.Listener<JSONObject>()
+                {
+                @Override
+                public void onResponse(JSONObject response) {
+                    Log.d(TAG, "Register Response: " + response.toString());
+                    hideDialog();
 
-            @Override
-            public void onResponse(JSONObject response) {
-                Log.d(TAG, "Register Response: " + response.toString());
-                hideDialog();
+                    try{
+                        // Now store the user in sqlite
+                        String uid = response.getString("id");
+                        String first_name = response.getString("first_name");
+                        String last_name = response.getString("last_name");
+                        String email = response.getString("email");
+                        String access_token = response.getString("access_token");
 
-                try{
-                    // Now store the user in sqlite
-                    String uid = response.getString("id");
-                    String first_name = response.getString("first_name");
-                    String last_name = response.getString("last_name");
-                    String email = response.getString("email");
-                    String access_token = response.getString("access_token");
+                        // Inserting row in users table
+                        db.deleteUsers();
+                        db.addUser(uid, first_name, last_name, email, access_token);
+                    }catch (JSONException e) {
+                        e.printStackTrace();
+                    }
 
-                    // Inserting row in users table
-                    db.deleteUsers();
-                    db.addUser(uid, first_name, last_name, email, access_token);
-                }catch (JSONException e) {
-                    e.printStackTrace();
+                    Toast.makeText(getApplicationContext(), "User successfully registered. Try login now!", Toast.LENGTH_LONG).show();
+
+                    // Launch login activity
+                    Intent intent = new Intent(
+                            RegisterActivity.this,
+                            LoginActivity.class);
+                    startActivity(intent);
+                    finish();
+
                 }
-
-                Toast.makeText(getApplicationContext(), "User successfully registered. Try login now!", Toast.LENGTH_LONG).show();
-
-                // Launch login activity
-                Intent intent = new Intent(
-                        RegisterActivity.this,
-                        LoginActivity.class);
-                startActivity(intent);
-                finish();
-
-            }
-        }, new Response.ErrorListener() {
-
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.e(TAG, "Registration Error: " + error.getMessage());
-                Toast.makeText(getApplicationContext(),
-                        "User Account Couldn't be created", Toast.LENGTH_LONG).show();
-                hideDialog();
-            }
-        }) {
-
-        };
+            },  new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Log.e(TAG, "Registration Error: " + error.getMessage());
+                    Toast.makeText(getApplicationContext(),
+                            "User Account Couldn't be created", Toast.LENGTH_LONG).show();
+                    hideDialog();
+                }
+        });
 
         // Adding request to request queue
         AppController.getInstance().addToRequestQueue(objectRequest, tag_string_req);

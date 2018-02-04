@@ -11,7 +11,7 @@ public class AppConfig {
     //private static String address = "https://requestb.in/1jew9rk1";
 
     // Server user login url
-    public static String URL_LOGIN = address + "accounts/login/";
+    public static String URL_LOGIN = address + "accounts/session/";
 
     // Server user register url
     public static String URL_REGISTER = address+ "accounts/";
