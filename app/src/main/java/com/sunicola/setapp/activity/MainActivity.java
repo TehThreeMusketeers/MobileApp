@@ -20,10 +20,16 @@ import com.sunicola.setapp.R;
 import com.sunicola.setapp.helper.SQLiteHandler;
 import com.sunicola.setapp.helper.SessionManager;
 
+import java.io.IOException;
 import java.util.HashMap;
 
+import javax.xml.transform.Result;
+
+import io.particle.android.sdk.cloud.ParticleCloud;
+import io.particle.android.sdk.cloud.ParticleCloudException;
 import io.particle.android.sdk.cloud.ParticleCloudSDK;
 import io.particle.android.sdk.devicesetup.ParticleDeviceSetupLibrary;
+import io.particle.android.sdk.utils.Async;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -116,7 +122,7 @@ public class MainActivity extends AppCompatActivity
     /**
      * Logging out the user. Will set isLoggedIn flag to false in shared
      * preferences Clears the user data from sqlite users table
-     * */
+     */
     private void logoutUser() {
         session.setLogin(false);
         db.deleteUsers();
@@ -147,17 +153,37 @@ public class MainActivity extends AppCompatActivity
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
-    /** Called when the user touches the SetupDevice button
+
+    /**
+     * Called when the user touches the SetupDevice button
      * This sets the access token to whatever is needed, then calls the device setup library to start
-     * the setup process*/
+     * the setup process
+     */
     public void onSetupDevice(View view) {
-        Log.d("MainActivity", "onSetupDevice called");
-        ParticleCloudSDK.getCloud().setAccessToken(accessToken);
 
-        System.out.println("ACCCESS TOKEN ACCORDING TO SQL: " +accessToken);
+        ParticleCloud cloud = ParticleCloudSDK.getCloud();
 
-        System.out.println("ACCESS TOKEN IS" +ParticleCloudSDK.getCloud().getAccessToken());
+        //this Async class helps make a separate intent for making particle API calls, as
+        //they tend to make blocking network calls and Android doesn't allow those from the UI thread
 
+        Async.executeAsync(cloud, new Async.ApiProcedure<ParticleCloud>() {
+
+            @Override
+            public Void callApi(ParticleCloud particleCloud) throws ParticleCloudException, IOException {
+                particleCloud.setAccessToken(accessToken);
+                System.out.println("Access token set! Token: " +cloud.getAccessToken());
+                return null;
+            }
+
+            @Override
+            public void onFailure(ParticleCloudException exception) {
+                System.out.println("Failed to make SDK call for access token injection");
+            }
+        });
+
+        //this starts the setup activity. Change the second parameter to whatever
+        //activity is needed for custom device type setup
         ParticleDeviceSetupLibrary.startDeviceSetup(this, MainActivity.class);
     }
+
 }
