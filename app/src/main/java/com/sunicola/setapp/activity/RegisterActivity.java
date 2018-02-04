@@ -139,10 +139,11 @@ public class RegisterActivity extends Activity {
                         String last_name = response.getString("last_name");
                         String email = response.getString("email");
                         String access_token = response.getString("access_token");
+                        String refresh_token = response.getString("refresh_token");
 
                         // Inserting row in users table
                         db.deleteUsers();
-                        db.addUser(uid, first_name, last_name, email, access_token);
+                        db.addUser(uid, first_name, last_name, email, access_token,refresh_token);
                     }catch (JSONException e) {
                         e.printStackTrace();
                     }

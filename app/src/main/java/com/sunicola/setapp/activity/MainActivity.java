@@ -27,6 +27,7 @@ import io.particle.android.sdk.devicesetup.ParticleDeviceSetupLibrary;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+    private static final String TAG = MainActivity.class.getSimpleName();
     private TextView userName;
     private TextView userEmail;
 
@@ -72,12 +73,11 @@ public class MainActivity extends AppCompatActivity
 
         String firstName = user.get("first_name");
         String lastName = user.get("last_name");
-        String name = firstName + " " + lastName;
         String email = user.get("email");
         accessToken = user.get("access_token");
 
         // Displaying the user details on the screen
-        userName.setText(name);
+        userName.setText(firstName +" "+ lastName);
         userEmail.setText(email);
     }
 
@@ -134,7 +134,7 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_addPhoton) {
-            // Launching the login activity
+            setupDevice();
         } else if (id == R.id.nav_manage) {
             //Will be used to code specific environments
         } else if (id == R.id.nav_share) {
@@ -150,14 +150,10 @@ public class MainActivity extends AppCompatActivity
     /** Called when the user touches the SetupDevice button
      * This sets the access token to whatever is needed, then calls the device setup library to start
      * the setup process*/
-    public void onSetupDevice(View view) {
-        Log.d("MainActivity", "onSetupDevice called");
+    public void setupDevice() {
         ParticleCloudSDK.getCloud().setAccessToken(accessToken);
-
         System.out.println("ACCESS TOKEN ACCORDING TO SQL: " +accessToken);
-
         System.out.println("ACCESS TOKEN IS" +ParticleCloudSDK.getCloud().getAccessToken());
-
         ParticleDeviceSetupLibrary.startDeviceSetup(this, MainActivity.class);
     }
 }
