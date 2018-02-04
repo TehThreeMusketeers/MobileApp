@@ -3,16 +3,21 @@ package com.sunicola.setapp.activity;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.icu.text.StringPrepParseException;
 import android.os.Bundle;
+import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
 import com.android.volley.Request.Method;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 
 import org.json.JSONException;
@@ -21,6 +26,7 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.google.gson.JsonObject;
 import com.sunicola.setapp.R;
 import com.sunicola.setapp.app.AppConfig;
 import com.sunicola.setapp.app.AppController;
@@ -28,9 +34,10 @@ import com.sunicola.setapp.helper.SQLiteHandler;
 import com.sunicola.setapp.helper.SessionManager;
 
 public class LoginActivity extends Activity {
-    private static final String TAG = RegisterActivity.class.getSimpleName();
+    private static final String TAG = LoginActivity.class.getSimpleName();
     private Button btnLogin;
     private Button btnLinkToRegister;
+    private Button devMode;
     private EditText inputEmail;
     private EditText inputPassword;
     private ProgressDialog pDialog;
@@ -46,6 +53,7 @@ public class LoginActivity extends Activity {
         inputPassword = findViewById(R.id.password);
         btnLogin = findViewById(R.id.btnLogin);
         btnLinkToRegister = findViewById(R.id.btnLinkToRegisterScreen);
+        devMode = findViewById(R.id.btnDev);
 
         // Progress dialog
         pDialog = new ProgressDialog(this);
@@ -67,7 +75,6 @@ public class LoginActivity extends Activity {
 
         // Login button Click Event
         btnLogin.setOnClickListener(new View.OnClickListener() {
-
             public void onClick(View view) {
                 String email = inputEmail.getText().toString().trim();
                 String password = inputPassword.getText().toString().trim();
@@ -75,8 +82,7 @@ public class LoginActivity extends Activity {
                 // Check for empty data in the form
                 if (!email.isEmpty() && !password.isEmpty()) {
                     // login user
-                    //checkLogin(email, password); ** Uncomment once out of dev mode  **
-                    devLogin();//temp login using local db
+                    checkLogin(email, password);
                 } else {
                     // Prompt user to enter credentials
                     Toast.makeText(getApplicationContext(),
@@ -84,17 +90,22 @@ public class LoginActivity extends Activity {
                             .show();
                 }
             }
-
         });
 
         // Link to Register Screen
         btnLinkToRegister.setOnClickListener(new View.OnClickListener() {
-
             public void onClick(View view) {
                 Intent i = new Intent(getApplicationContext(),
                         RegisterActivity.class);
                 startActivity(i);
                 finish();
+            }
+        });
+
+        //Dev button
+        devMode.setOnClickListener(new View.OnClickListener(){
+            public void onClick(View view){
+                setDevMode(view);
             }
         });
 
@@ -110,87 +121,68 @@ public class LoginActivity extends Activity {
         pDialog.setMessage("Logging in ...");
         showDialog();
 
-        StringRequest strReq = new StringRequest(Method.POST,
-                AppConfig.URL_LOGIN, new Response.Listener<String>() {
+        String basicAuth = encodeHeaders(email, password);
 
-            @Override
-            public void onResponse(String response) {
-                Log.d(TAG, "Login Response: " + response.toString());
-                hideDialog();
+        JsonObjectRequest strReq = new JsonObjectRequest(Method.POST,AppConfig.URL_LOGIN,null,
+                new Response.Listener<JSONObject>()
+                {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try{
+                            JSONObject user = response.getJSONObject("user");
+                            String email = user.getString("email");
+                            String first_name = user.getString("first_name");
+                            String last_name = user.getString("last_name");
+                            String token = response.getString("token");
 
-                try {
-                    JSONObject jObj = new JSONObject(response);
-                    boolean error = jObj.getBoolean("error");
+                            // Inserting row in users table
+                            db.deleteUsers();
+                            db.addUser(first_name, last_name, email, token);
 
-                    // Check for error node in json
-                    if (!error) {
-                        // user successfully logged in
-                        // Create login session
+                        } catch (JSONException e){
+                            e.printStackTrace();
+                        }
+
+                        Toast.makeText(getApplicationContext(), "User successfully loggedIn.", Toast.LENGTH_LONG).show();
+
                         session.setLogin(true);
-
-                        // Now store the user in SQLite
-                        JSONObject user = jObj.getJSONObject("user");
-                        String uid = user.getString("id");
-                        String first_name = user.getString("first_name");
-                        String last_name = user.getString("last_name");
-                        String email = user.getString("email");
-                        String access_token = user.getString("access_token");
-
-                        // Inserting row in users table
-                        db.addUser(uid, first_name, last_name, email, access_token);
-
-                        // Launch main activity
-                        Intent intent = new Intent(LoginActivity.this,
-                                MainActivity.class);
+                        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                         startActivity(intent);
                         finish();
-                    } else {
-                        // Error in login. Get the error message
-                        String errorMsg = jObj.getString("error_msg");
-                        Toast.makeText(getApplicationContext(),
-                                errorMsg, Toast.LENGTH_LONG).show();
                     }
-                } catch (JSONException e) {
-                    // JSON error
-                    e.printStackTrace();
-                    Toast.makeText(getApplicationContext(), "Json error: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                },
+                new Response.ErrorListener()
+                {
+                    @Override
+                    public void onErrorResponse(VolleyError error){
+                        Log.e(TAG, "Login Error: " + error.getMessage());
+                        Toast.makeText(getApplicationContext(),
+                                "User Account Couldn't be created", Toast.LENGTH_LONG).show();
+                        hideDialog();
+                    }
                 }
-
-            }
-        }, new Response.ErrorListener() {
-
+                ){
             @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.e(TAG, "Login Error: " + error.getMessage());
-                Toast.makeText(getApplicationContext(),
-                        error.getMessage(), Toast.LENGTH_LONG).show();
-                hideDialog();
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> headers= new HashMap<>();
+                headers.put("Accept", "application/json");
+                headers.put("Authorization", "Basic " + basicAuth);
+                Log.d("Auth Generated:", "Basic " + basicAuth);
+                return headers;
             }
-        }) {
-
-            @Override
-            protected Map<String, String> getParams() {
-                // Posting parameters to login url
-                Map<String, String> params = new HashMap<String, String>();
-                params.put("email", email);
-                params.put("password", password);
-
-                return params;
-            }
-
         };
 
         // Adding request to request queue
         AppController.getInstance().addToRequestQueue(strReq, tag_string_req);
     }
 
-    //dev login checks if email exists and takes user to new window
-    private void devLogin(){
-        // Launching the Main activity
-        session.setLogin(true);
-        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-        startActivity(intent);
-        finish();
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (pDialog != null) {
+            pDialog.dismiss();
+            pDialog = null;
+        }
     }
 
     private void showDialog() {
@@ -204,15 +196,16 @@ public class LoginActivity extends Activity {
     }
 
     //If devMode button is clicked, skip login and go straight into main activity
-
-    //WARNING THIS WILL NOT WORK FOR CLAIMING PHOTONS ONCE WE GET ACCESS TOKENS FROM THE SERVER
-    public void onDevModeClick(View view) {
-
+    private void setDevMode(View view) {
         session.setLogin(true);
         System.out.println("DEV MODE ON");
-
         Intent dev = new Intent(this, MainActivity.class);
         this.startActivity(dev);
+    }
 
+    private String encodeHeaders( String email, String password) {
+        String credentials = email + ":" + password;
+        String basicAuth = Base64.encodeToString(credentials.getBytes(), Base64.DEFAULT).replace("\n", "");
+        return basicAuth;
     }
 }

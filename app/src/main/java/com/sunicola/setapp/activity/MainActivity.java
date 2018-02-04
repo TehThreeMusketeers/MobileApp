@@ -154,7 +154,7 @@ public class MainActivity extends AppCompatActivity
         Log.d("MainActivity", "onSetupDevice called");
         ParticleCloudSDK.getCloud().setAccessToken(accessToken);
 
-        System.out.println("ACCCESS TOKEN ACCORDING TO SQL: " +accessToken);
+        System.out.println("ACCESS TOKEN ACCORDING TO SQL: " +accessToken);
 
         System.out.println("ACCESS TOKEN IS" +ParticleCloudSDK.getCloud().getAccessToken());
 
