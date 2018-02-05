@@ -21,4 +21,7 @@
 
     <string name="login_test">Claim a device</string>
     <string name="btn_dev">Developer mode</string>
+    <string name="title_activity_device_type">Choose device type</string>
+    <string name="select_device_type">Select desired device type:</string>
+    <string name="confirm_btn">Confirm</string>
 </resources>

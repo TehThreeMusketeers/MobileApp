@@ -40,6 +40,15 @@
             android:name=".activity.MainActivity"
             android:label="@string/title_activity_main"
             android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".activity.DeviceType"
+            android:label="@string/title_activity_device_type"
+            android:parentActivityName=".activity.MainActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.sunicola.setapp.activity.MainActivity" />
+        </activity>
     </application>
 
 </manifest>

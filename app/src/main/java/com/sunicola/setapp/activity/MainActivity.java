@@ -183,7 +183,7 @@ public class MainActivity extends AppCompatActivity
 
         //this starts the setup activity. Change the second parameter to whatever
         //activity is needed for custom device type setup
-        ParticleDeviceSetupLibrary.startDeviceSetup(this, MainActivity.class);
+        ParticleDeviceSetupLibrary.startDeviceSetup(this, DeviceType.class);
     }
 
 }

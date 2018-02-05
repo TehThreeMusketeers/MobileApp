@@ -4,7 +4,6 @@
         <string name="oauth_client_id">set-mobile-app-765</string>
         <string name="oauth_client_secret">230cce51dc8c1a8cafe92498581ac11dfeb7448d</string>
 
-
         <string name="brand_name">SET</string>
         <string name="device_name">Photon</string>
         <drawable name="device_image"></drawable>
