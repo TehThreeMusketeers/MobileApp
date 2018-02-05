@@ -130,9 +130,9 @@ public class LoginActivity extends Activity {
                     public void onResponse(JSONObject response) {
                         try{
                             JSONObject user = response.getJSONObject("user");
-                            String email = user.getString("email");
                             String first_name = user.getString("first_name");
                             String last_name = user.getString("last_name");
+                            String email = user.getString("email");
                             String token = response.getString("token");
 
                             // Inserting row in users table
