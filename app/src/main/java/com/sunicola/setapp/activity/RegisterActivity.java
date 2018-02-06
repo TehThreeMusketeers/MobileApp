@@ -172,6 +172,15 @@ public class RegisterActivity extends Activity {
         AppController.getInstance().addToRequestQueue(objectRequest, tag_string_req);
     }
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (pDialog != null) {
+            pDialog.dismiss();
+            pDialog = null;
+        }
+    }
+
     private void showDialog() {
         if (!pDialog.isShowing())
             pDialog.show();

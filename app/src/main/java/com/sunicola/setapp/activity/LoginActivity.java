@@ -203,6 +203,13 @@ public class LoginActivity extends Activity {
         this.startActivity(dev);
     }
 
+    /**
+     * Creates Basic Auth from email and password passed
+     * and returns string with basicAuth
+     * @param email
+     * @param password
+     * @return
+     */
     private String encodeHeaders( String email, String password) {
         String credentials = email + ":" + password;
         String basicAuth = Base64.encodeToString(credentials.getBytes(), Base64.DEFAULT).replace("\n", "");
