@@ -15,10 +15,16 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.sunicola.setapp.R;
+import com.sunicola.setapp.helper.APICalls;
 import com.sunicola.setapp.helper.SQLiteHandler;
 import com.sunicola.setapp.helper.SessionManager;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.HashMap;
 
@@ -30,8 +36,10 @@ public class MainActivity extends AppCompatActivity
     private static final String TAG = MainActivity.class.getSimpleName();
     private TextView userName;
     private TextView userEmail;
+    private TextView testFeatures;
 
     private SQLiteHandler db;
+    private APICalls api;
     private SessionManager session;
 
     private String accessToken;
@@ -43,24 +51,29 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        //Initalise particle SDKs
+        //Initialise particle SDKs
         ParticleDeviceSetupLibrary.init(this.getApplicationContext());
         ParticleCloudSDK.init(this.getApplicationContext());
 
+        //Initialise Navigation Drawer
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
-
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
+        //Gets Drawer Elements
         userName = navigationView.getHeaderView(0).findViewById(R.id.username);
         userEmail = navigationView.getHeaderView(0).findViewById(R.id.useremail);
+        testFeatures = findViewById(R.id.testFeatures);
 
         // SqLite database handler
         db = new SQLiteHandler(getApplicationContext());
+
+        // API calls handler
+        api = new APICalls(getApplicationContext());
 
         // session manager
         session = new SessionManager(getApplicationContext());
@@ -68,9 +81,8 @@ public class MainActivity extends AppCompatActivity
             logoutUser();
         }
 
-        // Fetching user details from sqlite
+        // Fetching user details from SQLite
         HashMap<String, String> user = db.getUserDetails();
-
         String firstName = user.get("first_name");
         String lastName = user.get("last_name");
         String email = user.get("email");
@@ -79,6 +91,8 @@ public class MainActivity extends AppCompatActivity
         // Displaying the user details on the screen
         userName.setText(firstName +" "+ lastName);
         userEmail.setText(email);
+
+        HashMap<Integer,String> deviceTypes = api.getAllDeviceTypes();
     }
 
     @Override
@@ -147,7 +161,7 @@ public class MainActivity extends AppCompatActivity
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
-    /** Called when the user touches the SetupDevice button
+    /** Called when the user touches the Setup Device button on the menu
      * This sets the access token to whatever is needed, then calls the device setup library to start
      * the setup process*/
     public void setupDevice() {

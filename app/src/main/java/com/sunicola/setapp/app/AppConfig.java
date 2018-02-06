@@ -15,5 +15,9 @@ public class AppConfig {
 
     // Server user register url
     public static String URL_REGISTER = address+ "accounts/";
-    //public static String URL_REGISTER = address+ "";
+
+    public static String URL_GET_ALL_DEVICES = address+ "devices/types/";
+
+    //Test URL
+    //public static String URL_TEST = "https://requestb.in/";
 }
