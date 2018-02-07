@@ -32,14 +32,11 @@ import com.sunicola.setapp.helper.SessionManager;
 
 public class RegisterActivity extends Activity {
     private static final String TAG = RegisterActivity.class.getSimpleName();
-    private Button btnRegister;
-    private Button btnLinkToLogin;
     private EditText inputFirstName;
     private EditText inputLastName;
     private EditText inputEmail;
     private EditText inputPassword;
     private ProgressDialog pDialog;
-    private SessionManager session;
     private SQLiteHandler db;
 
     @Override
@@ -51,15 +48,15 @@ public class RegisterActivity extends Activity {
         inputLastName = (EditText) findViewById(R.id.lastName);
         inputEmail = (EditText) findViewById(R.id.email);
         inputPassword = (EditText) findViewById(R.id.password);
-        btnRegister = (Button) findViewById(R.id.btnRegister);
-        btnLinkToLogin = (Button) findViewById(R.id.btnLinkToLoginScreen);
+        Button btnRegister = (Button) findViewById(R.id.btnRegister);
+        Button btnLinkToLogin = (Button) findViewById(R.id.btnLinkToLoginScreen);
 
         // Progress dialog
         pDialog = new ProgressDialog(this);
         pDialog.setCancelable(false);
 
         // Session manager
-        session = new SessionManager(getApplicationContext());
+        SessionManager session = new SessionManager(getApplicationContext());
 
         // SQLite database handler
         db = new SQLiteHandler(getApplicationContext());
@@ -124,7 +121,7 @@ public class RegisterActivity extends Activity {
         pDialog.setMessage("Registering ...");
         showDialog();
 
-        JsonObjectRequest objectRequest = new JsonObjectRequest(AppConfig.URL_REGISTER, jsonBody,
+        JsonObjectRequest objectRequest = new JsonObjectRequest(AppConfig.URL_ACCOUNTS, jsonBody,
                 new Response.Listener<JSONObject>()
                 {
                 @Override
