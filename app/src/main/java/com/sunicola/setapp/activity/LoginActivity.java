@@ -35,9 +35,6 @@ import com.sunicola.setapp.helper.SessionManager;
 
 public class LoginActivity extends Activity {
     private static final String TAG = LoginActivity.class.getSimpleName();
-    private Button btnLogin;
-    private Button btnLinkToRegister;
-    private Button devMode;
     private EditText inputEmail;
     private EditText inputPassword;
     private ProgressDialog pDialog;
@@ -51,9 +48,9 @@ public class LoginActivity extends Activity {
 
         inputEmail = findViewById(R.id.email);
         inputPassword = findViewById(R.id.password);
-        btnLogin = findViewById(R.id.btnLogin);
-        btnLinkToRegister = findViewById(R.id.btnLinkToRegisterScreen);
-        devMode = findViewById(R.id.btnDev);
+        Button btnLogin = findViewById(R.id.btnLogin);
+        Button btnLinkToRegister = findViewById(R.id.btnLinkToRegisterScreen);
+        Button devMode = findViewById(R.id.btnDev);
 
         // Progress dialog
         pDialog = new ProgressDialog(this);
@@ -123,7 +120,7 @@ public class LoginActivity extends Activity {
 
         String basicAuth = encodeHeaders(email, password);
 
-        JsonObjectRequest strReq = new JsonObjectRequest(Method.POST,AppConfig.URL_LOGIN,null,
+        JsonObjectRequest strReq = new JsonObjectRequest(Method.POST,AppConfig.URL_SESSION,null,
                 new Response.Listener<JSONObject>()
                 {
                     @Override
@@ -212,7 +209,6 @@ public class LoginActivity extends Activity {
      */
     private String encodeHeaders( String email, String password) {
         String credentials = email + ":" + password;
-        String basicAuth = Base64.encodeToString(credentials.getBytes(), Base64.DEFAULT).replace("\n", "");
-        return basicAuth;
+        return Base64.encodeToString(credentials.getBytes(), Base64.DEFAULT).replace("\n", "");
     }
 }

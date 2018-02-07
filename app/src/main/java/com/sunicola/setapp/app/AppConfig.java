@@ -7,16 +7,20 @@ package com.sunicola.setapp.app;
  */
 
 public class AppConfig {
+    // API location
     private static String address = "http://sccug-330-04.lancs.ac.uk:8000/api/v1/";
-    //private static String address = "https://requestb.in/1jew9rk1";
 
     // Server user login url
-    public static String URL_LOGIN = address + "accounts/session/";
+    public static String URL_SESSION = address + "accounts/session/";
 
     // Server user register url
-    public static String URL_REGISTER = address+ "accounts/";
+    public static String URL_ACCOUNTS = address+ "accounts/";
 
-    public static String URL_GET_ALL_DEVICES = address+ "devices/types/";
+    // Server all device types url
+    public static String URL_DEVICES_TYPES = address+ "devices/types/";
+
+    // Server devices for this user url
+    public static String URL_DEVICES = address+ "devices/";
 
     //Test URL
     //public static String URL_TEST = "https://requestb.in/";

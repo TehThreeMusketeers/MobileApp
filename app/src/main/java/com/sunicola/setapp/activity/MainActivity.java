@@ -33,10 +33,6 @@ import io.particle.android.sdk.devicesetup.ParticleDeviceSetupLibrary;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
-    private static final String TAG = MainActivity.class.getSimpleName();
-    private TextView userName;
-    private TextView userEmail;
-    private TextView testFeatures;
 
     private SQLiteHandler db;
     private APICalls api;
@@ -65,9 +61,8 @@ public class MainActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
         //Gets Drawer Elements
-        userName = navigationView.getHeaderView(0).findViewById(R.id.username);
-        userEmail = navigationView.getHeaderView(0).findViewById(R.id.useremail);
-        testFeatures = findViewById(R.id.testFeatures);
+        TextView userName = navigationView.getHeaderView(0).findViewById(R.id.username);
+        TextView userEmail = navigationView.getHeaderView(0).findViewById(R.id.useremail);
 
         // SqLite database handler
         db = new SQLiteHandler(getApplicationContext());
@@ -91,8 +86,6 @@ public class MainActivity extends AppCompatActivity
         // Displaying the user details on the screen
         userName.setText(firstName +" "+ lastName);
         userEmail.setText(email);
-
-        HashMap<Integer,String> deviceTypes = api.getAllDeviceTypes();
     }
 
     @Override
@@ -118,12 +111,10 @@ public class MainActivity extends AppCompatActivity
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
 
