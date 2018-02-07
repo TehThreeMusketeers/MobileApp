@@ -1,7 +1,10 @@
 package com.sunicola.setapp.activity;
 
+import android.app.Application;
+import android.bluetooth.BluetoothClass;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.util.Log;
@@ -15,6 +18,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.sunicola.setapp.R;
 import com.sunicola.setapp.helper.SQLiteHandler;
@@ -41,6 +45,8 @@ public class MainActivity extends AppCompatActivity
 
     private String accessToken;
 
+    private ParticleDeviceSetupLibrary.DeviceSetupCompleteReceiver receiver;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,6 +57,31 @@ public class MainActivity extends AppCompatActivity
         //Initalise particle SDKs
         ParticleDeviceSetupLibrary.init(this.getApplicationContext());
         ParticleCloudSDK.init(this.getApplicationContext());
+
+        //Used to receive device ID after claiming process completes
+        receiver = new ParticleDeviceSetupLibrary.DeviceSetupCompleteReceiver() {
+
+            //This starts DeviceType activity and passes it the device ID of the photon that was just claimed using photon setup
+            @Override
+            public void onSetupSuccess(@NonNull String configuredDeviceId) {
+                Toast.makeText(MainActivity.this, "Setup successful.", Toast.LENGTH_SHORT).show();
+
+                receiver.unregister(getApplicationContext());
+
+                Intent i = new Intent(getApplicationContext(), DeviceType.class);
+                i.putExtra("deviceID", configuredDeviceId);
+
+                startActivity(i);
+
+            }
+
+            @Override
+            public void onSetupFailure() {
+
+                Toast.makeText(MainActivity.this, "Setup failed", Toast.LENGTH_SHORT).show();
+
+            }
+        };
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -183,7 +214,11 @@ public class MainActivity extends AppCompatActivity
 
         //this starts the setup activity. Change the second parameter to whatever
         //activity is needed for custom device type setup
-        ParticleDeviceSetupLibrary.startDeviceSetup(this, DeviceType.class);
+
+        receiver.register(this);
+
+        ParticleDeviceSetupLibrary.startDeviceSetup(this, MainActivity.class);
+
     }
 
 }

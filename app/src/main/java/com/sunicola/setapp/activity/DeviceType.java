@@ -1,5 +1,8 @@
 package com.sunicola.setapp.activity;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -21,10 +24,16 @@ public class DeviceType extends AppCompatActivity implements AdapterView.OnItemS
 
     public boolean selected = false;
     public String selection;
+    public String deviceID;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_device_type);
+
+        Intent intent = getIntent();
+        deviceID = intent.getStringExtra("deviceID");
+
+        System.out.println("DeviceType activity started. Device ID is " +deviceID);
 
         Spinner spinner = (Spinner) findViewById(R.id.device_type_spinner);
         String[] arraySpinner = new String[] {
@@ -44,7 +53,8 @@ public class DeviceType extends AppCompatActivity implements AdapterView.OnItemS
 
     public void onConfirm(View view){
         if (selected){
-            System.out.println("Do stuff");
+            System.out.println(deviceID +" is a " +selection);
+            finish();
         }
         else{
             Toast.makeText(this, "Please select a device type", Toast.LENGTH_SHORT);
