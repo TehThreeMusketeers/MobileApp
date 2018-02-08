@@ -66,12 +66,11 @@ public class MainActivity extends AppCompatActivity
             public void onSetupSuccess(@NonNull String configuredDeviceId) {
                 Toast.makeText(MainActivity.this, "Setup successful.", Toast.LENGTH_SHORT).show();
 
-                receiver.unregister(getApplicationContext());
-
-                Intent i = new Intent(getApplicationContext(), DeviceType.class);
+                Intent i = new Intent(MainActivity.this, DeviceType.class);
                 i.putExtra("deviceID", configuredDeviceId);
 
                 startActivity(i);
+                receiver.unregister(getApplicationContext());
 
             }
 
@@ -82,6 +81,8 @@ public class MainActivity extends AppCompatActivity
 
             }
         };
+
+
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
