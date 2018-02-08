@@ -1,8 +1,8 @@
 <component name="libraryTable">
   <library name="io.particle:devicesetup-0.5.0">
     <CLASSES>
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/devicesetup-0.5.0.aar/31dd906957a129c4e71d9ba4401eb765/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/devicesetup-0.5.0.aar/31dd906957a129c4e71d9ba4401eb765/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/devicesetup-0.5.0.aar/83b33d84038799e4042cdee266290ae4/res" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/devicesetup-0.5.0.aar/83b33d84038799e4042cdee266290ae4/jars/classes.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES>

@@ -24,16 +24,18 @@ public class SQLiteHandler extends SQLiteOpenHelper {
     // Database Name
     private static final String DATABASE_NAME = "android_api";
 
-    // Login table name
+    // Session table name
     private static final String TABLE_USER = "user";
 
-    // Login Table Columns names
+    // Table Columns names
     private static final String KEY_ID = "id";
     private static final String KEY_UID = "uid";
     private static final String KEY_FIRST_NAME = "first_name";
     private static final String KEY_LAST_NAME = "last_name";
     private static final String KEY_EMAIL = "email";
     private static final String KEY_ACCESS_TOKEN = "access_token";
+    private static final String KEY_SESSION_TOKEN = "session_token";
+    private static final String KEY_REFRESH_TOKEN = "refresh_token";
 
     public SQLiteHandler(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -48,9 +50,10 @@ public class SQLiteHandler extends SQLiteOpenHelper {
                 + KEY_LAST_NAME+ " TEXT,"
                 + KEY_EMAIL + " TEXT UNIQUE,"
                 + KEY_UID + " TEXT,"
-                + KEY_ACCESS_TOKEN + " TEXT" + ")";
+                + KEY_ACCESS_TOKEN + " TEXT,"
+                + KEY_SESSION_TOKEN + " TEXT,"
+                + KEY_REFRESH_TOKEN + " TEXT" + ")";
         db.execSQL(CREATE_LOGIN_TABLE);
-
         Log.d(TAG, "Database tables created");
     }
 
@@ -59,7 +62,6 @@ public class SQLiteHandler extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         // Drop older table if existed
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_USER);
-
         // Create tables again
         onCreate(db);
     }
@@ -67,21 +69,31 @@ public class SQLiteHandler extends SQLiteOpenHelper {
     /**
      * Storing user details in database
      * */
-    public void addUser( String uid, String first_name, String last_name, String email, String access_token) {
+    public void addUser( String ... args) {
         SQLiteDatabase db = this.getWritableDatabase();
-
         ContentValues values = new ContentValues();
-        values.put(KEY_UID, uid); // user ID
-        values.put(KEY_FIRST_NAME, first_name); // First Name
-        values.put(KEY_LAST_NAME, last_name); // Last Name
-        values.put(KEY_EMAIL, email); // Email
-        values.put(KEY_ACCESS_TOKEN, access_token); // Access Token
-
+        if (args.length==4){
+            values.put(KEY_UID, "N/A"); // user ID
+            values.put(KEY_FIRST_NAME, args[0]); // First Name
+            values.put(KEY_LAST_NAME, args[1]); // Last Name
+            values.put(KEY_EMAIL, args[2]); // Email
+            values.put(KEY_ACCESS_TOKEN, "N/A"); // Access Token ? needs to be set up later
+            values.put(KEY_SESSION_TOKEN, args[3]); // Session Token
+            values.put(KEY_REFRESH_TOKEN, "N/A"); //Refresh Token used when Access token expires
+        }
+        else if (args.length == 6){
+            values.put(KEY_UID, args[0]); // user ID
+            values.put(KEY_FIRST_NAME, args[1]); // First Name
+            values.put(KEY_LAST_NAME, args[2]); // Last Name
+            values.put(KEY_EMAIL, args[3]); // Email
+            values.put(KEY_ACCESS_TOKEN, args[4]); // Access Token
+            values.put(KEY_SESSION_TOKEN, "N/A"); // Session Token (Only acquired at login)
+            values.put(KEY_REFRESH_TOKEN, args[5]); // Refresh Token used when Access token expires
+        }
         // Inserting Row
         long id = db.insert(TABLE_USER, null, values);
         db.close(); // Closing database connection
-
-        Log.d(TAG, "New user inserted into sqlite: " + id);
+        Log.d(TAG, "New user inserted into SQLite: " + id);
     }
 
     /**
@@ -90,23 +102,19 @@ public class SQLiteHandler extends SQLiteOpenHelper {
     public HashMap<String, String> getUserDetails() {
         HashMap<String, String> user = new HashMap<String, String>();
         String selectQuery = "SELECT * FROM " + TABLE_USER;
-
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
         // Move to first row
-        cursor.moveToFirst();
-        if (cursor.getCount() > 0) {
-            user.put("uid", cursor.getString(1));
-            user.put("first_name", cursor.getString(2));
-            user.put("last_name", cursor.getString(3));
-            user.put("email", cursor.getString(4));
-            user.put("access_token", cursor.getString(5));
+        if (cursor.moveToFirst()){
+            String[] names  = cursor.getColumnNames();
+            for (String name: names) {
+                user.put(name,cursor.getString(cursor.getColumnIndex(name)));
+            }
         }
         cursor.close();
         db.close();
         // return user
-        Log.d(TAG, "Fetching user from Sqlite: " + user.toString());
-
+        Log.d(TAG, "Fetching user from SQLite: " + user.toString());
         return user;
     }
 

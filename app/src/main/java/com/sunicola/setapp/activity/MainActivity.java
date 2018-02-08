@@ -21,10 +21,18 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.sunicola.setapp.R;
+import com.sunicola.setapp.helper.APICalls;
 import com.sunicola.setapp.helper.SQLiteHandler;
 import com.sunicola.setapp.helper.SessionManager;
 
+<<<<<<< HEAD
 import java.io.IOException;
+=======
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+>>>>>>> master
 import java.util.HashMap;
 
 import javax.xml.transform.Result;
@@ -37,10 +45,9 @@ import io.particle.android.sdk.utils.Async;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
-    private TextView userName;
-    private TextView userEmail;
 
     private SQLiteHandler db;
+    private APICalls api;
     private SessionManager session;
 
     private String accessToken;
@@ -54,10 +61,11 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        //Initalise particle SDKs
+        //Initialise particle SDKs
         ParticleDeviceSetupLibrary.init(this.getApplicationContext());
         ParticleCloudSDK.init(this.getApplicationContext());
 
+<<<<<<< HEAD
         //Used to receive device ID after claiming process completes
         receiver = new ParticleDeviceSetupLibrary.DeviceSetupCompleteReceiver() {
 
@@ -84,20 +92,26 @@ public class MainActivity extends AppCompatActivity
 
 
 
+=======
+        //Initialise Navigation Drawer
+>>>>>>> master
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
-
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        userName = navigationView.getHeaderView(0).findViewById(R.id.username);
-        userEmail = navigationView.getHeaderView(0).findViewById(R.id.useremail);
+        //Gets Drawer Elements
+        TextView userName = navigationView.getHeaderView(0).findViewById(R.id.username);
+        TextView userEmail = navigationView.getHeaderView(0).findViewById(R.id.useremail);
 
         // SqLite database handler
         db = new SQLiteHandler(getApplicationContext());
+
+        // API calls handler
+        api = new APICalls(getApplicationContext());
 
         // session manager
         session = new SessionManager(getApplicationContext());
@@ -105,17 +119,15 @@ public class MainActivity extends AppCompatActivity
             logoutUser();
         }
 
-        // Fetching user details from sqlite
+        // Fetching user details from SQLite
         HashMap<String, String> user = db.getUserDetails();
-
         String firstName = user.get("first_name");
         String lastName = user.get("last_name");
-        String name = firstName + " " + lastName;
         String email = user.get("email");
         accessToken = user.get("access_token");
 
         // Displaying the user details on the screen
-        userName.setText(name);
+        userName.setText(firstName +" "+ lastName);
         userEmail.setText(email);
     }
 
@@ -142,12 +154,10 @@ public class MainActivity extends AppCompatActivity
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
 
@@ -172,7 +182,7 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_addPhoton) {
-            // Launching the login activity
+            setupDevice();
         } else if (id == R.id.nav_manage) {
             //Will be used to code specific environments
         } else if (id == R.id.nav_share) {
@@ -185,6 +195,7 @@ public class MainActivity extends AppCompatActivity
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+<<<<<<< HEAD
 
     /**
      * Called when the user touches the SetupDevice button
@@ -218,6 +229,15 @@ public class MainActivity extends AppCompatActivity
 
         receiver.register(this);
 
+=======
+    /** Called when the user touches the Setup Device button on the menu
+     * This sets the access token to whatever is needed, then calls the device setup library to start
+     * the setup process*/
+    public void setupDevice() {
+        ParticleCloudSDK.getCloud().setAccessToken(accessToken);
+        System.out.println("ACCESS TOKEN ACCORDING TO SQL: " +accessToken);
+        System.out.println("ACCESS TOKEN IS" +ParticleCloudSDK.getCloud().getAccessToken());
+>>>>>>> master
         ParticleDeviceSetupLibrary.startDeviceSetup(this, MainActivity.class);
 
     }

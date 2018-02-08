@@ -32,14 +32,11 @@ import com.sunicola.setapp.helper.SessionManager;
 
 public class RegisterActivity extends Activity {
     private static final String TAG = RegisterActivity.class.getSimpleName();
-    private Button btnRegister;
-    private Button btnLinkToLogin;
     private EditText inputFirstName;
     private EditText inputLastName;
     private EditText inputEmail;
     private EditText inputPassword;
     private ProgressDialog pDialog;
-    private SessionManager session;
     private SQLiteHandler db;
 
     @Override
@@ -51,15 +48,15 @@ public class RegisterActivity extends Activity {
         inputLastName = (EditText) findViewById(R.id.lastName);
         inputEmail = (EditText) findViewById(R.id.email);
         inputPassword = (EditText) findViewById(R.id.password);
-        btnRegister = (Button) findViewById(R.id.btnRegister);
-        btnLinkToLogin = (Button) findViewById(R.id.btnLinkToLoginScreen);
+        Button btnRegister = (Button) findViewById(R.id.btnRegister);
+        Button btnLinkToLogin = (Button) findViewById(R.id.btnLinkToLoginScreen);
 
         // Progress dialog
         pDialog = new ProgressDialog(this);
         pDialog.setCancelable(false);
 
         // Session manager
-        session = new SessionManager(getApplicationContext());
+        SessionManager session = new SessionManager(getApplicationContext());
 
         // SQLite database handler
         db = new SQLiteHandler(getApplicationContext());
@@ -124,53 +121,61 @@ public class RegisterActivity extends Activity {
         pDialog.setMessage("Registering ...");
         showDialog();
 
-        JsonObjectRequest objectRequest = new JsonObjectRequest(AppConfig.URL_REGISTER, jsonBody, new Response.Listener<JSONObject>() {
+        JsonObjectRequest objectRequest = new JsonObjectRequest(AppConfig.URL_ACCOUNTS, jsonBody,
+                new Response.Listener<JSONObject>()
+                {
+                @Override
+                public void onResponse(JSONObject response) {
+                    Log.d(TAG, "Register Response: " + response.toString());
+                    hideDialog();
 
-            @Override
-            public void onResponse(JSONObject response) {
-                Log.d(TAG, "Register Response: " + response.toString());
-                hideDialog();
+                    try{
+                        // Now store the user in sqlite
+                        String uid = response.getString("id");
+                        String first_name = response.getString("first_name");
+                        String last_name = response.getString("last_name");
+                        String email = response.getString("email");
+                        String access_token = response.getString("access_token");
+                        String refresh_token = response.getString("refresh_token");
 
-                try{
-                    // Now store the user in sqlite
-                    String uid = response.getString("id");
-                    String first_name = response.getString("first_name");
-                    String last_name = response.getString("last_name");
-                    String email = response.getString("email");
-                    String access_token = response.getString("access_token");
+                        // Inserting row in users table
+                        db.deleteUsers();
+                        db.addUser(uid, first_name, last_name, email, access_token,refresh_token);
+                    }catch (JSONException e) {
+                        e.printStackTrace();
+                    }
 
-                    // Inserting row in users table
-                    db.deleteUsers();
-                    db.addUser(uid, first_name, last_name, email, access_token);
-                }catch (JSONException e) {
-                    e.printStackTrace();
+                    Toast.makeText(getApplicationContext(), "User successfully registered. Try login now!", Toast.LENGTH_LONG).show();
+
+                    // Launch login activity
+                    Intent intent = new Intent(
+                            RegisterActivity.this,
+                            LoginActivity.class);
+                    startActivity(intent);
+                    finish();
+
                 }
-
-                Toast.makeText(getApplicationContext(), "User successfully registered. Try login now!", Toast.LENGTH_LONG).show();
-
-                // Launch login activity
-                Intent intent = new Intent(
-                        RegisterActivity.this,
-                        LoginActivity.class);
-                startActivity(intent);
-                finish();
-
-            }
-        }, new Response.ErrorListener() {
-
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.e(TAG, "Registration Error: " + error.getMessage());
-                Toast.makeText(getApplicationContext(),
-                        "User Account Couldn't be created", Toast.LENGTH_LONG).show();
-                hideDialog();
-            }
-        }) {
-
-        };
+            },  new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Log.e(TAG, "Registration Error: " + error.getMessage());
+                    Toast.makeText(getApplicationContext(),
+                            "User Account Couldn't be created", Toast.LENGTH_LONG).show();
+                    hideDialog();
+                }
+        });
 
         // Adding request to request queue
         AppController.getInstance().addToRequestQueue(objectRequest, tag_string_req);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (pDialog != null) {
+            pDialog.dismiss();
+            pDialog = null;
+        }
     }
 
     private void showDialog() {

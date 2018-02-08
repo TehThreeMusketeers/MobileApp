@@ -9,19 +9,15 @@
     tools:showIn="@layout/app_bar_main">
 
 
-    <Button
-        android:id="@+id/button"
+    <TextView
+        android:id="@+id/testFeatures"
         android:layout_width="wrap_content"
-        android:layout_height="52dp"
-        android:layout_marginEnd="140dp"
-        android:layout_marginStart="141dp"
-        android:layout_marginTop="452dp"
-        android:background="@drawable/trianglifybackground"
-        android:onClick="onSetupDevice"
-        android:text="@string/login_test"
+        android:layout_height="wrap_content"
+        android:text="TextView"
+        tools:layout_editor_absoluteX="163dp"
+        tools:layout_editor_absoluteY="245dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.501"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
 </android.support.constraint.ConstraintLayout>
