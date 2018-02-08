@@ -3,22 +3,23 @@ package com.sunicola.setapp.activity;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.icu.text.StringPrepParseException;
 import android.os.Bundle;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
-import com.android.volley.Request;
 import com.android.volley.Request.Method;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.StringRequest;
+import com.sunicola.setapp.R;
+import com.sunicola.setapp.app.AppConfig;
+import com.sunicola.setapp.app.AppController;
+import com.sunicola.setapp.helper.SQLiteHandler;
+import com.sunicola.setapp.helper.SessionManager;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -26,12 +27,8 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.google.gson.JsonObject;
-import com.sunicola.setapp.R;
-import com.sunicola.setapp.app.AppConfig;
-import com.sunicola.setapp.app.AppController;
-import com.sunicola.setapp.helper.SQLiteHandler;
-import com.sunicola.setapp.helper.SessionManager;
+import static android.widget.Toast.LENGTH_LONG;
+import static android.widget.Toast.makeText;
 
 public class LoginActivity extends Activity {
     private static final String TAG = LoginActivity.class.getSimpleName();
@@ -82,8 +79,8 @@ public class LoginActivity extends Activity {
                     checkLogin(email, password);
                 } else {
                     // Prompt user to enter credentials
-                    Toast.makeText(getApplicationContext(),
-                            "Please enter the credentials!", Toast.LENGTH_LONG)
+                    makeText(getApplicationContext(),
+                            "Please enter the credentials!", LENGTH_LONG)
                             .show();
                 }
             }
@@ -130,17 +127,19 @@ public class LoginActivity extends Activity {
                             String first_name = user.getString("first_name");
                             String last_name = user.getString("last_name");
                             String email = user.getString("email");
-                            String token = response.getString("token");
+                            String session_token = response.getString("token");
+                            //String access_token = response.getString("access_token");
+                            //String refresh_token = response.getString("refresh_token");
 
                             // Inserting row in users table
                             db.deleteUsers();
-                            db.addUser(first_name, last_name, email, token);
+                            db.addUser(first_name, last_name, email, session_token);
 
                         } catch (JSONException e){
                             e.printStackTrace();
                         }
 
-                        Toast.makeText(getApplicationContext(), "User successfully loggedIn.", Toast.LENGTH_LONG).show();
+                        makeText(getApplicationContext(), "User successfully loggedIn.", LENGTH_LONG).show();
 
                         session.setLogin(true);
                         Intent intent = new Intent(LoginActivity.this, MainActivity.class);
@@ -153,8 +152,7 @@ public class LoginActivity extends Activity {
                     @Override
                     public void onErrorResponse(VolleyError error){
                         Log.e(TAG, "Login Error: " + error.getMessage());
-                        Toast.makeText(getApplicationContext(),
-                                "User Account Couldn't be created", Toast.LENGTH_LONG).show();
+                        makeText(getApplicationContext(),"User Account Couldn't be created", LENGTH_LONG).show();
                         hideDialog();
                     }
                 }
@@ -203,9 +201,9 @@ public class LoginActivity extends Activity {
     /**
      * Creates Basic Auth from email and password passed
      * and returns string with basicAuth
-     * @param email
-     * @param password
-     * @return
+     * @param email The user email that will to be encoded
+     * @param password The user password that will be encoded
+     * @return The string that the function returns which is a Base64 encoded email+password
      */
     private String encodeHeaders( String email, String password) {
         String credentials = email + ":" + password;
