@@ -61,7 +61,6 @@ public class APICalls {
                                 String value = jsonArray.getJSONObject(i).getString("value");
                                 types.put(id,value);
                             }
-                            Log.d("Response", types.get(1));
                         } catch (JSONException e){
                             e.printStackTrace();
                         }
@@ -112,7 +111,6 @@ public class APICalls {
                             String deviceId = response.getString("deviceId");
                             String deviceType = response.getString("deviceType");
                             String deviceName = response.getString("deviceName");
-                            Log.d(TAG,id +" "+ deviceId +" "+deviceType+" "+" "+deviceName);
                         }catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -158,7 +156,6 @@ public class APICalls {
                                 String deviceName = jsonArray.getJSONObject(i).getString("deviceName");
                                 Photon temp = new Photon(id,deviceId,deviceType,deviceName);
                                 devices.put(i,temp);
-                                Log.d(TAG,id +" "+ deviceId +" "+deviceType+" "+" "+deviceName);
                             }
                         }catch (JSONException e) {
                             e.printStackTrace();
@@ -185,6 +182,48 @@ public class APICalls {
         return devices;
     }
 
+    /**
+     * Returns Photon object with photon requested
+     */
+    public Photon getPhotonById(int id) {
+        // Tag used to cancel the request
+        String tag_string_req = "req_allDevices";
+        final String[] deviceId = new String[1];
+        final String[] deviceType = new String[1];
+        final String[] deviceName = new String[1];
+        JsonObjectRequest objectRequest = new JsonObjectRequest(Request.Method.GET,AppConfig.URL_DEVICES+id+"/", null,
+                new Response.Listener<JSONObject>()
+                {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try{
+                            deviceId[0] = response.getString("deviceId");
+                            deviceType[0] = response.getString("deviceType");
+                            deviceName[0] = response.getString("deviceName");
+                        }catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.e(TAG, "Server Error: " + error.getMessage());
+                        Toast.makeText(_context,
+                                "Issue getting all photons data from server", Toast.LENGTH_LONG).show();
+                    }
+                }
+        )
+        {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                return setHeaders();
+            }
+        };
+        // Adding request to request queue
+        AppController.getInstance().addToRequestQueue(objectRequest, tag_string_req);
+        return new Photon(id,deviceId[0],deviceType[0],deviceName[0]);
+    }
     /**
      * Sets Headers for request
      * @return
