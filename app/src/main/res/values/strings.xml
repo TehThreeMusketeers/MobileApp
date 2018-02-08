@@ -21,11 +21,9 @@
 
     <string name="login_test">Claim a device</string>
     <string name="btn_dev">Developer mode</string>
-<<<<<<< HEAD
     <string name="title_activity_device_type">Choose device type</string>
     <string name="select_device_type">Select desired device type:</string>
     <string name="confirm_btn">Confirm</string>
-=======
     <string name="main_tasks">Main Tasks</string>
     <string name="setup_new_photon">Setup New Photon</string>
     <string name="view_all_devices">View All Devices</string>
@@ -33,5 +31,4 @@
     <string name="advanced">Advanced</string>
     <string name="share">Share</string>
     <string name="log_out">Log Out</string>
->>>>>>> master
 </resources>

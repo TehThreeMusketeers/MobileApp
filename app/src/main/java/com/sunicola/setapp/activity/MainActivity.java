@@ -1,14 +1,8 @@
 package com.sunicola.setapp.activity;
 
-import android.app.Application;
-import android.bluetooth.BluetoothClass;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.util.Log;
-import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -25,17 +19,8 @@ import com.sunicola.setapp.helper.APICalls;
 import com.sunicola.setapp.helper.SQLiteHandler;
 import com.sunicola.setapp.helper.SessionManager;
 
-<<<<<<< HEAD
 import java.io.IOException;
-=======
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
->>>>>>> master
 import java.util.HashMap;
-
-import javax.xml.transform.Result;
 
 import io.particle.android.sdk.cloud.ParticleCloud;
 import io.particle.android.sdk.cloud.ParticleCloudException;
@@ -49,7 +34,6 @@ public class MainActivity extends AppCompatActivity
     private SQLiteHandler db;
     private APICalls api;
     private SessionManager session;
-
     private String accessToken;
 
     private ParticleDeviceSetupLibrary.DeviceSetupCompleteReceiver receiver;
@@ -65,7 +49,6 @@ public class MainActivity extends AppCompatActivity
         ParticleDeviceSetupLibrary.init(this.getApplicationContext());
         ParticleCloudSDK.init(this.getApplicationContext());
 
-<<<<<<< HEAD
         //Used to receive device ID after claiming process completes
         receiver = new ParticleDeviceSetupLibrary.DeviceSetupCompleteReceiver() {
 
@@ -79,22 +62,16 @@ public class MainActivity extends AppCompatActivity
 
                 startActivity(i);
                 receiver.unregister(getApplicationContext());
-
             }
 
             @Override
             public void onSetupFailure() {
-
                 Toast.makeText(MainActivity.this, "Setup failed", Toast.LENGTH_SHORT).show();
 
             }
         };
 
-
-
-=======
         //Initialise Navigation Drawer
->>>>>>> master
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -124,7 +101,8 @@ public class MainActivity extends AppCompatActivity
         String firstName = user.get("first_name");
         String lastName = user.get("last_name");
         String email = user.get("email");
-        accessToken = user.get("access_token");
+        //accessToken = user.get("access_token");
+        accessToken = "de12dbe2c696b2d3ac0b101fac04db358f90f84d";
 
         // Displaying the user details on the screen
         userName.setText(firstName +" "+ lastName);
@@ -195,15 +173,14 @@ public class MainActivity extends AppCompatActivity
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
-<<<<<<< HEAD
-
     /**
      * Called when the user touches the SetupDevice button
      * This sets the access token to whatever is needed, then calls the device setup library to start
      * the setup process
      */
-    public void onSetupDevice(View view) {
-
+    public void setupDevice() {
+        System.out.println("ACCESS TOKEN ACCORDING TO SQL: " +accessToken);
+        System.out.println("ACCESS TOKEN IS" +ParticleCloudSDK.getCloud().getAccessToken());
         ParticleCloud cloud = ParticleCloudSDK.getCloud();
 
         //this Async class helps make a separate intent for making particle API calls, as
@@ -215,6 +192,7 @@ public class MainActivity extends AppCompatActivity
             public Void callApi(ParticleCloud particleCloud) throws ParticleCloudException, IOException {
                 particleCloud.setAccessToken(accessToken);
                 System.out.println("Access token set! Token: " +cloud.getAccessToken());
+                ParticleDeviceSetupLibrary.startDeviceSetup(getApplicationContext(), DeviceType.class);
                 return null;
             }
 
@@ -223,23 +201,8 @@ public class MainActivity extends AppCompatActivity
                 System.out.println("Failed to make SDK call for access token injection");
             }
         });
-
-        //this starts the setup activity. Change the second parameter to whatever
-        //activity is needed for custom device type setup
-
         receiver.register(this);
 
-=======
-    /** Called when the user touches the Setup Device button on the menu
-     * This sets the access token to whatever is needed, then calls the device setup library to start
-     * the setup process*/
-    public void setupDevice() {
-        ParticleCloudSDK.getCloud().setAccessToken(accessToken);
-        System.out.println("ACCESS TOKEN ACCORDING TO SQL: " +accessToken);
-        System.out.println("ACCESS TOKEN IS" +ParticleCloudSDK.getCloud().getAccessToken());
->>>>>>> master
-        ParticleDeviceSetupLibrary.startDeviceSetup(this, MainActivity.class);
 
     }
-
 }
