@@ -18,15 +18,10 @@ public class Photon {
     public int getId() {
         return id;
     }
-
-    public String getDeviceId() {
-        return deviceId;
-    }
-
+    public String getDeviceId() {return deviceId;}
     public String getDeviceName() {
         return deviceName;
     }
-
     public String getDeviceType() {
         return deviceType;
     }

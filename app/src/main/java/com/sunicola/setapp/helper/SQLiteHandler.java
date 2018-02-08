@@ -81,14 +81,8 @@ public class SQLiteHandler extends SQLiteOpenHelper {
             values.put(KEY_SESSION_TOKEN, args[3]); // Session Token
             values.put(KEY_REFRESH_TOKEN, "N/A"); //Refresh Token used when Access token expires
         }
-        else if (args.length == 6){
-            values.put(KEY_UID, args[0]); // user ID
-            values.put(KEY_FIRST_NAME, args[1]); // First Name
-            values.put(KEY_LAST_NAME, args[2]); // Last Name
-            values.put(KEY_EMAIL, args[3]); // Email
-            values.put(KEY_ACCESS_TOKEN, args[4]); // Access Token
-            values.put(KEY_SESSION_TOKEN, "N/A"); // Session Token (Only acquired at login)
-            values.put(KEY_REFRESH_TOKEN, args[5]); // Refresh Token used when Access token expires
+        else {
+            Log.e(TAG," The number of args passed to add user are wrong");
         }
         // Inserting Row
         long id = db.insert(TABLE_USER, null, values);

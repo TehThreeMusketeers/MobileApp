@@ -105,7 +105,7 @@ public class MainActivity extends AppCompatActivity
         accessToken = "de12dbe2c696b2d3ac0b101fac04db358f90f84d";
 
         // Displaying the user details on the screen
-        userName.setText(firstName +" "+ lastName);
+        userName.setText(String.format("%s %s", firstName, lastName));
         userEmail.setText(email);
     }
 
@@ -139,23 +139,9 @@ public class MainActivity extends AppCompatActivity
         return super.onOptionsItemSelected(item);
     }
 
-    /**
-     * Logging out the user. Will set isLoggedIn flag to false in shared
-     * preferences Clears the user data from sqlite users table
-     */
-    private void logoutUser() {
-        session.setLogin(false);
-        db.deleteUsers();
-
-        // Launching the login activity
-        Intent intent = new Intent(MainActivity.this, LoginActivity.class);
-        startActivity(intent);
-        finish();
-    }
-
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
@@ -173,6 +159,21 @@ public class MainActivity extends AppCompatActivity
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+
+    /**
+     * Logging out the user. Will set isLoggedIn flag to false in shared
+     * preferences Clears the user data from sqlite users table
+     */
+    private void logoutUser() {
+        session.setLogin(false);
+        db.deleteUsers();
+
+        // Launching the login activity
+        Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+        startActivity(intent);
+        finish();
+        Toast.makeText(getApplicationContext(),"Good Bye " + db.getUserDetails().get("first_name"),Toast.LENGTH_LONG).show();
+    }
     /**
      * Called when the user touches the SetupDevice button
      * This sets the access token to whatever is needed, then calls the device setup library to start
@@ -187,22 +188,19 @@ public class MainActivity extends AppCompatActivity
         //they tend to make blocking network calls and Android doesn't allow those from the UI thread
 
         Async.executeAsync(cloud, new Async.ApiProcedure<ParticleCloud>() {
-
             @Override
-            public Void callApi(ParticleCloud particleCloud) throws ParticleCloudException, IOException {
+            public Void callApi(@NonNull ParticleCloud particleCloud) throws ParticleCloudException, IOException {
                 particleCloud.setAccessToken(accessToken);
                 System.out.println("Access token set! Token: " +cloud.getAccessToken());
-                ParticleDeviceSetupLibrary.startDeviceSetup(getApplicationContext(), DeviceType.class);
+                ParticleDeviceSetupLibrary.startDeviceSetup(getApplicationContext(), MainActivity.class);
                 return null;
             }
 
             @Override
-            public void onFailure(ParticleCloudException exception) {
+            public void onFailure(@NonNull ParticleCloudException exception) {
                 System.out.println("Failed to make SDK call for access token injection");
             }
         });
         receiver.register(this);
-
-
     }
 }
