@@ -11,7 +11,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.sunicola.setapp.app.AppConfig;
 import com.sunicola.setapp.app.AppController;
-import com.sunicola.setapp.objects.Photon;
+import com.sunicola.setapp.storage.SQLiteUser;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -19,6 +19,8 @@ import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import static android.widget.Toast.LENGTH_SHORT;
 
 
 /**
@@ -37,7 +39,7 @@ public class APICalls {
     public APICalls(Context context) {
         this._context = context;
         //Setup stuff
-        SQLiteHandler db = new SQLiteHandler(_context);
+        SQLiteUser db = new SQLiteUser(_context);
         HashMap<String, String> user = db.getUserDetails();
         sessionToken = user.get("session_token");
     }
@@ -107,10 +109,10 @@ public class APICalls {
                     @Override
                     public void onResponse(JSONObject response) {
                         try{
-                            String id = response.getString("id");
                             String deviceId = response.getString("deviceId");
-                            String deviceType = response.getString("deviceType");
-                            String deviceName = response.getString("deviceName");
+                            Toast.makeText(_context,
+                                    "Photon " + deviceId + " was created", LENGTH_SHORT)
+                                    .show();
                         }catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -138,10 +140,9 @@ public class APICalls {
     /**
      * Returns HashMap with all photons under this user
      */
-    public HashMap<Integer,Photon> getAllPhotons() {
+    public void getAllPhotons() {
         // Tag used to cancel the request
         String tag_string_req = "req_allDevices";
-        HashMap<Integer,Photon> devices = new HashMap<>();
         JsonObjectRequest objectRequest = new JsonObjectRequest(Request.Method.GET,AppConfig.URL_DEVICES, null,
                 new Response.Listener<JSONObject>()
                 {
@@ -154,8 +155,6 @@ public class APICalls {
                                 String deviceId = jsonArray.getJSONObject(i).getString("deviceId");
                                 String deviceType = jsonArray.getJSONObject(i).getString("deviceType");
                                 String deviceName = jsonArray.getJSONObject(i).getString("deviceName");
-                                Photon temp = new Photon(id,deviceId,deviceType,deviceName);
-                                devices.put(i,temp);
                             }
                         }catch (JSONException e) {
                             e.printStackTrace();
@@ -179,27 +178,23 @@ public class APICalls {
         };
         // Adding request to request queue
         AppController.getInstance().addToRequestQueue(objectRequest, tag_string_req);
-        return devices;
     }
 
     /**
      * Returns Photon object with photon requested
      */
-    public Photon getPhotonById(int id) {
+    public void getPhotonById(int id) {
         // Tag used to cancel the request
         String tag_string_req = "req_allDevices";
-        final String[] deviceId = new String[1];
-        final String[] deviceType = new String[1];
-        final String[] deviceName = new String[1];
         JsonObjectRequest objectRequest = new JsonObjectRequest(Request.Method.GET,AppConfig.URL_DEVICES+id+"/", null,
                 new Response.Listener<JSONObject>()
                 {
                     @Override
                     public void onResponse(JSONObject response) {
                         try{
-                            deviceId[0] = response.getString("deviceId");
-                            deviceType[0] = response.getString("deviceType");
-                            deviceName[0] = response.getString("deviceName");
+                            String deviceId = response.getString("deviceId");
+                            String deviceType = response.getString("deviceType");
+                            String deviceName = response.getString("deviceName");
                         }catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -222,7 +217,6 @@ public class APICalls {
         };
         // Adding request to request queue
         AppController.getInstance().addToRequestQueue(objectRequest, tag_string_req);
-        return new Photon(id,deviceId[0],deviceType[0],deviceName[0]);
     }
     /**
      * Sets Headers for request
