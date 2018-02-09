@@ -1,4 +1,4 @@
-package com.sunicola.setapp.helper;
+package com.sunicola.setapp.storage;
 
 /**
  * Created by soaresbo on 26/01/2018.
@@ -13,16 +13,16 @@ import android.util.Log;
 
 import java.util.HashMap;
 
-public class SQLiteHandler extends SQLiteOpenHelper {
+public class SQLiteUser extends SQLiteOpenHelper {
 
-    private static final String TAG = SQLiteHandler.class.getSimpleName();
+    private static final String TAG = SQLiteUser.class.getSimpleName();
 
     // All Static variables
     // Database Version
     private static final int DATABASE_VERSION = 1;
 
     // Database Name
-    private static final String DATABASE_NAME = "android_api";
+    private static final String DATABASE_NAME = "users_db";
 
     // Session table name
     private static final String TABLE_USER = "user";
@@ -37,7 +37,7 @@ public class SQLiteHandler extends SQLiteOpenHelper {
     private static final String KEY_SESSION_TOKEN = "session_token";
     private static final String KEY_REFRESH_TOKEN = "refresh_token";
 
-    public SQLiteHandler(Context context) {
+    public SQLiteUser(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 

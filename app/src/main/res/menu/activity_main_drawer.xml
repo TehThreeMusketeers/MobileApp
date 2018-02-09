@@ -6,13 +6,13 @@
     <group android:checkableBehavior="single"
         android:title="@string/main_tasks">
         <item
-            android:id="@+id/nav_addPhoton"
-            android:icon="@drawable/ic_menu_plus_one"
-            android:title="@string/setup_new_photon" />
-        <item
             android:id="@+id/nav_allDevices"
             android:icon="@drawable/ic_menu_all_devices"
             android:title="@string/view_all_devices" />
+        <item
+            android:id="@+id/nav_addPhoton"
+            android:icon="@drawable/ic_menu_plus_one"
+            android:title="@string/setup_new_photon" />
         <item
             android:id="@+id/nav_manage"
             android:icon="@drawable/ic_menu_manage"

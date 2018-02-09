@@ -18,7 +18,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.sunicola.setapp.R;
 import com.sunicola.setapp.app.AppConfig;
 import com.sunicola.setapp.app.AppController;
-import com.sunicola.setapp.helper.SQLiteHandler;
+import com.sunicola.setapp.storage.SQLiteUser;
 import com.sunicola.setapp.helper.SessionManager;
 
 import org.json.JSONException;
@@ -36,7 +36,7 @@ public class LoginActivity extends Activity {
     private EditText inputPassword;
     private ProgressDialog pDialog;
     private SessionManager session;
-    private SQLiteHandler db;
+    private SQLiteUser db;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -54,7 +54,7 @@ public class LoginActivity extends Activity {
         pDialog.setCancelable(false);
 
         // SQLite database handler
-        db = new SQLiteHandler(getApplicationContext());
+        db = new SQLiteUser(getApplicationContext());
 
         // Session manager
         session = new SessionManager(getApplicationContext());
@@ -138,9 +138,7 @@ public class LoginActivity extends Activity {
                         } catch (JSONException e){
                             e.printStackTrace();
                         }
-
-                        makeText(getApplicationContext(), "User successfully loggedIn.", LENGTH_LONG).show();
-
+                        makeText(getApplicationContext(), "User successfully logged in.", LENGTH_LONG).show();
                         session.setLogin(true);
                         Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                         startActivity(intent);
@@ -152,7 +150,7 @@ public class LoginActivity extends Activity {
                     @Override
                     public void onErrorResponse(VolleyError error){
                         Log.e(TAG, "Login Error: " + error.getMessage());
-                        makeText(getApplicationContext(),"User Account Couldn't be created", LENGTH_LONG).show();
+                        makeText(getApplicationContext(),"No user found with corresponding credentials", LENGTH_LONG).show();
                         hideDialog();
                     }
                 }

@@ -1,5 +1,7 @@
 package com.sunicola.setapp.activity;
 
+import android.support.v4.app.FragmentTransaction;
+import android.support.v4.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -15,8 +17,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.sunicola.setapp.R;
+import com.sunicola.setapp.fragments.PhotonListFragment;
 import com.sunicola.setapp.helper.APICalls;
-import com.sunicola.setapp.helper.SQLiteHandler;
+import com.sunicola.setapp.storage.SQLiteUser;
 import com.sunicola.setapp.helper.SessionManager;
 
 import java.io.IOException;
@@ -31,8 +34,9 @@ import io.particle.android.sdk.utils.Async;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    private SQLiteHandler db;
+    private SQLiteUser db;
     private APICalls api;
+    private HashMap<String, String> user;
     private SessionManager session;
     private String accessToken;
 
@@ -51,7 +55,6 @@ public class MainActivity extends AppCompatActivity
 
         //Used to receive device ID after claiming process completes
         receiver = new ParticleDeviceSetupLibrary.DeviceSetupCompleteReceiver() {
-
             //This starts DeviceType activity and passes it the device ID of the photon that was just claimed using photon setup
             @Override
             public void onSetupSuccess(@NonNull String configuredDeviceId) {
@@ -85,7 +88,7 @@ public class MainActivity extends AppCompatActivity
         TextView userEmail = navigationView.getHeaderView(0).findViewById(R.id.useremail);
 
         // SqLite database handler
-        db = new SQLiteHandler(getApplicationContext());
+        db = new SQLiteUser(getApplicationContext());
 
         // API calls handler
         api = new APICalls(getApplicationContext());
@@ -97,16 +100,19 @@ public class MainActivity extends AppCompatActivity
         }
 
         // Fetching user details from SQLite
-        HashMap<String, String> user = db.getUserDetails();
+        user = db.getUserDetails();
         String firstName = user.get("first_name");
         String lastName = user.get("last_name");
         String email = user.get("email");
+        accessToken = "3d70546870896f2cf19a636163370fb33ac5c1e6";
+        //FIXME: Uncomment line below and delete above when login starts to provide session token
         //accessToken = user.get("access_token");
-        accessToken = "de12dbe2c696b2d3ac0b101fac04db358f90f84d";
 
         // Displaying the user details on the screen
         userName.setText(String.format("%s %s", firstName, lastName));
         userEmail.setText(email);
+        //Displays first Fragment at login
+        displaySelectedScreen(R.id.nav_allDevices);
     }
 
     @Override
@@ -143,21 +149,34 @@ public class MainActivity extends AppCompatActivity
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         // Handle navigation view item clicks here.
-        int id = item.getItemId();
+        displaySelectedScreen(item.getItemId());
+        return true;
+    }
 
-        if (id == R.id.nav_addPhoton) {
-            setupDevice();
-        } else if (id == R.id.nav_manage) {
-            //Will be used to code specific environments
-        } else if (id == R.id.nav_share) {
-            //Will be used to give friend or family access to account
-        } else if (id == R.id.nav_logOut) {
-            logoutUser();
+    private void displaySelectedScreen(int itemId){
+        Fragment fragment = null;
+
+        switch (itemId){
+            case R.id.nav_allDevices:
+                fragment = new PhotonListFragment();
+                break;
+            case R.id.nav_addPhoton:
+                setupDevice();
+                break;
+            case R.id.nav_logOut:
+                logoutUser();
+                break;
+        }
+
+        //replacing the fragment
+        if (fragment != null) {
+            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+            ft.replace(R.id.screen_area, fragment);
+            ft.commit();
         }
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
-        return true;
     }
 
     /**
@@ -166,13 +185,12 @@ public class MainActivity extends AppCompatActivity
      */
     private void logoutUser() {
         session.setLogin(false);
-        db.deleteUsers();
-
         // Launching the login activity
         Intent intent = new Intent(MainActivity.this, LoginActivity.class);
         startActivity(intent);
+        Toast.makeText(getApplicationContext(),"Good Bye " + user.get("first_name"),Toast.LENGTH_LONG).show();
+        db.deleteUsers();
         finish();
-        Toast.makeText(getApplicationContext(),"Good Bye " + db.getUserDetails().get("first_name"),Toast.LENGTH_LONG).show();
     }
     /**
      * Called when the user touches the SetupDevice button
