@@ -9,6 +9,9 @@ import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 
 import com.sunicola.setapp.R;
+import com.sunicola.setapp.helper.APICalls;
+
+import java.util.HashMap;
 
 import static android.widget.Toast.LENGTH_LONG;
 import static android.widget.Toast.makeText;
@@ -19,9 +22,12 @@ import static android.widget.Toast.makeText;
  */
 public class DeviceType extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
-    public boolean selected = false;
-    public String selection;
-    public String deviceID;
+    private boolean selected = false;
+    private int selection;
+    private String deviceID;
+    //import class to handle api calls to server
+    private APICalls api = new APICalls(getApplicationContext());
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -30,13 +36,19 @@ public class DeviceType extends AppCompatActivity implements AdapterView.OnItemS
         Intent intent = getIntent();
         deviceID = intent.getStringExtra("deviceID");
 
-        System.out.println("DeviceType activity started. Device ID is " +deviceID);
+        System.out.println("DeviceType activity started. Device ID is " +deviceID); //DEBUG
 
         Spinner spinner = (Spinner) findViewById(R.id.device_type_spinner);
-        String[] arraySpinner = new String[] {
-                "test1", "test2", "test3"
-        };
-        // Create an ArrayAdapter using the string array and a default spinner layout
+
+        /*Get list of device types from server, create a drop-down menu of them and allow the user
+        to pick one
+        */
+        HashMap<Integer,String> deviceTypes = api.getAllDeviceTypes();
+        String[] arraySpinner = new String[deviceTypes.size()];
+        //populate the array using the hashMap
+        for(int i=0; i<deviceTypes.size(); i++){
+            arraySpinner[i] = deviceTypes.get(i);
+        }
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, arraySpinner);
         // Specify the layout to use when the list of choices appears
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -49,7 +61,12 @@ public class DeviceType extends AppCompatActivity implements AdapterView.OnItemS
 
     public void onConfirm(View view){
         if (selected){
-            System.out.println(deviceID +" is a " +selection);
+            System.out.println(deviceID +" is a " +selection); //DEBUG
+
+
+            //Register a photon under the user profile on the server
+            api.registerPhoton(deviceID,selection); //String devID, int devType
+
             finish();
         }
         else{
@@ -63,7 +80,7 @@ public class DeviceType extends AppCompatActivity implements AdapterView.OnItemS
         // parent.getItemAtPosition(pos)
         selected = true;
         System.out.println("Selected " +parent.getItemAtPosition(pos));
-        selection = parent.getItemAtPosition(pos).toString(); //store selection as string
+        selection = (int)parent.getItemAtPosition(pos); //store selection as int
     }
 
     @Override
