@@ -39,9 +39,7 @@ public class User {
         return access_token;
     }
 
-    public String getRefresh_token() {
-        return refresh_token;
-    }
+    public String getRefresh_token() {return refresh_token;}
 
     public void setId(String id) {
         this.id = id;

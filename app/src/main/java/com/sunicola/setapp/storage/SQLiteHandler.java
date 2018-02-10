@@ -31,6 +31,7 @@ public class SQLiteHandler extends SQLiteOpenHelper {
     // Table Names table name
     private static final String TABLE_USER = "user";
     private static final String TABLE_PHOTON = "photons";
+    private static final String TABLE_TYPE =  "types";
     private static final String TABLE_GROUPS = "groups";
 
     // Table Columns user
@@ -50,6 +51,11 @@ public class SQLiteHandler extends SQLiteOpenHelper {
     private static final String KEY_DEVICE_TYPE = "deviceType";
     private static final String KEY_DEVICE_NAME = "deviceName";
     private static final String KEY_DEVICE_GROUP = "deviceGroup";
+
+    // Table Device Types
+    private static final String KEY_DB_TID = "dbID";
+    private static final String KEY_TYPE_ID = "id";
+    private static final String KEY_TYPE_NAME = "value";
 
     // Table Columns groups
     private static final String KEY_DB_GID = "dbID";
@@ -87,16 +93,25 @@ public class SQLiteHandler extends SQLiteOpenHelper {
                 + KEY_DEVICE_GROUP + " TEXT"
             + ")";
 
-        String CREATE_GROUP_TABLE =
+        String CREATE_TYPE_TABLE =
             "CREATE TABLE "
-                    + TABLE_GROUPS + "("
-                    + KEY_DB_GID + " INTEGER PRIMARY KEY,"
-                    + KEY_GROUP_ID+ " TEXT UNIQUE,"
-                    + KEY_GROUP_NAME+ " TEXT"
+                    + TABLE_TYPE + "("
+                    + KEY_DB_TID + " INTEGER PRIMARY KEY,"
+                    + KEY_TYPE_ID+ " TEXT UNIQUE,"
+                    + KEY_TYPE_NAME+ " TEXT"
             + ")";
+
+        String CREATE_GROUP_TABLE =
+                "CREATE TABLE "
+                        + TABLE_GROUPS + "("
+                        + KEY_DB_GID + " INTEGER PRIMARY KEY,"
+                        + KEY_GROUP_ID+ " TEXT UNIQUE,"
+                        + KEY_GROUP_NAME+ " TEXT"
+                        + ")";
 
         db.execSQL(CREATE_USER_TABLE);
         db.execSQL(CREATE_PHOTON_TABLE);
+        db.execSQL(CREATE_TYPE_TABLE);
         db.execSQL(CREATE_GROUP_TABLE);
         Log.d(TAG, "Database tables created");
     }
@@ -107,6 +122,7 @@ public class SQLiteHandler extends SQLiteOpenHelper {
         // Drop older table if existed
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_USER);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_PHOTON);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_TYPE);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_GROUPS);
         // Create tables again
         onCreate(db);
@@ -147,6 +163,17 @@ public class SQLiteHandler extends SQLiteOpenHelper {
         long photon_id = db.insert(TABLE_PHOTON, null, values);
         db.close(); // Closing database connection
         Log.d(TAG, "New photon inserted into SQLite: " + photon_id);
+    }
+
+    public void addDeviceType(String id, String value) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(KEY_TYPE_ID, id);
+        values.put(KEY_TYPE_NAME, value);
+        // Inserting Row
+        long deviceType_id= db.insert(TABLE_TYPE, null, values);
+        db.close(); // Closing database connection
+        Log.d(TAG, "New device type inserted into SQLite: " + deviceType_id);
     }
 
     /**
@@ -190,7 +217,31 @@ public class SQLiteHandler extends SQLiteOpenHelper {
                 photonList.add(photon);
             } while(cursor.moveToNext());
         }
+        Log.d(TAG, "Fetching photons from SQLite");
         return photonList;
+    }
+
+    /**
+     * Returns List containig photon objects found in SQLite
+     * @return
+     */
+    public HashMap<String,String> getAllDeviceTypes() {
+        HashMap<String, String> devTypes = new HashMap<String, String>();
+        String selectQuery = "SELECT * FROM " + TABLE_TYPE;
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        // Move to first row
+        if (cursor.moveToFirst()){
+            String[] names  = cursor.getColumnNames();
+            do {
+                devTypes.put(cursor.getString(cursor.getColumnIndex("id")),cursor.getString(cursor.getColumnIndex("value")));
+            }while (cursor.moveToNext());
+        }
+        cursor.close();
+        db.close();
+        // return user
+        Log.d(TAG, "Fetching device types from SQLite: " + devTypes.toString());
+        return devTypes;
     }
 
 
@@ -211,6 +262,14 @@ public class SQLiteHandler extends SQLiteOpenHelper {
         db.delete(TABLE_PHOTON, null, null);
         db.close();
         Log.d(TAG, "Deleted all photon from SQLite");
+    }
+
+    public void deleteDeviceType() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        // Delete All Rows
+        db.delete(TABLE_TYPE, null, null);
+        db.close();
+        Log.d(TAG, "Deleted all device types from SQLite");
     }
 
 }

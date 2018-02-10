@@ -19,6 +19,7 @@ import com.sunicola.setapp.storage.SQLiteHandler;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by soaresbo on 09/02/2018.
@@ -43,11 +44,13 @@ public class PhotonListFragment extends ListFragment implements AdapterView.OnIt
         getActivity().setTitle("All Devices");
         getListView().setOnItemClickListener(this);
 
+        // instatiates api, db and list objects
         apiCalls = new APICalls(getContext());
         db = new SQLiteHandler(getContext());
         List<String> mainList = new ArrayList<>();
 
-        apiCalls.getAllPhotons();
+        //updates db using api calls
+        apiCalls.updateAllPhotons();
         List<Photon> photonList = db.getAllPhotons();
         for (Photon photon: photonList) {
             mainList.add(photon.getDeviceId());
@@ -55,6 +58,13 @@ public class PhotonListFragment extends ListFragment implements AdapterView.OnIt
 
         ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, mainList);
         setListAdapter(adapter);
+
+        //Device Types
+        apiCalls.updateAlllDeviceTypes();
+        HashMap<String,String> devTypes = db.getAllDeviceTypes();
+        for (Map.Entry<String,String> entry : devTypes.entrySet()){
+            Log.e(TAG,"KEY " + entry.getKey() + " VALUE " + entry.getValue());
+        }
     }
 
     @Override
