@@ -51,20 +51,21 @@ public class APICalls {
      * Returns HashMap containing all device types supported by the SDK
      * @return
      */
-    public HashMap<Integer,String> getAllDeviceTypes(){
+    public void updateAlllDeviceTypes(){
         String tag_string_req = "req_all_device_types";
-        HashMap<Integer,String> types = new HashMap<>();
         JsonObjectRequest strReq = new JsonObjectRequest(Request.Method.GET, AppConfig.URL_DEVICES_TYPES,null,
                 new Response.Listener<JSONObject>()
                 {
                     @Override
                     public void onResponse(JSONObject response) {
                         try{
+                            db.deleteDeviceType();
                             JSONArray jsonArray = response.getJSONArray("results");
                             for (int i=0; i<jsonArray.length(); i++) {
                                 int id = jsonArray.getJSONObject(i).getInt("id");
                                 String value = jsonArray.getJSONObject(i).getString("value");
-                                types.put(id,value);
+                                db.addDeviceType(Integer.toString(id),value);
+                                Log.d(TAG,"PHOTON TYPES RESPONSE: " + id +" "+ value);
                             }
                         } catch (JSONException e){
                             e.printStackTrace();
@@ -88,7 +89,6 @@ public class APICalls {
             }
         };
         AppController.getInstance().addToRequestQueue(strReq, tag_string_req);
-        return types;
     }
 
     /**
@@ -145,7 +145,7 @@ public class APICalls {
      * DONE
      * Returns HashMap with all photons under this user
      */
-    public void getAllPhotons() {
+    public void updateAllPhotons() {
         // Tag used to cancel the request
         String tag_string_req = "req_allDevices";
         JsonObjectRequest objectRequest = new JsonObjectRequest(Request.Method.GET,AppConfig.URL_DEVICES, null,
@@ -162,6 +162,9 @@ public class APICalls {
                                 String deviceType = jsonArray.getJSONObject(i).getString("deviceType");
                                 String deviceName = jsonArray.getJSONObject(i).getString("deviceName");
                                 db.addPhoton(new Photon(Integer.toString(id),deviceId,deviceType,deviceName));
+                                Toast.makeText(_context,
+                                        "Photons List Updated", Toast.LENGTH_SHORT).show();
+                                Log.d(TAG,"Saved Photon with id: " + deviceId);
                             }
                         }catch (JSONException e) {
                             e.printStackTrace();
