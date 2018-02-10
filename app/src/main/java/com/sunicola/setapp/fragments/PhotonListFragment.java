@@ -55,9 +55,6 @@ public class PhotonListFragment extends ListFragment implements AdapterView.OnIt
 
         ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, mainList);
         setListAdapter(adapter);
-
-        HashMap<Integer,String> temp = apiCalls.getAllDeviceTypes();
-        Log.e(TAG,"TEST View AllDeviceTypes" + temp.keySet());
     }
 
     @Override

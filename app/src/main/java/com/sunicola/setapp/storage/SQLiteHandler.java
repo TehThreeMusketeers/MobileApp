@@ -66,7 +66,7 @@ public class SQLiteHandler extends SQLiteOpenHelper {
         String CREATE_USER_TABLE =
             "CREATE TABLE "
                 + TABLE_USER + "("
-                + KEY_DB_UID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+                + KEY_DB_UID + " INTEGER PRIMARY KEY,"
                 + KEY_USER_UID + " TEXT UNIQUE,"
                 + KEY_USER_FIRST_NAME+ " TEXT,"
                 + KEY_USER_LAST_NAME+ " TEXT,"
@@ -79,7 +79,7 @@ public class SQLiteHandler extends SQLiteOpenHelper {
         String CREATE_PHOTON_TABLE =
             "CREATE TABLE "
                 + TABLE_PHOTON + "("
-                + KEY_DB_PID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+                + KEY_DB_PID + " INTEGER PRIMARY KEY,"
                 + KEY_DEVICE_API_ID + " TEXT UNIQUE,"
                 + KEY_DEVICE_ID + " TEXT UNIQUE,"
                 + KEY_DEVICE_TYPE + " TEXT,"
@@ -90,7 +90,7 @@ public class SQLiteHandler extends SQLiteOpenHelper {
         String CREATE_GROUP_TABLE =
             "CREATE TABLE "
                     + TABLE_GROUPS + "("
-                    + KEY_DB_GID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+                    + KEY_DB_GID + " INTEGER PRIMARY KEY,"
                     + KEY_GROUP_ID+ " TEXT UNIQUE,"
                     + KEY_GROUP_NAME+ " TEXT"
             + ")";
