@@ -13,8 +13,11 @@ import android.widget.Toast;
 
 import com.sunicola.setapp.R;
 import com.sunicola.setapp.helper.APICalls;
+import com.sunicola.setapp.objects.Photon;
+import com.sunicola.setapp.storage.SQLiteHandler;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -23,6 +26,8 @@ import java.util.List;
 
 public class PhotonListFragment extends ListFragment implements AdapterView.OnItemClickListener {
     private static final String TAG = PhotonListFragment.class.getSimpleName();
+    private APICalls apiCalls;
+    private SQLiteHandler db;
 
     @Nullable
     @Override
@@ -35,23 +40,24 @@ public class PhotonListFragment extends ListFragment implements AdapterView.OnIt
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
-        /*
-        ArrayAdapter adapter = ArrayAdapter.createFromResource(getActivity(),
-                R.array.Planets, android.R.layout.simple_list_item_1);
-        setListAdapter(adapter);
+        getActivity().setTitle("All Devices");
         getListView().setOnItemClickListener(this);
-        */
 
+        apiCalls = new APICalls(getContext());
+        db = new SQLiteHandler(getContext());
         List<String> mainList = new ArrayList<>();
-        mainList.add("foo");
-        mainList.add("bar");
+
+        apiCalls.getAllPhotons();
+        List<Photon> photonList = db.getAllPhotons();
+        for (Photon photon: photonList) {
+            mainList.add(photon.getDeviceId());
+        }
 
         ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, mainList);
         setListAdapter(adapter);
-        getListView().setOnItemClickListener(this);
 
-        getActivity().setTitle("All Devices");
+        HashMap<Integer,String> temp = apiCalls.getAllDeviceTypes();
+        Log.e(TAG,"TEST View AllDeviceTypes" + temp.keySet());
     }
 
     @Override

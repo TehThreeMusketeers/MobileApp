@@ -18,7 +18,8 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.sunicola.setapp.R;
 import com.sunicola.setapp.app.AppConfig;
 import com.sunicola.setapp.app.AppController;
-import com.sunicola.setapp.storage.SQLiteUser;
+import com.sunicola.setapp.objects.User;
+import com.sunicola.setapp.storage.SQLiteHandler;
 import com.sunicola.setapp.helper.SessionManager;
 
 import org.json.JSONException;
@@ -36,7 +37,7 @@ public class LoginActivity extends Activity {
     private EditText inputPassword;
     private ProgressDialog pDialog;
     private SessionManager session;
-    private SQLiteUser db;
+    private SQLiteHandler db;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -54,7 +55,7 @@ public class LoginActivity extends Activity {
         pDialog.setCancelable(false);
 
         // SQLite database handler
-        db = new SQLiteUser(getApplicationContext());
+        db = new SQLiteHandler(getApplicationContext());
 
         // Session manager
         session = new SessionManager(getApplicationContext());
@@ -131,9 +132,9 @@ public class LoginActivity extends Activity {
                             //String access_token = response.getString("access_token");
                             //String refresh_token = response.getString("refresh_token");
 
-                            // Inserting row in users table
-                            db.deleteUsers();
-                            db.addUser(first_name, last_name, email, session_token);
+                            // Inserting add new row in SQLite for this user
+                            db.deleteUserData();
+                            db.addUser(new User(first_name, last_name, email, session_token));
 
                         } catch (JSONException e){
                             e.printStackTrace();

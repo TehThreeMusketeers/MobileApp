@@ -19,7 +19,7 @@ import android.widget.Toast;
 import com.sunicola.setapp.R;
 import com.sunicola.setapp.fragments.PhotonListFragment;
 import com.sunicola.setapp.helper.APICalls;
-import com.sunicola.setapp.storage.SQLiteUser;
+import com.sunicola.setapp.storage.SQLiteHandler;
 import com.sunicola.setapp.helper.SessionManager;
 
 import java.io.IOException;
@@ -34,7 +34,7 @@ import io.particle.android.sdk.utils.Async;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    private SQLiteUser db;
+    private SQLiteHandler db;
     private APICalls api;
     private HashMap<String, String> user;
     private SessionManager session;
@@ -88,7 +88,7 @@ public class MainActivity extends AppCompatActivity
         TextView userEmail = navigationView.getHeaderView(0).findViewById(R.id.useremail);
 
         // SqLite database handler
-        db = new SQLiteUser(getApplicationContext());
+        db = new SQLiteHandler(getApplicationContext());
 
         // API calls handler
         api = new APICalls(getApplicationContext());
@@ -189,7 +189,8 @@ public class MainActivity extends AppCompatActivity
         Intent intent = new Intent(MainActivity.this, LoginActivity.class);
         startActivity(intent);
         Toast.makeText(getApplicationContext(),"Good Bye " + user.get("first_name"),Toast.LENGTH_LONG).show();
-        db.deleteUsers();
+        db.deleteUserData();
+        db.deletePhotonData();
         finish();
     }
     /**

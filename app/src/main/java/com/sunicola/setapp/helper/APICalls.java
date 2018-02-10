@@ -11,7 +11,8 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.sunicola.setapp.app.AppConfig;
 import com.sunicola.setapp.app.AppController;
-import com.sunicola.setapp.storage.SQLiteUser;
+import com.sunicola.setapp.objects.Photon;
+import com.sunicola.setapp.storage.SQLiteHandler;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -31,6 +32,7 @@ public class APICalls {
     private static final String TAG = APICalls.class.getSimpleName();
     private Context _context;
     private String sessionToken;
+    private SQLiteHandler db;
 
     /**
      * API calls Constructor
@@ -39,12 +41,13 @@ public class APICalls {
     public APICalls(Context context) {
         this._context = context;
         //Setup stuff
-        SQLiteUser db = new SQLiteUser(_context);
+        db = new SQLiteHandler(_context);
         HashMap<String, String> user = db.getUserDetails();
         sessionToken = user.get("session_token");
     }
 
     /**
+     * NEEDS WORK
      * Returns HashMap containing all device types supported by the SDK
      * @return
      */
@@ -89,6 +92,7 @@ public class APICalls {
     }
 
     /**
+     * DONE
      * Registers a new photon under this users account
      * @param devID
      * @param devType
@@ -138,6 +142,7 @@ public class APICalls {
     }
 
     /**
+     * DONE
      * Returns HashMap with all photons under this user
      */
     public void getAllPhotons() {
@@ -148,6 +153,7 @@ public class APICalls {
                 {
                     @Override
                     public void onResponse(JSONObject response) {
+                        db.deletePhotonData();
                         try{
                             JSONArray jsonArray = response.getJSONArray("results");
                             for (int i=0; i<jsonArray.length(); i++) {
@@ -155,6 +161,7 @@ public class APICalls {
                                 String deviceId = jsonArray.getJSONObject(i).getString("deviceId");
                                 String deviceType = jsonArray.getJSONObject(i).getString("deviceType");
                                 String deviceName = jsonArray.getJSONObject(i).getString("deviceName");
+                                db.addPhoton(new Photon(Integer.toString(id),deviceId,deviceType,deviceName));
                             }
                         }catch (JSONException e) {
                             e.printStackTrace();
@@ -181,6 +188,7 @@ public class APICalls {
     }
 
     /**
+     * NEEDS WORK
      * Returns Photon object with photon requested
      */
     public void getPhotonById(int id) {
