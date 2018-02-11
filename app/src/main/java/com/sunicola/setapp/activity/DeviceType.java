@@ -10,6 +10,7 @@ import android.widget.Spinner;
 
 import com.sunicola.setapp.R;
 import com.sunicola.setapp.helper.APICalls;
+import com.sunicola.setapp.storage.SQLiteHandler;
 
 import java.util.HashMap;
 
@@ -27,6 +28,7 @@ public class DeviceType extends AppCompatActivity implements AdapterView.OnItemS
     private String deviceID;
     //import class to handle api calls to server
     private APICalls api = new APICalls(getApplicationContext());
+    private SQLiteHandler db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,16 +45,19 @@ public class DeviceType extends AppCompatActivity implements AdapterView.OnItemS
         /*Get list of device types from server, create a drop-down menu of them and allow the user
         to pick one
         */
-        HashMap<Integer,String> deviceTypes = api.getAllDeviceTypes();
+        api.updateAlllDeviceTypes();
+
+        db = new SQLiteHandler(getApplicationContext());
+
+        HashMap<String,String> deviceTypes = db.getAllDeviceTypes();
         String[] arraySpinner = new String[deviceTypes.size()];
         //populate the array using the hashMap
-        for(int i=0; i<deviceTypes.size(); i++){
-            arraySpinner[i] = deviceTypes.get(i);
+        for(int i=1; i<(deviceTypes.size()+1); i++){
+            arraySpinner[i] = deviceTypes.get(String.valueOf(i));
         }
+        //Use array to populate spinner object
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, arraySpinner);
-        // Specify the layout to use when the list of choices appears
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        // Apply the adapter to the spinner
         spinner.setAdapter(adapter);
 
         spinner.setOnItemSelectedListener(this);
