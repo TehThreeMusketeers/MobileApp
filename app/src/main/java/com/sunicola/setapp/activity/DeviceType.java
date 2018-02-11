@@ -26,9 +26,11 @@ public class DeviceType extends AppCompatActivity implements AdapterView.OnItemS
     private boolean selected = false;
     private int selection;
     private String deviceID;
+    private String deviceName;
     //import class to handle api calls to server
-    private APICalls api = new APICalls(getApplicationContext());
+    private APICalls api;
     private SQLiteHandler db;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +39,7 @@ public class DeviceType extends AppCompatActivity implements AdapterView.OnItemS
 
         Intent intent = getIntent();
         deviceID = intent.getStringExtra("deviceID");
+        deviceName = intent.getStringExtra("name");
 
         System.out.println("DeviceType activity started. Device ID is " +deviceID); //DEBUG
 
@@ -45,6 +48,7 @@ public class DeviceType extends AppCompatActivity implements AdapterView.OnItemS
         /*Get list of device types from server, create a drop-down menu of them and allow the user
         to pick one
         */
+        api = new APICalls(getApplicationContext());
         api.updateAlllDeviceTypes();
 
         db = new SQLiteHandler(getApplicationContext());
@@ -52,8 +56,8 @@ public class DeviceType extends AppCompatActivity implements AdapterView.OnItemS
         HashMap<String,String> deviceTypes = db.getAllDeviceTypes();
         String[] arraySpinner = new String[deviceTypes.size()];
         //populate the array using the hashMap
-        for(int i=1; i<(deviceTypes.size()+1); i++){
-            arraySpinner[i] = deviceTypes.get(String.valueOf(i));
+        for(int i=0; i<(deviceTypes.size()); i++){
+            arraySpinner[i] = deviceTypes.get(String.valueOf(i+1));
         }
         //Use array to populate spinner object
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, arraySpinner);
@@ -70,7 +74,7 @@ public class DeviceType extends AppCompatActivity implements AdapterView.OnItemS
 
 
             //Register a photon under the user profile on the server
-            api.registerPhoton(deviceID,selection); //String devID, int devType
+            api.registerPhoton(deviceID,selection, deviceName); //String devID, int devType
 
             finish();
         }

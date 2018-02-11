@@ -40,6 +40,8 @@ public class MainActivity extends AppCompatActivity
     private SessionManager session;
     private String accessToken;
 
+    private ParticleCloud cloud;
+
     private ParticleDeviceSetupLibrary.DeviceSetupCompleteReceiver receiver;
 
     @Override
@@ -53,15 +55,24 @@ public class MainActivity extends AppCompatActivity
         ParticleDeviceSetupLibrary.init(this.getApplicationContext());
         ParticleCloudSDK.init(this.getApplicationContext());
 
+        cloud = ParticleCloudSDK.getCloud();
+
         //Used to receive device ID after claiming process completes
         receiver = new ParticleDeviceSetupLibrary.DeviceSetupCompleteReceiver() {
-            //This starts DeviceType activity and passes it the device ID of the photon that was just claimed using photon setup
+            //This starts DeviceType activity and passes it the device ID and name of the photon that was just claimed using photon setup
             @Override
             public void onSetupSuccess(@NonNull String configuredDeviceId) {
                 Toast.makeText(MainActivity.this, "Setup successful.", Toast.LENGTH_SHORT).show();
 
                 Intent i = new Intent(MainActivity.this, DeviceType.class);
+
                 i.putExtra("deviceID", configuredDeviceId);
+                try {
+                    i.putExtra("name", cloud.getDevice(configuredDeviceId).getName());
+                } catch (ParticleCloudException e) {
+                    e.printStackTrace();
+                    System.out.println("Particle cloud Exception while trying to put device name in Inent at MainActivity");
+                }
 
                 startActivity(i);
                 receiver.unregister(getApplicationContext());
@@ -107,6 +118,8 @@ public class MainActivity extends AppCompatActivity
         accessToken = "3d70546870896f2cf19a636163370fb33ac5c1e6";
         //FIXME: Uncomment line below and delete above when login starts to provide session token
         //accessToken = user.get("access_token");
+
+        cloud.setAccessToken(accessToken); //Particle cloud access token is set when the user logs in
 
         // Displaying the user details on the screen
         userName.setText(String.format("%s %s", firstName, lastName));
@@ -200,8 +213,7 @@ public class MainActivity extends AppCompatActivity
      */
     public void setupDevice() {
         System.out.println("ACCESS TOKEN ACCORDING TO SQL: " +accessToken);
-        System.out.println("ACCESS TOKEN IS" +ParticleCloudSDK.getCloud().getAccessToken());
-        ParticleCloud cloud = ParticleCloudSDK.getCloud();
+        System.out.println("ACCESS TOKEN IS" +cloud.getAccessToken());
 
         //this Async class helps make a separate intent for making particle API calls, as
         //they tend to make blocking network calls and Android doesn't allow those from the UI thread
@@ -209,7 +221,6 @@ public class MainActivity extends AppCompatActivity
         Async.executeAsync(cloud, new Async.ApiProcedure<ParticleCloud>() {
             @Override
             public Void callApi(@NonNull ParticleCloud particleCloud) throws ParticleCloudException, IOException {
-                particleCloud.setAccessToken(accessToken);
                 System.out.println("Access token set! Token: " +cloud.getAccessToken());
                 ParticleDeviceSetupLibrary.startDeviceSetup(getApplicationContext(), MainActivity.class);
                 return null;
