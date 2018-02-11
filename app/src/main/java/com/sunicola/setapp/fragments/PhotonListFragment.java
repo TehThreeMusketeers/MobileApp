@@ -3,6 +3,7 @@ package com.sunicola.setapp.fragments;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ListFragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,22 +26,45 @@ import java.util.Map;
  * Created by soaresbo on 09/02/2018.
  */
 
-public class PhotonListFragment extends ListFragment implements AdapterView.OnItemClickListener {
+public class PhotonListFragment extends ListFragment implements AdapterView.OnItemClickListener, SwipeRefreshLayout.OnRefreshListener {
     private static final String TAG = PhotonListFragment.class.getSimpleName();
     private APICalls apiCalls;
     private SQLiteHandler db;
+    private SwipeRefreshLayout swipe;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         //returning our layout file
-        return inflater.inflate(R.layout.photon_list_fragment, container, false);
-    }
 
+        // Inflate the layout for this fragment
+        View view = inflater.inflate(R.layout.photon_list_fragment, container, false);
+
+        swipe = (SwipeRefreshLayout) view.findViewById(R.id.swipeRefresh);
+        swipe.setOnRefreshListener(this);
+        return view;
+
+    }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        loadListView();
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        Toast.makeText(getActivity(), "Item: " + position, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onRefresh() {
+        if (loadListView()){
+            onCompletion();
+        }
+    }
+
+    public boolean loadListView(){
         getActivity().setTitle("All Devices");
         getListView().setOnItemClickListener(this);
 
@@ -65,10 +89,12 @@ public class PhotonListFragment extends ListFragment implements AdapterView.OnIt
         for (Map.Entry<String,String> entry : devTypes.entrySet()){
             Log.e(TAG,"KEY " + entry.getKey() + " VALUE " + entry.getValue());
         }
+        return true;
     }
 
-    @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        Toast.makeText(getActivity(), "Item: " + position, Toast.LENGTH_SHORT).show();
+    public void onCompletion() {
+        if (swipe.isRefreshing()) {
+            swipe.setRefreshing(false);
+        }
     }
 }
