@@ -35,4 +35,5 @@ dependencies {
     compile 'io.particle:cloudsdk:0.4.8'
     compile 'io.particle:devicesetup:0.5.0'
     compile 'com.mcxiaoke.volley:library-aar:1.0.0'
+    compile 'com.github.clans:fab:1.6.3'
 }
