@@ -97,13 +97,14 @@ public class APICalls {
      * @param devID
      * @param devType
      */
-    public void registerPhoton(String devID, int devType) {
+    public void registerPhoton(String devID, int devType, String devName) {
         // Tag used to cancel the request
         String tag_string_req = "req_newDevice";
         JSONObject jsonBody = new JSONObject();
         try {
             jsonBody.put("deviceId", devID);
             jsonBody.put("deviceType", devType);
+            jsonBody.put("deviceName", devName);
         }catch (JSONException e) {
             e.printStackTrace();
         }
