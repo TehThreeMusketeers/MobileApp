@@ -115,9 +115,9 @@ public class MainActivity extends AppCompatActivity
         String firstName = user.get("first_name");
         String lastName = user.get("last_name");
         String email = user.get("email");
-        accessToken = "3d70546870896f2cf19a636163370fb33ac5c1e6";
         //FIXME: Uncomment line below and delete above when login starts to provide session token
-        //accessToken = user.get("access_token");
+        accessToken = user.get("access_token");
+        System.out.println("ACCESS TOKEN IS " +accessToken);
 
         cloud.setAccessToken(accessToken); //Particle cloud access token is set when the user logs in
 

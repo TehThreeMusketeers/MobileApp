@@ -77,6 +77,11 @@ public class DeviceType extends AppCompatActivity implements AdapterView.OnItemS
             api.registerPhoton(deviceID,selection, deviceName); //String devID, int devType
 
             finish();
+
+            Intent returnBtn = new Intent(getApplicationContext(),
+                    MainActivity.class);
+
+            startActivity(returnBtn);
         }
         else{
             makeText(this, "Please select a device type", LENGTH_LONG).show();
@@ -89,7 +94,8 @@ public class DeviceType extends AppCompatActivity implements AdapterView.OnItemS
         // parent.getItemAtPosition(pos)
         selected = true;
         System.out.println("Selected " +parent.getItemAtPosition(pos));
-        selection = (int)parent.getItemAtPosition(pos); //store selection as int
+        selection = pos; //store selection as int
+        System.out.println("POSITION IS " +pos);
     }
 
     @Override

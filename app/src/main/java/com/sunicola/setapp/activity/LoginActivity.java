@@ -129,12 +129,14 @@ public class LoginActivity extends Activity {
                             String last_name = user.getString("last_name");
                             String email = user.getString("email");
                             String session_token = response.getString("token");
-                            //String access_token = response.getString("access_token");
+                            String access_token = response.getString("access_token");
                             //String refresh_token = response.getString("refresh_token");
 
                             // Inserting add new row in SQLite for this user
                             db.deleteUserData();
-                            db.addUser(new User(first_name, last_name, email, session_token));
+                            User newUser = new User(first_name, last_name, email, session_token);
+                            newUser.setAccess_token(access_token);
+                            db.addUser(newUser);
 
                         } catch (JSONException e){
                             e.printStackTrace();
