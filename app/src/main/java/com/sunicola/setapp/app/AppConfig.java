@@ -8,8 +8,7 @@ package com.sunicola.setapp.app;
 
 public class AppConfig {
     // API location
-    private static String address = "http://sccug-330-04.lancs.ac.uk:8000/api/v1/";
-    private static String address_cloud = "http://setapp.cloud/api/v1/";
+    private static String address = "http://sccug-330-04.lancs.ac.uk:80/api/v1/";
 
     // Server user register url
     public static String URL_ACCOUNTS = address+ "accounts/";
@@ -20,7 +19,6 @@ public class AppConfig {
     public static String URL_DEVICES = address+ "devices/";
     // Server all device types url
     public static String URL_DEVICES_TYPES = address+ "devices/types/";
-
 
     // Server groups for this user url
     public static String URL_GROUPS = address+ "devices/groups/";

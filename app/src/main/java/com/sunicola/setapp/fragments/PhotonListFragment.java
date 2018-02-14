@@ -99,10 +99,5 @@ public class PhotonListFragment
         //list.setItemChecked(0, true);
         list.setOnItemClickListener(this);
 
-        ArrayList<String> devices = new ArrayList<>();
-        devices.add("muma");
-        devices.add("mumaasd");
-        apiCalls.registerGroup("Lool",1,devices);
-
     }
 }

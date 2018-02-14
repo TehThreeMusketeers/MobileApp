@@ -263,7 +263,7 @@ public class APICalls {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Log.e(TAG, "Registration photon Error: " + error.getMessage());
+                        Log.e(TAG, "Registration Group Error: " + error.getMessage());
                         Toast.makeText(_context,
                                 "Issue adding photon data from server", Toast.LENGTH_LONG).show();
                     }
