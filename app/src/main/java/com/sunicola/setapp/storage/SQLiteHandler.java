@@ -206,7 +206,7 @@ public class SQLiteHandler extends SQLiteOpenHelper {
         List<Photon> photonList = new ArrayList();
         String selectQuery = "SELECT * FROM " + TABLE_PHOTON;
         SQLiteDatabase db = this.getWritableDatabase();
-        Cursor cursor = db.rawQuery(selectQuery, (String[])null);
+        Cursor cursor = db.rawQuery(selectQuery, null);
         if(cursor.moveToFirst()) {
             String[] names  = cursor.getColumnNames();
             do {

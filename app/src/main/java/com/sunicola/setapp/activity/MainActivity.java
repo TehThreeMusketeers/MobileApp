@@ -1,5 +1,8 @@
 package com.sunicola.setapp.activity;
 
+
+import com.github.clans.fab.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.Fragment;
 import android.content.Intent;
@@ -13,6 +16,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -115,9 +119,7 @@ public class MainActivity extends AppCompatActivity
         String firstName = user.get("first_name");
         String lastName = user.get("last_name");
         String email = user.get("email");
-        //FIXME: Uncomment line below and delete above when login starts to provide session token
         accessToken = user.get("access_token");
-        System.out.println("ACCESS TOKEN IS " +accessToken);
 
         cloud.setAccessToken(accessToken); //Particle cloud access token is set when the user logs in
 
@@ -126,6 +128,15 @@ public class MainActivity extends AppCompatActivity
         userEmail.setText(email);
         //Displays first Fragment at login
         displaySelectedScreen(R.id.nav_allDevices);
+
+        FloatingActionButton fab1 = findViewById(R.id.fab12);
+        fab1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();
+            }
+        });
     }
 
     @Override

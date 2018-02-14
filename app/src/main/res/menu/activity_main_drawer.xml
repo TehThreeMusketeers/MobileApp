@@ -14,7 +14,6 @@
             android:icon="@drawable/ic_menu_plus_one"
             android:title="@string/setup_new_photon" />
         <item
-            android:id="@+id/nav_manage"
             android:icon="@drawable/ic_menu_manage"
             android:title="@string/settings" />
     </group>
@@ -22,7 +21,6 @@
     <item android:title="@string/advanced">
         <menu>
             <item
-                android:id="@+id/nav_share"
                 android:icon="@drawable/ic_menu_share"
                 android:title="@string/share" />
             <item
