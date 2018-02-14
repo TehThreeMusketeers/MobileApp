@@ -29,4 +29,8 @@
     <string name="list_device_id">Device ID</string>
     <string name="list_device_type">Device Type</string>
 
+
+    <string name="btn_if">IF</string>
+    <string name="btn_then">THEN</string>
+
 </resources>
