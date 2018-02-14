@@ -1,40 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+android:id="@+id/android_list_view_tutorial_with_example"
+android:layout_width="match_parent"
+android:layout_height="match_parent"
+android:orientation="horizontal"
+android:padding="7dp">
 
-    <ImageView
-        android:id="@+id/photonImg"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginTop="25dp"
-        android:src="@drawable/photon" />
+<ImageView
+    android:id="@+id/photonImg"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:contentDescription="@string/app_name"
+    android:src="@drawable/photon" />
+    />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="7dp">
 
-    <TextView
-        android:id="@+id/devId"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/photonImg"
-        android:layout_marginTop="50dp"
-        android:layout_toEndOf="@+id/photonImg"
-        android:padding="10dp"
-        android:text="@string/list_device_id"
-        android:textAlignment="center"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
+        <TextView
+            android:id="@+id/devId"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/list_device_id"
+            android:textAlignment="center"
+            android:textSize="15sp"
+            android:textStyle="bold" />
 
-    <TextView
-        android:id="@+id/devType"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/photonImg"
-        android:layout_marginBottom="32dp"
-        android:layout_toEndOf="@+id/photonImg"
-        android:padding="10dp"
-        android:text="@string/list_device_type"
-        android:textAlignment="center"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
-
-</RelativeLayout>
+        <TextView
+            android:id="@+id/devType"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingTop="5dp"
+            android:text="@string/list_device_type"
+            android:textAlignment="center"
+            android:textSize="12sp" />
+    </LinearLayout>
+</LinearLayout>
