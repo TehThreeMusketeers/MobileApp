@@ -7,12 +7,7 @@ package com.sunicola.setapp.objects;
 public class Photon {
     private String id, deviceId, deviceType, deviceName, deviceGroup;
 
-    /**
-     * Used during SQLite getAllPhotons
-     */
-    public Photon(){
-    }
-
+    public Photon(){}
     public Photon(String id, String deviceId, String deviceType, String deviceName){
         this.id = id;
         this.deviceId = deviceId;

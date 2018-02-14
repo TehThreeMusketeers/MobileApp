@@ -11,6 +11,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import com.sunicola.setapp.objects.Group;
 import com.sunicola.setapp.objects.Photon;
 import com.sunicola.setapp.objects.User;
 
@@ -32,7 +33,7 @@ public class SQLiteHandler extends SQLiteOpenHelper {
     private static final String TABLE_USER = "user";
     private static final String TABLE_PHOTON = "photons";
     private static final String TABLE_TYPE =  "types";
-    private static final String TABLE_GROUPS = "groups";
+    private static final String TABLE_GROUP = "groups";
 
     // Table Columns user
     private static final String KEY_DB_UID = "dbID";
@@ -59,8 +60,9 @@ public class SQLiteHandler extends SQLiteOpenHelper {
 
     // Table Columns groups
     private static final String KEY_DB_GID = "dbID";
-    private static final String KEY_GROUP_ID = "groupId";
-    private static final String KEY_GROUP_NAME = "groupName";
+    private static final String KEY_GROUP_ID = "id";
+    private static final String KEY_GROUP_NAME = "name";
+    private static final String KEY_GROUP_TYPE = "groupType";
 
     public SQLiteHandler(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -103,10 +105,11 @@ public class SQLiteHandler extends SQLiteOpenHelper {
 
         String CREATE_GROUP_TABLE =
                 "CREATE TABLE "
-                        + TABLE_GROUPS + "("
+                        + TABLE_GROUP + "("
                         + KEY_DB_GID + " INTEGER PRIMARY KEY,"
                         + KEY_GROUP_ID+ " TEXT UNIQUE,"
-                        + KEY_GROUP_NAME+ " TEXT"
+                        + KEY_GROUP_NAME+ " TEXT,"
+                        + KEY_GROUP_TYPE+ " TEXT"
                         + ")";
 
         db.execSQL(CREATE_USER_TABLE);
@@ -123,7 +126,7 @@ public class SQLiteHandler extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_USER);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_PHOTON);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_TYPE);
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_GROUPS);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_GROUP);
         // Create tables again
         onCreate(db);
     }
@@ -165,6 +168,11 @@ public class SQLiteHandler extends SQLiteOpenHelper {
         Log.d(TAG, "New photon inserted into SQLite: " + photon_id);
     }
 
+    /**
+     * Adds new Device Type to DB
+     * @param id
+     * @param value
+     */
     public void addDeviceType(String id, String value) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
@@ -174,6 +182,22 @@ public class SQLiteHandler extends SQLiteOpenHelper {
         long deviceType_id= db.insert(TABLE_TYPE, null, values);
         db.close(); // Closing database connection
         Log.d(TAG, "New device type inserted into SQLite: " + deviceType_id);
+    }
+
+    /**
+     * Adds photon data to the db in the according key
+     * @param group
+     */
+    public void addNewGroup(Group group) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(KEY_GROUP_ID, group.getGroupType());
+        values.put(KEY_GROUP_NAME, group.getName());
+        values.put(KEY_GROUP_TYPE, group.getGroupType());
+        // Inserting Row
+        long group_id = db.insert(TABLE_GROUP, null, values);
+        db.close(); // Closing database connection
+        Log.d(TAG, "New photon inserted into SQLite: " + group_id);
     }
 
     /**
@@ -199,7 +223,7 @@ public class SQLiteHandler extends SQLiteOpenHelper {
     }
 
     /**
-     * Returns List containig photon objects found in SQLite
+     * Returns List containing photon objects found in SQLite
      * @return
      */
     public List<Photon> getAllPhotons() {
@@ -243,6 +267,28 @@ public class SQLiteHandler extends SQLiteOpenHelper {
         return devTypes;
     }
 
+    /**
+     * Returns List containing Group objects found in SQLite
+     * @return
+     */
+    public List<Group> getAllGroups() {
+        List<Group> groupList = new ArrayList();
+        String selectQuery = "SELECT * FROM " + TABLE_GROUP;
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        if(cursor.moveToFirst()) {
+            do {
+                Group group = new Group();
+                group.setId(cursor.getInt(cursor.getColumnIndex("id")));
+                group.setName(cursor.getString(cursor.getColumnIndex("name")));
+                group.setGroupType(cursor.getInt(cursor.getColumnIndex("groupType")));
+                groupList.add(group);
+            } while(cursor.moveToNext());
+        }
+        Log.d(TAG, "Fetching photons from SQLite");
+        return groupList;
+    }
+
 
     /**
      * Deletes all user table
@@ -254,7 +300,6 @@ public class SQLiteHandler extends SQLiteOpenHelper {
         db.close();
         Log.d(TAG, "Deleted all user info from SQLite");
     }
-
     public void deletePhotonData() {
         SQLiteDatabase db = this.getWritableDatabase();
         // Delete All Rows
@@ -262,13 +307,19 @@ public class SQLiteHandler extends SQLiteOpenHelper {
         db.close();
         Log.d(TAG, "Deleted all photon from SQLite");
     }
-
     public void deleteDeviceType() {
         SQLiteDatabase db = this.getWritableDatabase();
         // Delete All Rows
         db.delete(TABLE_TYPE, null, null);
         db.close();
         Log.d(TAG, "Deleted all device types from SQLite");
+    }
+    public void deleteGroupType() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        // Delete All Rows
+        db.delete(TABLE_GROUP, null, null);
+        db.close();
+        Log.d(TAG, "Deleted all groups from SQLite");
     }
 
 }
