@@ -31,5 +31,7 @@
     <string name="advanced">Advanced</string>
     <string name="share">Share</string>
     <string name="log_out">Log Out</string>
+    <string name="list_device_id">Device ID</string>
+    <string name="list_device_type">Device Type</string>
 
 </resources>

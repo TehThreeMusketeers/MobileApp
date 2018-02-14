@@ -49,7 +49,7 @@ public class DeviceType extends AppCompatActivity implements AdapterView.OnItemS
         to pick one
         */
         api = new APICalls(getApplicationContext());
-        api.updateAlllDeviceTypes();
+        api.updateAllDeviceTypes();
 
         db = new SQLiteHandler(getApplicationContext());
 
