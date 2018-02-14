@@ -2,6 +2,8 @@ package com.sunicola.setapp.activity;
 
 
 import com.github.clans.fab.FloatingActionButton;
+
+import android.net.Uri;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.Fragment;
@@ -22,6 +24,7 @@ import android.widget.Toast;
 
 import com.sunicola.setapp.R;
 import com.sunicola.setapp.fragments.PhotonListFragment;
+import com.sunicola.setapp.fragments.TriggerFragment;
 import com.sunicola.setapp.helper.APICalls;
 import com.sunicola.setapp.storage.SQLiteHandler;
 import com.sunicola.setapp.helper.SessionManager;
@@ -36,7 +39,7 @@ import io.particle.android.sdk.devicesetup.ParticleDeviceSetupLibrary;
 import io.particle.android.sdk.utils.Async;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener, TriggerFragment.OnFragmentInteractionListener{
 
     private SQLiteHandler db;
     private APICalls api;
@@ -135,8 +138,20 @@ public class MainActivity extends AppCompatActivity
             public void onClick(View view) {
                 Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
+
+                Fragment fragment = new TriggerFragment();
+                FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+                ft.replace(R.id.screen_area, fragment);
+                ft.commit();
+
+
             }
         });
+    }
+
+    @Override
+    public void onFragmentInteraction(Uri uri) {
+
     }
 
     @Override

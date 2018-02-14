@@ -93,9 +93,8 @@ public class DeviceType extends AppCompatActivity implements AdapterView.OnItemS
         // An item was selected. You can retrieve the selected item using
         // parent.getItemAtPosition(pos)
         selected = true;
-        System.out.println("Selected " +parent.getItemAtPosition(pos));
-        selection = pos; //store selection as int
-        System.out.println("POSITION IS " +pos);
+        selection = pos+1; //store selection as int
+        System.out.println("SELECTION IS " +selection);
     }
 
     @Override

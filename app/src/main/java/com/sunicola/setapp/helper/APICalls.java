@@ -230,6 +230,9 @@ public class APICalls {
         // Adding request to request queue
         AppController.getInstance().addToRequestQueue(objectRequest, tag_string_req);
     }
+
+    public void getGroupTypes(){
+    }
     /**
      * Sets Headers for request
      * @return
