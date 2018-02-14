@@ -6,11 +6,7 @@
 
         <string name="brand_name">SET</string>
         <string name="device_name">Photon</string>
-        <drawable name="device_image"></drawable>
-        <drawable name="device_image_small"></drawable>
 
-        <drawable name="brand_image_horizontal">@drawable/logo</drawable>
-        <drawable name="brand_image_vertical">@drawable/logo</drawable>
         <drawable name="screen_background">@drawable/background</drawable>
         <color name="brand_image_background_color">#641A1A1A</color>
 

@@ -43,7 +43,7 @@ public class DeviceType extends AppCompatActivity implements AdapterView.OnItemS
 
         System.out.println("DeviceType activity started. Device ID is " +deviceID); //DEBUG
 
-        Spinner spinner = (Spinner) findViewById(R.id.device_type_spinner);
+        Spinner spinner = findViewById(R.id.device_type_spinner);
 
         /*Get list of device types from server, create a drop-down menu of them and allow the user
         to pick one

@@ -16,7 +16,6 @@
     </FrameLayout>
 
     <com.github.clans.fab.FloatingActionMenu
-        android:id="@+id/plus_options"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
 
@@ -35,21 +34,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/ic_menu_plus_one"
-            fab:fab_label="Menu item 1" />
-
-        <com.github.clans.fab.FloatingActionButton
-            android:id="@+id/fab22"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_menu_plus_one"
-            fab:fab_label="Menu item 2" />
-
-        <com.github.clans.fab.FloatingActionButton
-            android:id="@+id/fab32"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_menu_plus_one"
-            fab:fab_label="Something" />
+            fab:fab_label="Add Trigger" />
 
     </com.github.clans.fab.FloatingActionMenu>
 
