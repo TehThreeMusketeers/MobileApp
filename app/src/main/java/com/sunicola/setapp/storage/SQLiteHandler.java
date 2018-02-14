@@ -232,7 +232,6 @@ public class SQLiteHandler extends SQLiteOpenHelper {
         Cursor cursor = db.rawQuery(selectQuery, null);
         // Move to first row
         if (cursor.moveToFirst()){
-            String[] names  = cursor.getColumnNames();
             do {
                 devTypes.put(cursor.getString(cursor.getColumnIndex("id")),cursor.getString(cursor.getColumnIndex("value")));
             }while (cursor.moveToNext());

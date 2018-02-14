@@ -51,7 +51,7 @@ public class APICalls {
      * Returns HashMap containing all device types supported by the SDK
      * @return
      */
-    public void updateAlllDeviceTypes(){
+    public void updateAllDeviceTypes(){
         String tag_string_req = "req_all_device_types";
         JsonObjectRequest strReq = new JsonObjectRequest(Request.Method.GET, AppConfig.URL_DEVICES_TYPES,null,
                 new Response.Listener<JSONObject>()
