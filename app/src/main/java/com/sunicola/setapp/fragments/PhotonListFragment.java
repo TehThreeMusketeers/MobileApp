@@ -50,8 +50,7 @@ import java.util.List;
 
  */
 
-
-
+// TODO: Fix the entire class to ensure it works properly as user increases number of phtons
 public class PhotonListFragment
 
         extends ListFragment
@@ -159,11 +158,8 @@ public class PhotonListFragment
             map = new HashMap<>();
 
             map.put("devId", photonIdList.get(i));
-
-            map.put("devType", util.convertId(photonTypeList.get(i)));
-
-            //map.put("image", Integer.toString(images[Integer.parseInt(photonTypeList.get(i))]));
-
+            //map.put("devType", util.convertId(photonTypeList.get(i)));
+            map.put("image", Integer.toString(images[Integer.parseInt(photonTypeList.get(i))]));
             data.add(map);
 
         }
@@ -171,14 +167,12 @@ public class PhotonListFragment
 
 
         //KEYS IN MAP
-
-        String[] from = {"devId","image","devType"};
+        String[] from = {"devId","image"};
 
 
 
         //IDS OF VIEWS
-
-        int[] to = {R.id.devId,R.id.photonImg,R.id.devType};
+        int[] to = {R.id.devId,R.id.photonImg};
 
 
 
@@ -193,9 +187,6 @@ public class PhotonListFragment
         ListView list = getListView();
 
         list.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
-
-        //list.setItemChecked(0, true);
-
         list.setOnItemClickListener(this);
 
 

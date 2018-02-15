@@ -8,11 +8,12 @@ public class Photon {
     private String id, deviceId, deviceType, deviceName, deviceGroup;
 
     public Photon(){}
-    public Photon(String id, String deviceId, String deviceType, String deviceName){
+    public Photon(String id, String deviceId, String deviceType, String deviceName, String deviceGroup){
         this.id = id;
         this.deviceId = deviceId;
         this.deviceType = deviceType;
         this.deviceName = deviceName;
+        this.deviceGroup = deviceGroup;
     }
 
     public String getId() {
