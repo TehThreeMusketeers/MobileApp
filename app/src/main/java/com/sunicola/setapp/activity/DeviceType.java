@@ -41,7 +41,7 @@ public class DeviceType extends AppCompatActivity implements AdapterView.OnItemS
         deviceID = intent.getStringExtra("deviceID");
         deviceName = intent.getStringExtra("name");
 
-        System.out.println("DeviceType activity started. Device ID is " +deviceID); //DEBUG
+        System.out.println("DeviceType activity started. Device ID is " +deviceID +" Device name is: " +deviceName); //DEBUG
 
         Spinner spinner = findViewById(R.id.device_type_spinner);
 
@@ -95,6 +95,7 @@ public class DeviceType extends AppCompatActivity implements AdapterView.OnItemS
         selected = true;
         selection = pos+1; //store selection as int
         System.out.println("SELECTION IS " +selection);
+
     }
 
     @Override

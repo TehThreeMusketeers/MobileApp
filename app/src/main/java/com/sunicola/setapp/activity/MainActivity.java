@@ -74,11 +74,13 @@ public class MainActivity extends AppCompatActivity
                 Intent i = new Intent(MainActivity.this, DeviceType.class);
 
                 i.putExtra("deviceID", configuredDeviceId);
+
+                //FIXME this causes an exception with the cloud sdk, fix.
                 try {
                     i.putExtra("name", cloud.getDevice(configuredDeviceId).getName());
                 } catch (ParticleCloudException e) {
                     e.printStackTrace();
-                    System.out.println("Particle cloud Exception while trying to put device name in Inent at MainActivity");
+                    System.out.println("Particle cloud Exception while trying to put device name in Intent at MainActivity");
                 }
 
                 startActivity(i);
@@ -136,13 +138,14 @@ public class MainActivity extends AppCompatActivity
         fab1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                Snackbar.make(view, "Create your own trigger rules", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
 
                 Fragment fragment = new TriggerFragment();
                 FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
                 ft.replace(R.id.screen_area, fragment);
                 ft.commit();
+
 
 
             }
