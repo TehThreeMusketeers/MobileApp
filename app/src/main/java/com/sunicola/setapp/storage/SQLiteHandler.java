@@ -34,6 +34,7 @@ public class SQLiteHandler extends SQLiteOpenHelper {
     private static final String TABLE_PHOTON = "photons";
     private static final String TABLE_TYPE =  "types";
     private static final String TABLE_GROUP = "groups";
+    private static final String TABLE_GROUP_TYPE = "groupTypes";
 
     // Table Columns user
     private static final String KEY_DB_UID = "dbID";
@@ -63,6 +64,13 @@ public class SQLiteHandler extends SQLiteOpenHelper {
     private static final String KEY_GROUP_ID = "id";
     private static final String KEY_GROUP_NAME = "name";
     private static final String KEY_GROUP_TYPE = "groupType";
+
+    // Table Columns group Types
+    private static final String KEY_DB_GTID = "dbID";
+    private static final String KEY_GROUP_TYPE_ID = "id";
+    private static final String KEY_GROUP_TYPE_NAME = "name";
+    private static final String KEY_GROUP_TYPE_STATE = "states";
+    private static final String KEY_GROUP_TYPE_VARIABLE = "variables";
 
     public SQLiteHandler(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -112,10 +120,21 @@ public class SQLiteHandler extends SQLiteOpenHelper {
                         + KEY_GROUP_TYPE+ " TEXT"
                         + ")";
 
+        String CREATE_GROUP_TYPE_TABLE =
+                "CREATE TABLE "
+                        + TABLE_GROUP_TYPE+ "("
+                        + KEY_DB_GTID+ " INTEGER PRIMARY KEY,"
+                        + KEY_GROUP_TYPE_ID+ " TEXT UNIQUE,"
+                        + KEY_GROUP_TYPE_NAME+ " TEXT,"
+                        + KEY_GROUP_TYPE_STATE+ " BLOB,"
+                        + KEY_GROUP_TYPE_VARIABLE+ " BLOB"
+                        + ")";
+
         db.execSQL(CREATE_USER_TABLE);
         db.execSQL(CREATE_PHOTON_TABLE);
         db.execSQL(CREATE_TYPE_TABLE);
         db.execSQL(CREATE_GROUP_TABLE);
+        db.execSQL(CREATE_GROUP_TYPE_TABLE);
         Log.d(TAG, "Database tables created");
     }
 
@@ -127,6 +146,7 @@ public class SQLiteHandler extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_PHOTON);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_TYPE);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_GROUP);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_GROUP_TYPE);
         // Create tables again
         onCreate(db);
     }
@@ -246,7 +266,7 @@ public class SQLiteHandler extends SQLiteOpenHelper {
     }
 
     /**
-     * Returns List containig photon objects found in SQLite
+     * Returns List containing photon objects found in SQLite
      * @return
      */
     public HashMap<String,String> getAllDeviceTypes() {
@@ -314,12 +334,19 @@ public class SQLiteHandler extends SQLiteOpenHelper {
         db.close();
         Log.d(TAG, "Deleted all device types from SQLite");
     }
-    public void deleteGroupType() {
+    public void deleteGroupData() {
         SQLiteDatabase db = this.getWritableDatabase();
         // Delete All Rows
         db.delete(TABLE_GROUP, null, null);
         db.close();
         Log.d(TAG, "Deleted all groups from SQLite");
+    }
+    public void deleteGroupType() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        // Delete All Rows
+        db.delete(TABLE_GROUP_TYPE, null, null);
+        db.close();
+        Log.d(TAG, "Deleted all group types from SQLite");
     }
 
 }
