@@ -55,7 +55,7 @@ public class PhotonListFragment
         Log.e(TAG,"Clicked" + position);
     }
 
-    public boolean loadDualList(){
+    public void loadDualList(){
         getActivity().setTitle("All Devices");
 
         // instantiates api, db and list objects
@@ -88,7 +88,7 @@ public class PhotonListFragment
         String[] from = {"devId","image","devType"};
 
         //IDS OF VIEWS
-        int[] to={R.id.devId,R.id.photonImg,R.id.devType};
+        int[] to = {R.id.devId,R.id.photonImg,R.id.devType};
 
         //ADAPTER
         SimpleAdapter adapter = new SimpleAdapter(getActivity(), data, R.layout.photon_list_fragment, from, to);
@@ -99,6 +99,5 @@ public class PhotonListFragment
         //list.setItemChecked(0, true);
         list.setOnItemClickListener(this);
 
-        return true;
     }
 }

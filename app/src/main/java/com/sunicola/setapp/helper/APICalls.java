@@ -11,6 +11,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.sunicola.setapp.app.AppConfig;
 import com.sunicola.setapp.app.AppController;
+import com.sunicola.setapp.objects.Group;
 import com.sunicola.setapp.objects.Photon;
 import com.sunicola.setapp.storage.SQLiteHandler;
 
@@ -18,6 +19,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -231,8 +233,52 @@ public class APICalls {
         AppController.getInstance().addToRequestQueue(objectRequest, tag_string_req);
     }
 
-    public void getGroupTypes(){
+    public void registerGroup(String groupName, int groupType, ArrayList<String> devices) {
+        // Tag used to cancel the request
+        String tag_string_req = "req_newDeviceGroup";
+        JSONObject jsonBody = new JSONObject();
+        try {
+            jsonBody.put("name", groupName);
+            jsonBody.put("groupType", groupType);
+            jsonBody.put("devices", devices);
+        }catch (JSONException e) {
+            e.printStackTrace();
+        }
+        JsonObjectRequest objectRequest = new JsonObjectRequest(Request.Method.POST,AppConfig.URL_GROUPS, jsonBody,
+                new Response.Listener<JSONObject>()
+                {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try{
+                            String groupName = response.getString("name");
+                            int groupId = response.getInt("id");
+                            int groupType = response.getInt("groupType");
+                            db.addNewGroup(new Group(groupName,groupId,groupType));
+                            Log.e(TAG, groupName + " ADDED");
+                        }catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.e(TAG, "Registration Group Error: " + error.getMessage());
+                        Toast.makeText(_context,
+                                "Issue adding photon data from server", Toast.LENGTH_LONG).show();
+                    }
+                }
+        )
+        {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                return setHeaders();
+            }
+        };
+        // Adding request to request queue
+        AppController.getInstance().addToRequestQueue(objectRequest, tag_string_req);
     }
+
     /**
      * Sets Headers for request
      * @return
