@@ -233,6 +233,12 @@ public class APICalls {
         AppController.getInstance().addToRequestQueue(objectRequest, tag_string_req);
     }
 
+    /**
+     * Registers new Group
+     * @param groupName
+     * @param groupType
+     * @param devices
+     */
     public void registerGroup(String groupName, int groupType, ArrayList<String> devices) {
         // Tag used to cancel the request
         String tag_string_req = "req_newDeviceGroup";
