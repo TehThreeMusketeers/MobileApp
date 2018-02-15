@@ -7,6 +7,8 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
 
 import com.sunicola.setapp.R;
 
@@ -65,7 +67,36 @@ public class TriggerFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_trigger, container, false);
+
+        View v = inflater.inflate(R.layout.fragment_trigger, container, false);
+        Spinner spinnerState = v.findViewById(R.id.spinner_state);
+        Spinner spinnerVar = v.findViewById(R.id.spinner_var);
+        Spinner spinnerOperator = v.findViewById(R.id.spinner_operator);
+        Spinner spinnerAction = v.findViewById(R.id.spinner_action);
+
+        //populate spinners here
+        String[] stateVal = {"ARMED", "DISARMED"};
+        String[] varVal = {"Motion", "Light level", "Sound level"};
+        String[] opVal = {"<", ">", "="};
+        String[] actionVal = {"Blink LED", "function2", "function3"};
+
+        ArrayAdapter<String> stateAdapter = new ArrayAdapter<String>(this.getActivity(), android.R.layout.simple_spinner_item, stateVal);
+        ArrayAdapter<String> varAdapter = new ArrayAdapter<String>(this.getActivity(), android.R.layout.simple_spinner_item, varVal);
+        ArrayAdapter<String> opAdapter = new ArrayAdapter<String>(this.getActivity(), android.R.layout.simple_spinner_item, opVal);
+        ArrayAdapter<String> actionAdapter = new ArrayAdapter<String>(this.getActivity(), android.R.layout.simple_spinner_item, actionVal);
+
+        stateAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        varAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        opAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        actionAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        spinnerState.setAdapter(stateAdapter);
+        spinnerVar.setAdapter(varAdapter);
+        spinnerOperator.setAdapter(opAdapter);
+        spinnerAction.setAdapter(actionAdapter);
+
+
+        return v;
     }
 
     // TODO: Rename method, update argument and hook method into UI event
