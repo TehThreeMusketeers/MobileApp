@@ -25,6 +25,7 @@ import java.util.List;
  * Created by soaresbo on 09/02/2018.
  */
 
+// TODO: Fix the entire class to ensure it works properly as user increases number of phtons
 public class PhotonListFragment
         extends ListFragment
         implements AdapterView.OnItemClickListener {
@@ -32,7 +33,7 @@ public class PhotonListFragment
     private APICalls apiCalls;
     private SQLiteHandler db;
     private Util util;
-    int[] images = {0,R.drawable.boardphoton, R.drawable.photon};
+    int[] images = {0,0,R.drawable.boardphoton, R.drawable.photon};
     ArrayList<HashMap<String, String>> data = new ArrayList<>();
 
     @Nullable
@@ -79,16 +80,16 @@ public class PhotonListFragment
         for (int i=0; i<photonIdList.size(); i++){
             map = new HashMap<>();
             map.put("devId", photonIdList.get(i));
-            map.put("devType", util.convertId(photonTypeList.get(i)));
+            //map.put("devType", util.convertId(photonTypeList.get(i)));
             map.put("image", Integer.toString(images[Integer.parseInt(photonTypeList.get(i))]));
             data.add(map);
         }
 
         //KEYS IN MAP
-        String[] from = {"devId","image","devType"};
+        String[] from = {"devId","image"};
 
         //IDS OF VIEWS
-        int[] to = {R.id.devId,R.id.photonImg,R.id.devType};
+        int[] to = {R.id.devId,R.id.photonImg};
 
         //ADAPTER
         SimpleAdapter adapter = new SimpleAdapter(getActivity(), data, R.layout.photon_list_fragment, from, to);
@@ -96,7 +97,6 @@ public class PhotonListFragment
 
         ListView list = getListView();
         list.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
-        //list.setItemChecked(0, true);
         list.setOnItemClickListener(this);
 
     }

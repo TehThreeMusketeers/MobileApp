@@ -164,7 +164,8 @@ public class APICalls {
                                 String deviceId = jsonArray.getJSONObject(i).getString("deviceId");
                                 String deviceType = jsonArray.getJSONObject(i).getString("deviceType");
                                 String deviceName = jsonArray.getJSONObject(i).getString("deviceName");
-                                db.addPhoton(new Photon(Integer.toString(id),deviceId,deviceType,deviceName));
+                                String deviceGroup = jsonArray.getJSONObject(i).getString("group");
+                                db.addPhoton(new Photon(Integer.toString(id),deviceId,deviceType,deviceName,deviceGroup));
                                 Toast.makeText(_context,
                                         "Photons List Updated", Toast.LENGTH_SHORT).show();
                                 Log.d(TAG,"Saved Photon with id: " + deviceId);

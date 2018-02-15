@@ -266,7 +266,7 @@ public class SQLiteHandler extends SQLiteOpenHelper {
     }
 
     /**
-     * Returns List containig photon objects found in SQLite
+     * Returns List containing photon objects found in SQLite
      * @return
      */
     public HashMap<String,String> getAllDeviceTypes() {

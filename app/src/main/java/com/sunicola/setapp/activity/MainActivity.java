@@ -1,16 +1,13 @@
 package com.sunicola.setapp.activity;
 
 
-import com.github.clans.fab.FloatingActionButton;
-
-import android.net.Uri;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v4.app.Fragment;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -22,12 +19,13 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.github.clans.fab.FloatingActionButton;
 import com.sunicola.setapp.R;
 import com.sunicola.setapp.fragments.PhotonListFragment;
 import com.sunicola.setapp.fragments.TriggerFragment;
 import com.sunicola.setapp.helper.APICalls;
-import com.sunicola.setapp.storage.SQLiteHandler;
 import com.sunicola.setapp.helper.SessionManager;
+import com.sunicola.setapp.storage.SQLiteHandler;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -136,15 +134,10 @@ public class MainActivity extends AppCompatActivity
         fab1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-
                 Fragment fragment = new TriggerFragment();
                 FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
                 ft.replace(R.id.screen_area, fragment);
                 ft.commit();
-
-
             }
         });
     }
