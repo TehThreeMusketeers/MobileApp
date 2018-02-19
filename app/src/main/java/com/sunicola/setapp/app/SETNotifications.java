@@ -3,30 +3,37 @@ package com.sunicola.setapp.app;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Context;
+import android.content.res.Resources;
+import android.graphics.Color;
 
+import com.sunicola.setapp.R;
+
+import static android.provider.Settings.System.getString;
+import static com.segment.analytics.internal.Utils.getResourceString;
 import static com.segment.analytics.internal.Utils.getSystemService;
 
 /**
  * Created by kolev on 15/02/2018.
  */
 
-public class Notifications {
+public class SETNotifications {
 
     private Context ctx;
-    private String chn_ID = "SETAPP_Notification_Channel";
+    private String chn_ID = "SETAPP_Notification_Channel"; //id of the channel
 
-    public Notifications(Context context){
+    private String name = Resources.getSystem().getString(R.string.channel_name); //user-visible name of the channel
+
+    private String description = Resources.getSystem().getString(R.string.channel_description); // The user-visible description of the channel.
+
+
+
+    public SETNotifications(Context context){
 
         ctx = context;
 
         NotificationManager mNotificationManager =
                 (NotificationManager) getSystemService(ctx, Context.NOTIFICATION_SERVICE);
-        // The id of the channel.
-        String id = chn_ID
-        // The user-visible name of the channel.
-        CharSequence name = getString(R.string.channel_name);
-        // The user-visible description of the channel.
-        String description = getString(R.string.channel_description);
+
         int importance = NotificationManager.IMPORTANCE_HIGH;
         NotificationChannel mChannel = new NotificationChannel(id, name, importance);
         // Configure the notification channel.
