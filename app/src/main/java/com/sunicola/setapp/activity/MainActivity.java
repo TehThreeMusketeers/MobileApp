@@ -6,6 +6,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
@@ -21,6 +22,7 @@ import android.widget.Toast;
 
 import com.github.clans.fab.FloatingActionButton;
 import com.sunicola.setapp.R;
+import com.sunicola.setapp.app.SETNotifications;
 import com.sunicola.setapp.fragments.PhotonListFragment;
 import com.sunicola.setapp.fragments.TriggerFragment;
 import com.sunicola.setapp.helper.APICalls;
@@ -61,6 +63,11 @@ public class MainActivity extends AppCompatActivity
         ParticleCloudSDK.init(this.getApplicationContext());
 
         cloud = ParticleCloudSDK.getCloud();
+
+        //Add notification support
+        SETNotifications notifications = new SETNotifications(getApplicationContext());
+
+        notifications.issueNotification("Test", "This is a test notification", null);
 
         //Used to receive device ID after claiming process completes
         receiver = new ParticleDeviceSetupLibrary.DeviceSetupCompleteReceiver() {

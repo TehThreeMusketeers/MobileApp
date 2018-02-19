@@ -33,7 +33,4 @@
     <string name="btn_if">IF</string>
     <string name="btn_then">THEN</string>
 
-    <string name="channel_name">SETApp</string>
-    <string name="channel_description">Monitor the status of your SET devices</string>
-
 </resources>
