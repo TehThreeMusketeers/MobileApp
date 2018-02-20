@@ -12,8 +12,11 @@ import android.graphics.Color;
 import android.media.RingtoneManager;
 import android.os.Build;
 import android.support.v4.app.NotificationCompat;
+import android.util.Log;
 
+import com.google.firebase.messaging.RemoteMessage;
 import com.sunicola.setapp.R;
+import com.sunicola.setapp.helper.FirebaseMessagingService;
 
 import static android.provider.Settings.System.getString;
 import static com.segment.analytics.internal.Utils.getResourceString;
