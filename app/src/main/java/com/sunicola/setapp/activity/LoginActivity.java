@@ -96,14 +96,6 @@ public class LoginActivity extends Activity {
                 finish();
             }
         });
-
-        //Dev button
-        devMode.setOnClickListener(new View.OnClickListener(){
-            public void onClick(View view){
-                setDevMode(view);
-            }
-        });
-
     }
 
     /**
@@ -189,14 +181,6 @@ public class LoginActivity extends Activity {
     private void hideDialog() {
         if (pDialog.isShowing())
             pDialog.dismiss();
-    }
-
-    //If devMode button is clicked, skip login and go straight into main activity
-    private void setDevMode(View view) {
-        session.setLogin(true);
-        System.out.println("DEV MODE ON");
-        Intent dev = new Intent(this, MainActivity.class);
-        this.startActivity(dev);
     }
 
     /**

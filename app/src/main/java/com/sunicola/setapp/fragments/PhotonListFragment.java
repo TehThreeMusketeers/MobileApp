@@ -30,10 +30,7 @@ public class PhotonListFragment
         extends ListFragment
         implements AdapterView.OnItemClickListener {
     private static final String TAG = PhotonListFragment.class.getSimpleName();
-    private APICalls apiCalls;
-    private SQLiteHandler db;
-    private Util util;
-    int[] images = {0,0,R.drawable.boardphoton, R.drawable.photon};
+    int[] images = {R.drawable.photon, R.drawable.boardphoton};
     ArrayList<HashMap<String, String>> data = new ArrayList<>();
 
     @Nullable
@@ -60,15 +57,15 @@ public class PhotonListFragment
         getActivity().setTitle("All Devices");
 
         // instantiates api, db and list objects
-        apiCalls = new APICalls(getContext());
-        db = new SQLiteHandler(getContext());
-        util = new Util(getContext());
+        APICalls apiCalls = new APICalls(getContext());
+        SQLiteHandler db = new SQLiteHandler(getContext());
+        Util util = new Util(getContext());
         List<String> photonIdList = new ArrayList<>();
         List<String> photonTypeList = new ArrayList<>();
 
-
         //updates db using api calls
         apiCalls.updateAllPhotons();
+        apiCalls.updateAllDeviceTypes();
         List<Photon> photonList = db.getAllPhotons();
         for (Photon photon: photonList) {
             photonIdList.add(photon.getDeviceId());
@@ -80,16 +77,21 @@ public class PhotonListFragment
         for (int i=0; i<photonIdList.size(); i++){
             map = new HashMap<>();
             map.put("devId", photonIdList.get(i));
-            //map.put("devType", util.convertId(photonTypeList.get(i)));
-            map.put("image", Integer.toString(images[Integer.parseInt(photonTypeList.get(i))]));
+            if (Integer.parseInt(photonList.get(i).getDeviceType()) == 1){
+               map.put("image", Integer.toString(images[0]));
+            }
+            else {
+                map.put("image", Integer.toString(images[1]));
+            }
+            map.put("devType", util.convertId(photonTypeList.get(i)));
             data.add(map);
         }
 
         //KEYS IN MAP
-        String[] from = {"devId","image"};
+        String[] from = {"devId","image","devType"};
 
         //IDS OF VIEWS
-        int[] to = {R.id.devId,R.id.photonImg};
+        int[] to = {R.id.devId,R.id.photonImg,R.id.devType};
 
         //ADAPTER
         SimpleAdapter adapter = new SimpleAdapter(getActivity(), data, R.layout.photon_list_fragment, from, to);

@@ -1,6 +1,7 @@
 package com.sunicola.setapp.helper;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.sunicola.setapp.storage.SQLiteHandler;
 

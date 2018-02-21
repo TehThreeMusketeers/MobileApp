@@ -32,7 +32,7 @@ public class SQLiteHandler extends SQLiteOpenHelper {
     // Table Names table name
     private static final String TABLE_USER = "user";
     private static final String TABLE_PHOTON = "photons";
-    private static final String TABLE_TYPE =  "types";
+    private static final String TABLE_PHOTON_TYPE =  "types";
     private static final String TABLE_GROUP = "groups";
     private static final String TABLE_GROUP_TYPE = "groupTypes";
 
@@ -105,30 +105,30 @@ public class SQLiteHandler extends SQLiteOpenHelper {
 
         String CREATE_TYPE_TABLE =
             "CREATE TABLE "
-                    + TABLE_TYPE + "("
-                    + KEY_DB_TID + " INTEGER PRIMARY KEY,"
-                    + KEY_TYPE_ID+ " TEXT UNIQUE,"
-                    + KEY_TYPE_NAME+ " TEXT"
-            + ")";
+                + TABLE_PHOTON_TYPE + "("
+                + KEY_DB_TID + " INTEGER PRIMARY KEY,"
+                + KEY_TYPE_ID+ " TEXT UNIQUE,"
+                + KEY_TYPE_NAME+ " TEXT"
+             + ")";
 
         String CREATE_GROUP_TABLE =
-                "CREATE TABLE "
-                        + TABLE_GROUP + "("
-                        + KEY_DB_GID + " INTEGER PRIMARY KEY,"
-                        + KEY_GROUP_ID+ " TEXT UNIQUE,"
-                        + KEY_GROUP_NAME+ " TEXT,"
-                        + KEY_GROUP_TYPE+ " TEXT"
-                        + ")";
+            "CREATE TABLE "
+                + TABLE_GROUP + "("
+                + KEY_DB_GID + " INTEGER PRIMARY KEY,"
+                + KEY_GROUP_ID+ " TEXT UNIQUE,"
+                + KEY_GROUP_NAME+ " TEXT,"
+                + KEY_GROUP_TYPE+ " TEXT"
+            + ")";
 
         String CREATE_GROUP_TYPE_TABLE =
-                "CREATE TABLE "
-                        + TABLE_GROUP_TYPE+ "("
-                        + KEY_DB_GTID+ " INTEGER PRIMARY KEY,"
-                        + KEY_GROUP_TYPE_ID+ " TEXT UNIQUE,"
-                        + KEY_GROUP_TYPE_NAME+ " TEXT,"
-                        + KEY_GROUP_TYPE_STATE+ " BLOB,"
-                        + KEY_GROUP_TYPE_VARIABLE+ " BLOB"
-                        + ")";
+            "CREATE TABLE "
+                + TABLE_GROUP_TYPE+ "("
+                + KEY_DB_GTID+ " INTEGER PRIMARY KEY,"
+                + KEY_GROUP_TYPE_ID+ " TEXT UNIQUE,"
+                + KEY_GROUP_TYPE_NAME+ " TEXT,"
+                + KEY_GROUP_TYPE_STATE+ " BLOB,"
+                + KEY_GROUP_TYPE_VARIABLE+ " BLOB"
+            + ")";
 
         db.execSQL(CREATE_USER_TABLE);
         db.execSQL(CREATE_PHOTON_TABLE);
@@ -144,7 +144,7 @@ public class SQLiteHandler extends SQLiteOpenHelper {
         // Drop older table if existed
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_USER);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_PHOTON);
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_TYPE);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_PHOTON_TYPE);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_GROUP);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_GROUP_TYPE);
         // Create tables again
@@ -199,7 +199,7 @@ public class SQLiteHandler extends SQLiteOpenHelper {
         values.put(KEY_TYPE_ID, id);
         values.put(KEY_TYPE_NAME, value);
         // Inserting Row
-        long deviceType_id= db.insert(TABLE_TYPE, null, values);
+        long deviceType_id= db.insert(TABLE_PHOTON_TYPE, null, values);
         db.close(); // Closing database connection
         Log.d(TAG, "New device type inserted into SQLite: " + deviceType_id);
     }
@@ -271,7 +271,7 @@ public class SQLiteHandler extends SQLiteOpenHelper {
      */
     public HashMap<String,String> getAllDeviceTypes() {
         HashMap<String, String> devTypes = new HashMap<String, String>();
-        String selectQuery = "SELECT * FROM " + TABLE_TYPE;
+        String selectQuery = "SELECT * FROM " + TABLE_PHOTON_TYPE;
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
         // Move to first row
@@ -330,7 +330,7 @@ public class SQLiteHandler extends SQLiteOpenHelper {
     public void deleteDeviceType() {
         SQLiteDatabase db = this.getWritableDatabase();
         // Delete All Rows
-        db.delete(TABLE_TYPE, null, null);
+        db.delete(TABLE_PHOTON_TYPE, null, null);
         db.close();
         Log.d(TAG, "Deleted all device types from SQLite");
     }
