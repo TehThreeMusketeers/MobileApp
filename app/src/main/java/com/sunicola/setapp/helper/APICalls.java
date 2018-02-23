@@ -65,9 +65,8 @@ public class APICalls {
                             JSONArray jsonArray = response.getJSONArray("results");
                             for (int i=0; i<jsonArray.length(); i++) {
                                 int id = jsonArray.getJSONObject(i).getInt("id");
-                                String value = jsonArray.getJSONObject(i).getString("value");
+                                String value = jsonArray.getJSONObject(i).getString("name");
                                 db.addDeviceType(Integer.toString(id),value);
-                                Log.d(TAG,"PHOTON TYPES RESPONSE: " + id +" "+ value);
                             }
                         } catch (JSONException e){
                             e.printStackTrace();

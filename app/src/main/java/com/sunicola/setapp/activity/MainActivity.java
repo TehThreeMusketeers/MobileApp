@@ -23,6 +23,7 @@ import android.widget.Toast;
 import com.github.clans.fab.FloatingActionButton;
 import com.sunicola.setapp.R;
 import com.sunicola.setapp.app.SETNotifications;
+import com.sunicola.setapp.fragments.AccountDetails;
 import com.sunicola.setapp.fragments.PhotonListFragment;
 import com.sunicola.setapp.fragments.TriggerFragment;
 import com.sunicola.setapp.helper.APICalls;
@@ -181,13 +182,11 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
+        Fragment fragment = null;
+
         int id = item.getItemId();
-        //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
-            return true;
+            fragment = new AccountDetails();
         }
         return super.onOptionsItemSelected(item);
     }
@@ -212,6 +211,9 @@ public class MainActivity extends AppCompatActivity
                 break;
             case R.id.nav_logOut:
                 logoutUser();
+                break;
+            case R.id.nav_allDevicesGroups:
+                //fragment = new TriggerFragment();
                 break;
         }
 

@@ -10,6 +10,10 @@
             android:icon="@drawable/ic_menu_all_devices"
             android:title="@string/view_all_devices" />
         <item
+            android:id="@+id/nav_allDevicesGroups"
+            android:icon="@drawable/ic_menu_all_devices_groups"
+            android:title="@string/view_all_device_groups" />
+        <item
             android:id="@+id/nav_addPhoton"
             android:icon="@drawable/ic_menu_plus_one"
             android:title="@string/setup_new_photon" />
