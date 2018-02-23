@@ -193,6 +193,61 @@ public class APICalls {
         AppController.getInstance().addToRequestQueue(objectRequest, tag_string_req);
     }
 
+    //FIXME: Make the url use groupID var in the future
+    public void sendTrigger(int groupID, int state, int valueType, int operator, String value, String function){
+        // Tag used to cancel the request
+        String tag_string_req = "req_sendTrigger";
+        JSONObject jsonBody = new JSONObject();
+
+        JSONObject obj = new JSONObject();
+        try {
+            obj.put("function", function);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        JSONArray jsonArray = new JSONArray();
+        jsonArray.put(obj);
+
+        try {
+            jsonBody.put("state", state);
+            jsonBody.put("valuetype", valueType);
+            jsonBody.put("operator", operator);
+            jsonBody.put("value", value);
+            jsonBody.put("localActions", jsonArray);
+            System.out.println("LOOK HERE" +jsonBody);
+            Log.e("LOOK HERE", jsonBody.toString());
+        }catch (JSONException e) {
+            e.printStackTrace();
+        }
+        JsonObjectRequest objectRequest = new JsonObjectRequest(Request.Method.POST,AppConfig.URL_GROUPS+"2/triggers/", jsonBody,
+                new Response.Listener<JSONObject>()
+                {
+                    @Override
+                    public void onResponse(JSONObject response) {
+
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.e(TAG, "Trigger descr. Error: " + error.getMessage());
+                        Toast.makeText(_context,
+                                "Issue sending trigger description", Toast.LENGTH_LONG).show();
+                    }
+                }
+        )
+        {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                return setHeaders();
+            }
+        };
+        // Adding request to request queue
+        AppController.getInstance().addToRequestQueue(objectRequest, tag_string_req);
+
+
+    }
+
     /**
      * NEEDS WORK
      * Returns Photon object with photon requested
@@ -283,6 +338,17 @@ public class APICalls {
         };
         // Adding request to request queue
         AppController.getInstance().addToRequestQueue(objectRequest, tag_string_req);
+    }
+
+    public void sendFirebaseToken(String fToken){
+
+        //TODO: add functionality to send firebase token to server on this endpoint: POST /api/v1/accounts/notifytoken (when it exists)
+        //need to make sure the user is logged in, so the server knows who the token belongs to.
+    }
+
+    public void patchFirebaseToken(String fToken){
+
+        //TODO: add functionality to be able to PATCH (update) a token in case its refreshed on this endpoint:  PATCH /api/v1/accounts/notifytoken (to update) (when it exists)
     }
 
     /**

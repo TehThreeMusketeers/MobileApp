@@ -4,13 +4,18 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Spinner;
 
 import com.sunicola.setapp.R;
+import com.sunicola.setapp.helper.APICalls;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -20,11 +25,19 @@ import com.sunicola.setapp.R;
  * Use the {@link TriggerFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class TriggerFragment extends Fragment {
+public class TriggerFragment extends Fragment implements AdapterView.OnItemSelectedListener, View.OnClickListener {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
+
+    private int stateSelect;
+    private int valTypeSelect;
+    private String valSelect;
+    private int opSelect;
+    private String actSelect;
+    private EditText edit_text;
+
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -69,10 +82,16 @@ public class TriggerFragment extends Fragment {
         // Inflate the layout for this fragment
 
         View v = inflater.inflate(R.layout.fragment_trigger, container, false);
+
+        Button b = (Button) v.findViewById(R.id.button);
+        b.setOnClickListener(this);
+
         Spinner spinnerState = v.findViewById(R.id.spinner_state);
         Spinner spinnerVar = v.findViewById(R.id.spinner_var);
         Spinner spinnerOperator = v.findViewById(R.id.spinner_operator);
         Spinner spinnerAction = v.findViewById(R.id.spinner_action);
+
+        edit_text = (EditText)v.findViewById(R.id.editText4);
 
         //populate spinners here
         String[] stateVal = {"ARMED", "DISARMED"};
@@ -94,6 +113,11 @@ public class TriggerFragment extends Fragment {
         spinnerVar.setAdapter(varAdapter);
         spinnerOperator.setAdapter(opAdapter);
         spinnerAction.setAdapter(actionAdapter);
+
+        spinnerState.setOnItemSelectedListener(this);
+        spinnerVar.setOnItemSelectedListener(this);
+        spinnerOperator.setOnItemSelectedListener(this);
+        spinnerAction.setOnItemSelectedListener(this);
 
 
         return v;
@@ -121,6 +145,46 @@ public class TriggerFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
+    }
+
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View v, int i, long l) {
+        Log.e("gets here", "gets here2");
+        switch (parent.getId()){
+            case R.id.spinner_action:
+                actSelect = parent.getItemAtPosition(i).toString();
+                Log.e("action", actSelect);
+                break;
+            case R.id.spinner_operator:
+                if(i==2){
+                    opSelect = 5;
+                }else{
+                    opSelect = i+1;
+                }
+                break;
+            case R.id.spinner_state:
+                stateSelect = i+1;
+                break;
+            case R.id.spinner_var:
+                valTypeSelect = i+3;
+                break;
+        }
+
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> adapterView) {
+
+    }
+
+    @Override
+    public void onClick(View view) {
+
+        valSelect = edit_text.getText().toString();
+        APICalls api = new APICalls(getContext());
+        api.sendTrigger(2, stateSelect, valTypeSelect, opSelect, valSelect, actSelect);
+        System.out.println(stateSelect +" " +valTypeSelect +" " +opSelect +" " +valSelect +" " +actSelect);
+
     }
 
     /**
