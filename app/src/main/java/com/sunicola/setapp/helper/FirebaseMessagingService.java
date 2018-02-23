@@ -14,11 +14,19 @@ import com.sunicola.setapp.app.SETNotifications;
 public class FirebaseMessagingService extends com.google.firebase.messaging.FirebaseMessagingService {
 
     private RemoteMessage.Notification remote;
+
+
     @Override
+    /** This method is called when the server sends a message to the particular token that we've sent
+     * using FirebaseService.java The method receives a RemoteMessage, logs the sender, then turns
+     * the RemoteMessage into a notification, logs the body of the notification.
+     * None of these should need to be changed, unless we want more complex notifications with a payload.
+     * @param remoteMessage the remote message sent by the server
+     */
     public void onMessageReceived(RemoteMessage remoteMessage) {
         // ...
 
-        // TODO(developer): Handle FCM messages here.
+        // TODO(developer): Handle FCM messages here. (this is only relevant if the message has a body)
         // Not getting messages here? See why this may be: https://goo.gl/39bRNJ
         Log.d("FIREBASE", "MSG From: " + remoteMessage.getFrom());
 

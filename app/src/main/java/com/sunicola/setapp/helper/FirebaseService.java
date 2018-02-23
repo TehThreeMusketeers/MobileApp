@@ -20,7 +20,12 @@ public class FirebaseService extends FirebaseInstanceIdService {
         refreshedToken = FirebaseInstanceId.getInstance().getToken();
         Log.d("FIREBASE", "Refreshed token: " +refreshedToken);
 
-        //TODO: Notify server that the token has changed.
+        //TODO: Test and confirm these api calls work correctly and are received by the server.
+
+        APICalls api = new APICalls(getApplicationContext());
+
+        api.sendFirebaseToken(refreshedToken);
+        api.patchFirebaseToken(refreshedToken);
 
     }
 

@@ -341,6 +341,17 @@ public class APICalls {
         AppController.getInstance().addToRequestQueue(objectRequest, tag_string_req);
     }
 
+    public void sendFirebaseToken(String fToken){
+
+        //TODO: add functionality to send firebase token to server on this endpoint: POST /api/v1/accounts/notifytoken (when it exists)
+        //need to make sure the user is logged in, so the server knows who the token belongs to.
+    }
+
+    public void patchFirebaseToken(String fToken){
+
+        //TODO: add functionality to be able to PATCH (update) a token in case its refreshed on this endpoint:  PATCH /api/v1/accounts/notifytoken (to update) (when it exists)
+    }
+
     /**
      * Sets Headers for request
      * @return
