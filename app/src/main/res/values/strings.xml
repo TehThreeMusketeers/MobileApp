@@ -33,6 +33,18 @@
     <string name="btn_if">IF</string>
     <string name="btn_then">THEN</string>
 
+    <!-- Strings for the Lights Control Fragment -->
+    <string name="light_control_fragment">Light Control</string>
+    <string name="colour_text">Colour</string>
+    <string name="brightness_text">Brightness</string>
+    <string name="button_white_text">White</string>
+    <string name="button_on_text">On</string>
+    <string name="button_off_text">Off</string>
+    <string name="button_all_text">All Bulbs</string>
+    <string name="button_bulb_one_text">Bulb 1</string>
+    <string name="button_bulb_two_text">Bulb 2</string>
+    <string name="button_bulb_three_text">Bulb 3</string>
+
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="view_all_device_groups">View All Device Groups</string>
