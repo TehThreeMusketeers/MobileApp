@@ -291,7 +291,7 @@ public class SQLiteHandler extends SQLiteOpenHelper {
      * Returns List containing Group objects found in SQLite
      * @return
      */
-    public List<Group> getAllGroups() {
+    public List<Group> getDevGroups() {
         List<Group> groupList = new ArrayList();
         String selectQuery = "SELECT * FROM " + TABLE_GROUP;
         SQLiteDatabase db = this.getWritableDatabase();

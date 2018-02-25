@@ -25,7 +25,6 @@ import java.util.List;
  * Created by soaresbo on 09/02/2018.
  */
 
-// TODO: Fix the entire class to ensure it works properly as user increases number of phtons
 public class PhotonListFragment
         extends ListFragment
         implements AdapterView.OnItemClickListener {
@@ -62,6 +61,7 @@ public class PhotonListFragment
         Util util = new Util(getContext());
         List<String> photonIdList = new ArrayList<>();
         List<String> photonTypeList = new ArrayList<>();
+        List<String> photonGroupList = new ArrayList<>();
 
         //updates db using api calls
         apiCalls.updateAllPhotons();
@@ -70,6 +70,7 @@ public class PhotonListFragment
         for (Photon photon: photonList) {
             photonIdList.add(photon.getDeviceId());
             photonTypeList.add(photon.getDeviceType());
+            photonGroupList.add(photon.getDeviceGroup());
         }
 
         //MAP
@@ -83,15 +84,16 @@ public class PhotonListFragment
             else {
                 map.put("image", Integer.toString(images[1]));
             }
-            map.put("devType", util.convertId(photonTypeList.get(i)));
+            map.put("devType", util.convertDevId(photonTypeList.get(i)));
+            map.put("devGroup", util.convertGroupId(photonGroupList.get(i)));
             data.add(map);
         }
 
         //KEYS IN MAP
-        String[] from = {"devId","image","devType"};
+        String[] from = {"devId","image","devType","devGroup"};
 
         //IDS OF VIEWS
-        int[] to = {R.id.devId,R.id.photonImg,R.id.devType};
+        int[] to = {R.id.devId,R.id.photonImg,R.id.devType,R.id.devGroup};
 
         //ADAPTER
         SimpleAdapter adapter = new SimpleAdapter(getActivity(), data, R.layout.photon_list_fragment, from, to);
@@ -100,6 +102,5 @@ public class PhotonListFragment
         ListView list = getListView();
         list.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
         list.setOnItemClickListener(this);
-
     }
 }

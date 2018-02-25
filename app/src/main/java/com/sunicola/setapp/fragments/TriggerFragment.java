@@ -149,7 +149,6 @@ public class TriggerFragment extends Fragment implements AdapterView.OnItemSelec
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View v, int i, long l) {
-        Log.e("gets here", "gets here2");
         switch (parent.getId()){
             case R.id.spinner_action:
                 actSelect = parent.getItemAtPosition(i).toString();

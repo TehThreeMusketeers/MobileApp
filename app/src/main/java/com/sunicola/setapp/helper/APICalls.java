@@ -49,9 +49,7 @@ public class APICalls {
     }
 
     /**
-     * NEEDS WORK
-     * Returns HashMap containing all device types supported by the SDK
-     * @return
+     * Updates DeviceTypes Database Table in SQLite
      */
     public void updateAllDeviceTypes(){
         String tag_string_req = "req_all_device_types";
@@ -144,8 +142,7 @@ public class APICalls {
     }
 
     /**
-     * DONE
-     * Returns HashMap with all photons under this user
+     * Updates all photons table in SQLite with data received from server
      */
     public void updateAllPhotons() {
         // Tag used to cancel the request
@@ -193,12 +190,19 @@ public class APICalls {
         AppController.getInstance().addToRequestQueue(objectRequest, tag_string_req);
     }
 
-    //FIXME: Make the url use groupID var in the future
+    /**
+     * Creates Trigger for this group of photons
+     * @param groupID
+     * @param state
+     * @param valueType
+     * @param operator
+     * @param value
+     * @param function
+     */
     public void sendTrigger(int groupID, int state, int valueType, int operator, String value, String function){
         // Tag used to cancel the request
         String tag_string_req = "req_sendTrigger";
         JSONObject jsonBody = new JSONObject();
-
         JSONObject obj = new JSONObject();
         try {
             obj.put("function", function);
@@ -207,19 +211,16 @@ public class APICalls {
         }
         JSONArray jsonArray = new JSONArray();
         jsonArray.put(obj);
-
         try {
             jsonBody.put("state", state);
             jsonBody.put("valuetype", valueType);
             jsonBody.put("operator", operator);
             jsonBody.put("value", value);
             jsonBody.put("localActions", jsonArray);
-            System.out.println("LOOK HERE" +jsonBody);
-            Log.e("LOOK HERE", jsonBody.toString());
         }catch (JSONException e) {
             e.printStackTrace();
         }
-        JsonObjectRequest objectRequest = new JsonObjectRequest(Request.Method.POST,AppConfig.URL_GROUPS+"2/triggers/", jsonBody,
+        JsonObjectRequest objectRequest = new JsonObjectRequest(Request.Method.POST,AppConfig.URL_GROUPS+groupID+"/triggers/", jsonBody,
                 new Response.Listener<JSONObject>()
                 {
                     @Override
@@ -341,14 +342,77 @@ public class APICalls {
     }
 
     public void sendFirebaseToken(String fToken){
-
         //TODO: add functionality to send firebase token to server on this endpoint: POST /api/v1/accounts/notifytoken (when it exists)
         //need to make sure the user is logged in, so the server knows who the token belongs to.
+        String tag_string_req = "req_newNotification";
+        JSONObject jsonBody = new JSONObject();
+        try {
+            jsonBody.put("notificationToken", fToken);
+        }catch (JSONException e) {
+            e.printStackTrace();
+        }
+        JsonObjectRequest objectRequest = new JsonObjectRequest(Request.Method.POST,AppConfig.URL_NOTIFICATION, jsonBody,
+                new Response.Listener<JSONObject>()
+                {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Log.d(TAG,"Notification Sent");
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.e(TAG, "Notification Post Error" + error.getMessage());
+                        Toast.makeText(_context,
+                                "Issue adding notification token", Toast.LENGTH_LONG).show();
+                    }
+                }
+        )
+        {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                return setHeaders();
+            }
+        };
+        // Adding request to request queue
+        AppController.getInstance().addToRequestQueue(objectRequest, tag_string_req);
     }
 
     public void patchFirebaseToken(String fToken){
-
         //TODO: add functionality to be able to PATCH (update) a token in case its refreshed on this endpoint:  PATCH /api/v1/accounts/notifytoken (to update) (when it exists)
+        //need to make sure the user is logged in, so the server knows who the token belongs to.
+        String tag_string_req = "req_patchNotification";
+        JSONObject jsonBody = new JSONObject();
+        try {
+            jsonBody.put("notificationToken", fToken);
+        }catch (JSONException e) {
+            e.printStackTrace();
+        }
+        JsonObjectRequest objectRequest = new JsonObjectRequest(Request.Method.PATCH,AppConfig.URL_NOTIFICATION, jsonBody,
+                new Response.Listener<JSONObject>()
+                {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Log.d(TAG,"Notification Patched");
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.e(TAG, "Notification Patch Error" + error.getMessage());
+                        Toast.makeText(_context,
+                                "Issue patching notification token", Toast.LENGTH_LONG).show();
+                    }
+                }
+        )
+        {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                return setHeaders();
+            }
+        };
+        // Adding request to request queue
+        AppController.getInstance().addToRequestQueue(objectRequest, tag_string_req);
     }
 
     /**

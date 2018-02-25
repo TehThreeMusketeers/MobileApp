@@ -18,8 +18,6 @@ public class FirebaseService extends FirebaseInstanceIdService {
     @Override
     public void onTokenRefresh(){
         refreshedToken = FirebaseInstanceId.getInstance().getToken();
-        Log.d("FIREBASE", "Refreshed token: " +refreshedToken);
-
         //TODO: Test and confirm these api calls work correctly and are received by the server.
 
         APICalls api = new APICalls(getApplicationContext());

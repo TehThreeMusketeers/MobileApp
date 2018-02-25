@@ -14,6 +14,8 @@ public class AppConfig {
     public static String URL_ACCOUNTS = address+ "accounts/";
     // Server user login url
     public static String URL_SESSION = address + "accounts/session/";
+    //Server urser NotifyToken
+    public static String URL_NOTIFICATION= address+ "accounts/notifytoken";
 
     // Server devices for this user url
     public static String URL_DEVICES = address+ "devices/";
