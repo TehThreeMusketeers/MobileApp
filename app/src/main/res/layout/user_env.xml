@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <view
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        class="com.sunicola.setapp.app.UserEnvironment"
+        android:background="#ffffff"
+        android:id="@+id/single_touch_view"
+        android:layout_gravity="left|top"
+        ></view>
+
+</android.support.constraint.FrameLayout>
