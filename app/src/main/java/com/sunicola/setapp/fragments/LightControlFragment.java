@@ -1,25 +1,30 @@
+/*
+ * Copyright (c) 26. 2. 2018. Orber Soares Bom Jesus
+ */
+
 package com.sunicola.setapp.fragments;
 
 import android.content.Context;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.util.Log;
 import android.widget.Button;
 import android.widget.SeekBar;
 
+import com.madrapps.pikolo.HSLColorPicker;
+import com.madrapps.pikolo.listeners.SimpleColorSelectionListener;
 import com.sunicola.setapp.R;
 
 import java.io.DataOutputStream;
 import java.net.Socket;
 
-/**
- * Created by Cristian on 23/02/2018.
- */
 
 public class LightControlFragment extends Fragment {
     // Skeleton vars
@@ -31,18 +36,41 @@ public class LightControlFragment extends Fragment {
     // command strings
     private static final String ALL_OFF = "410";
     private static final String ALL_ON = "420";
+
+    /**
+     * Add Color Picker after view has been created
+     * @param view
+     * @param savedInstanceState
+     */
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        colorPicker = getView().findViewById(R.id.colorPicker);
+        HSLColorPicker colorPicker = getView().findViewById(R.id.colorPicker);
+        colorPicker.setColorSelectionListener(new SimpleColorSelectionListener() {
+            @Override
+            public void onColorSelected(int color) {
+                // Do whatever you want with the color
+                final String hexColor = String.format("#%06X", (0xFFFFFF & color));
+                sendMessage(COLOR_PREFIX+hexColor); //sends hex color
+                // sendMessage(COLOR_PREFIX+color); sends raw color
+            }
+        });
+    }
+
     private static final String BULB_1_OFF = "460";
     private static final String BULB_1_ON = "450";
     private static final String BULB_2_OFF = "480";
     private static final String BULB_2_ON = "470";
     private static final String BULB_3_OFF = "4a0";
-    private static final String  BULB_3_ON = "490";
+    private static final String BULB_3_ON = "490";
     private static final String COLOR_PREFIX = "40";
     private static final String BRIGHTNESS_PREFIX = "4e";
 
     // UI elements
     private Button bulb1, bulb2, bulb3, all, off;
     private SeekBar colour, brightness;
+    private HSLColorPicker colorPicker;
 
     // communication
     private Socket socket;
@@ -54,13 +82,7 @@ public class LightControlFragment extends Fragment {
     // required constructor
     public LightControlFragment() {}
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment TriggerFragment.
-     */
+
     // TODO: Rename and change types and number of parameters
     public static TriggerFragment newInstance(String param1, String param2) {
         TriggerFragment fragment = new TriggerFragment();
@@ -114,6 +136,8 @@ public class LightControlFragment extends Fragment {
                 }
             }
         });
+
+        /* Old Color code
         colour = view.findViewById(R.id.seek_colour);
         colour.setMax(255);
         colour.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
@@ -125,7 +149,7 @@ public class LightControlFragment extends Fragment {
             public void onStartTrackingTouch(SeekBar seekBar) {}
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {}
-        });
+        });*/
 
         brightness = view.findViewById(R.id.seek_brightness);
         brightness.setMax(20);
