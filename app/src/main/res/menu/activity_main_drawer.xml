@@ -10,9 +10,9 @@
             android:icon="@drawable/ic_menu_all_devices"
             android:title="@string/view_all_devices" />
         <item
-            android:id="@+id/nav_allDevicesGroups"
+            android:id="@+id/nav_usr_Env"
             android:icon="@drawable/ic_menu_all_devices_groups"
-            android:title="@string/view_all_device_groups" />
+            android:title="@string/user_env" />
         <item
             android:id="@+id/nav_addPhoton"
             android:icon="@drawable/ic_menu_plus_one"

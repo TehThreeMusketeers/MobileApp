@@ -35,7 +35,10 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="view_all_device_groups">View All Device Groups</string>
+    <string name="user_env">User Environment</string>
     <string name="title_activity_draw">DrawActivity</string>
+
+    <string name="ue_btn_customize">Customize</string>
+    <string name="ue_btn_done">Done</string>
 
 </resources>

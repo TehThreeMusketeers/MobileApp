@@ -8,10 +8,13 @@ import android.graphics.ColorFilter;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.PixelFormat;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffXfermode;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -24,9 +27,11 @@ import android.view.View;
 public class UserEnvironment extends View{
     private final Paint blackPaint;
     private Path drawPath;
-    private Canvas drawCanvas;
-    private Bitmap canvasBitmap;
     private Context ctx;
+    private Bitmap cache;
+
+    private boolean drawing;
+    private boolean erasing;
 
     public UserEnvironment(Context context, AttributeSet attrs){
         super(context, attrs);
@@ -38,12 +43,34 @@ public class UserEnvironment extends View{
         blackPaint.setStyle(Paint.Style.STROKE);
         blackPaint.setStrokeJoin(Paint.Join.ROUND);
 
+        drawing = false;
+        erasing = false;
+
         drawPath = new Path();
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
-        canvas.drawPath(drawPath, blackPaint);
+        System.out.println("JOCKO" +drawing);
+        if(drawing){
+            canvas.drawPath(drawPath, blackPaint);
+        }
+        else if(erasing){
+            canvas.drawColor(0, PorterDuff.Mode.CLEAR);
+            erasing = false;
+        }
+    }
+
+    public void setDrawing(){
+        drawing = true;
+    }
+
+    public void unsetDrawing(){
+        drawing = false;
+    }
+
+    public void erase(){
+        erasing = true;
     }
 
 

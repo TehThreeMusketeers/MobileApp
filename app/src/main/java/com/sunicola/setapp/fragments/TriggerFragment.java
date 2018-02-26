@@ -74,6 +74,8 @@ public class TriggerFragment extends Fragment implements AdapterView.OnItemSelec
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+
+        getActivity().setTitle("Trigger Decsription");
     }
 
     @Override
