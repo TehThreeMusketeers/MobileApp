@@ -15,7 +15,6 @@ import android.widget.SeekBar;
 import com.sunicola.setapp.R;
 
 import java.io.DataOutputStream;
-import java.io.IOException;
 import java.net.Socket;
 
 /**
@@ -81,7 +80,7 @@ public class LightControlFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.lights_control, container, false);
+        View view = inflater.inflate(R.layout.fragment_lights_control, container, false);
         bulb1 = view.findViewById(R.id.button_bulb_one);
         bulb1.setOnClickListener(onButtonClickListener(BULB_1_ON));
         bulb2 = view.findViewById(R.id.button_bulb_two);

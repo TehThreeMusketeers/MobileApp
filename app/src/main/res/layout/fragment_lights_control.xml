@@ -18,14 +18,14 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="50dp"
             android:text="@string/colour_text"
-            android:textSize="20dp"
+            android:textSize="20sp"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <SeekBar
             android:id="@+id/seek_colour"
-            android:layout_width="466dp"
+            android:layout_width="360dp"
             android:layout_height="50dp"
             android:layout_marginTop="8dp"
             app:layout_constraintLeft_toLeftOf="parent"
@@ -40,14 +40,14 @@
             android:layout_marginStart="8dp"
             android:layout_marginTop="16dp"
             android:text="@string/brightness_text"
-            android:textSize="20dp"
+            android:textSize="20sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/seek_colour" />
 
         <SeekBar
             android:id="@+id/seek_brightness"
-            android:layout_width="466dp"
+            android:layout_width="360dp"
             android:layout_height="50dp"
             android:layout_marginTop="24dp"
             app:layout_constraintLeft_toLeftOf="parent"
@@ -67,7 +67,7 @@
 
         <Button
             android:id="@+id/button_all"
-            android:layout_width="465dp"
+            android:layout_width="300dp"
             android:layout_height="48dp"
             android:layout_marginTop="40dp"
             android:background="@android:color/holo_blue_bright"
@@ -78,10 +78,10 @@
 
         <Button
             android:id="@+id/button_bulb_one"
-            android:layout_width="150dp"
-            android:layout_height="43dp"
+            android:layout_width="62dp"
+            android:layout_height="46dp"
             android:layout_marginEnd="8dp"
-            android:layout_marginStart="100dp"
+            android:layout_marginStart="8dp"
             android:layout_marginTop="40dp"
             android:background="@android:color/holo_blue_bright"
             android:text="@string/button_bulb_one_text"
@@ -91,22 +91,21 @@
 
         <Button
             android:id="@+id/button_bulb_three"
-            android:layout_width="150dp"
-            android:layout_height="44dp"
-            android:layout_marginEnd="100dp"
+            android:layout_width="62dp"
+            android:layout_height="46dp"
+            android:layout_marginEnd="8dp"
             android:layout_marginStart="8dp"
             android:layout_marginTop="40dp"
             android:background="@android:color/holo_blue_bright"
             android:text="@string/button_bulb_three_text"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toEndOf="@+id/button_bulb_two"
             app:layout_constraintTop_toBottomOf="@+id/seek_brightness" />
 
         <Button
             android:id="@+id/button_bulb_two"
-            android:layout_width="150dp"
-            android:layout_height="44dp"
+            android:layout_width="62dp"
+            android:layout_height="46dp"
             android:layout_marginEnd="8dp"
             android:layout_marginStart="8dp"
             android:layout_marginTop="40dp"
