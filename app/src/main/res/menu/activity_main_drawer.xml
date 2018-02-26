@@ -22,7 +22,6 @@
             android:title="@string/settings" />
         <item
             android:id="@+id/light_control"
-            android:icon="@drawable/ic_menu_light_control"
             android:title="@string/light_control_fragment" />
     </group>
 

@@ -11,21 +11,16 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sunicola.setapp.objects.Group;
-import com.sunicola.setapp.objects.GroupType;
 import com.sunicola.setapp.objects.Photon;
 import com.sunicola.setapp.objects.User;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 public class SQLiteHandler extends SQLiteOpenHelper {
-    private ObjectMapper mapper = new ObjectMapper();
+    // All Static variables
 
     //To be used during debugging
     private static final String TAG = SQLiteHandler.class.getSimpleName();
@@ -69,12 +64,13 @@ public class SQLiteHandler extends SQLiteOpenHelper {
     private static final String KEY_GROUP_ID = "id";
     private static final String KEY_GROUP_NAME = "name";
     private static final String KEY_GROUP_TYPE = "groupType";
-    private static final String KEY_GROUP_STATE = "state";
 
     // Table Columns group Types
     private static final String KEY_DB_GTID = "dbID";
     private static final String KEY_GROUP_TYPE_ID = "id";
-    private static final String KEY_GROUP_TYPE_OBJECT = "object";
+    private static final String KEY_GROUP_TYPE_NAME = "name";
+    private static final String KEY_GROUP_TYPE_STATE = "states";
+    private static final String KEY_GROUP_TYPE_VARIABLE = "variables";
 
     public SQLiteHandler(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -129,7 +125,9 @@ public class SQLiteHandler extends SQLiteOpenHelper {
                 + TABLE_GROUP_TYPE+ "("
                 + KEY_DB_GTID+ " INTEGER PRIMARY KEY,"
                 + KEY_GROUP_TYPE_ID+ " TEXT UNIQUE,"
-                + KEY_GROUP_TYPE_OBJECT+ " TEXT"
+                + KEY_GROUP_TYPE_NAME+ " TEXT,"
+                + KEY_GROUP_TYPE_STATE+ " BLOB,"
+                + KEY_GROUP_TYPE_VARIABLE+ " BLOB"
             + ")";
 
         db.execSQL(CREATE_USER_TABLE);
@@ -173,6 +171,56 @@ public class SQLiteHandler extends SQLiteOpenHelper {
     }
 
     /**
+     * Adds photon data to the db in the according key
+     * @param photon
+     */
+    public void addPhoton(Photon photon) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(KEY_DEVICE_API_ID, photon.getId());
+        values.put(KEY_DEVICE_ID, photon.getDeviceId());
+        values.put(KEY_DEVICE_TYPE, photon.getDeviceType());
+        values.put(KEY_DEVICE_NAME, photon.getDeviceName());
+        values.put(KEY_DEVICE_GROUP, photon.getDeviceGroup());
+        // Inserting Row
+        long photon_id = db.insert(TABLE_PHOTON, null, values);
+        db.close(); // Closing database connection
+        Log.d(TAG, "New photon inserted into SQLite: " + photon_id);
+    }
+
+    /**
+     * Adds new Device Type to DB
+     * @param id
+     * @param value
+     */
+    public void addDeviceType(String id, String value) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(KEY_TYPE_ID, id);
+        values.put(KEY_TYPE_NAME, value);
+        // Inserting Row
+        long deviceType_id= db.insert(TABLE_PHOTON_TYPE, null, values);
+        db.close(); // Closing database connection
+        Log.d(TAG, "New device type inserted into SQLite: " + deviceType_id);
+    }
+
+    /**
+     * Adds photon data to the db in the according key
+     * @param group
+     */
+    public void addNewGroup(Group group) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(KEY_GROUP_ID, group.getGroupType());
+        values.put(KEY_GROUP_NAME, group.getName());
+        values.put(KEY_GROUP_TYPE, group.getGroupType());
+        // Inserting Row
+        long group_id = db.insert(TABLE_GROUP, null, values);
+        db.close(); // Closing database connection
+        Log.d(TAG, "New photon inserted into SQLite: " + group_id);
+    }
+
+    /**
      * Getting user data from database
      * */
     public HashMap<String, String> getUserDetails() {
@@ -192,24 +240,6 @@ public class SQLiteHandler extends SQLiteOpenHelper {
         // return user
         Log.d(TAG, "Fetching user from SQLite: " + user.toString());
         return user;
-    }
-
-    /**
-     * Adds photon data to the db in the according key
-     * @param photon
-     */
-    public void addPhoton(Photon photon) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues values = new ContentValues();
-        values.put(KEY_DEVICE_API_ID, photon.getId());
-        values.put(KEY_DEVICE_ID, photon.getDeviceId());
-        values.put(KEY_DEVICE_TYPE, photon.getDeviceType());
-        values.put(KEY_DEVICE_NAME, photon.getDeviceName());
-        values.put(KEY_DEVICE_GROUP, photon.getDeviceGroup());
-        // Inserting Row
-        long photon_id = db.insert(TABLE_PHOTON, null, values);
-        db.close(); // Closing database connection
-        Log.d(TAG, "New photon inserted into SQLite: " + photon_id);
     }
 
     /**
@@ -235,23 +265,6 @@ public class SQLiteHandler extends SQLiteOpenHelper {
         return photonList;
     }
 
-
-    /**
-     * Adds new Device Type to DB
-     * @param id
-     * @param value
-     */
-    public void addDeviceType(String id, String value) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues values = new ContentValues();
-        values.put(KEY_TYPE_ID, id);
-        values.put(KEY_TYPE_NAME, value);
-        // Inserting Row
-        long deviceType_id= db.insert(TABLE_PHOTON_TYPE, null, values);
-        db.close(); // Closing database connection
-        Log.d(TAG, "New device type inserted into SQLite: " + deviceType_id);
-    }
-
     /**
      * Returns List containing photon objects found in SQLite
      * @return
@@ -275,27 +288,10 @@ public class SQLiteHandler extends SQLiteOpenHelper {
     }
 
     /**
-     * Adds photon data to the db in the according key
-     * @param group
-     */
-    public void addNewGroup(Group group) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues values = new ContentValues();
-        values.put(KEY_GROUP_ID, group.getGroupType());
-        values.put(KEY_GROUP_NAME, group.getName());
-        values.put(KEY_GROUP_TYPE, group.getGroupType());
-        values.put(KEY_GROUP_STATE, group.getState());
-        // Inserting Row
-        long group_id = db.insert(TABLE_GROUP, null, values);
-        db.close(); // Closing database connection
-        Log.d(TAG, "New Group inserted into SQLite: " + group_id);
-    }
-
-    /**
      * Returns List containing Group objects found in SQLite
      * @return
      */
-    public List<Group> getDevGroups() {
+    public List<Group> getAllGroups() {
         List<Group> groupList = new ArrayList();
         String selectQuery = "SELECT * FROM " + TABLE_GROUP;
         SQLiteDatabase db = this.getWritableDatabase();
@@ -306,50 +302,13 @@ public class SQLiteHandler extends SQLiteOpenHelper {
                 group.setId(cursor.getInt(cursor.getColumnIndex("id")));
                 group.setName(cursor.getString(cursor.getColumnIndex("name")));
                 group.setGroupType(cursor.getInt(cursor.getColumnIndex("groupType")));
-                group.setState(cursor.getInt(cursor.getColumnIndex("state")));
                 groupList.add(group);
             } while(cursor.moveToNext());
         }
-        Log.d(TAG, "Fetching Groups from SQLite");
+        Log.d(TAG, "Fetching photons from SQLite");
         return groupList;
     }
 
-    /**
-     * Add new group type
-     * @param groupType
-     */
-    public void addNewGroupType(GroupType groupType) throws JsonProcessingException {
-        SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues values = new ContentValues();
-        String groupObj = mapper.writeValueAsString(groupType);
-        values.put(KEY_GROUP_TYPE_ID, groupType.getId());
-        values.put(KEY_GROUP_TYPE_OBJECT, groupObj);
-        // Inserting Row
-        long groupType_id = db.insert(TABLE_GROUP_TYPE, null, values);
-        db.close(); // Closing database connection
-        Log.d(TAG, "New Group Type inserted into SQLite: " + groupType_id);
-    }
-
-    //FIXME: Not working
-    /**
-     * Returns a list with all group types
-     * @return
-     * @throws IOException
-     */
-    public List<GroupType> getAllGroupTypes() throws IOException {
-        List<GroupType> devicesGroup = new ArrayList();
-        String selectQuery = "SELECT * FROM " + TABLE_GROUP_TYPE;
-        SQLiteDatabase db = this.getWritableDatabase();
-        Cursor cursor = db.rawQuery(selectQuery, null);
-        if(cursor.moveToFirst()) {
-            do {
-                GroupType groupType = mapper.readValue(String.valueOf(cursor.getInt(cursor.getColumnIndex("object"))), new TypeReference<GroupType>() { });
-                devicesGroup.add(groupType);
-            } while(cursor.moveToNext());
-        }
-        Log.d(TAG, "Fetching Groups from SQLite");
-        return devicesGroup;
-    }
 
     /**
      * Deletes all user table
@@ -389,4 +348,5 @@ public class SQLiteHandler extends SQLiteOpenHelper {
         db.close();
         Log.d(TAG, "Deleted all group types from SQLite");
     }
+
 }
