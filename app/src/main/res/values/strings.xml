@@ -38,5 +38,6 @@
     <string name="view_all_device_groups">View All Device Groups</string>
     <string name="photon_logo">Photon Logo</string>
     <string name="devGroup">Device Group</string>
+    <string name="devState">Device State</string>
 
 </resources>

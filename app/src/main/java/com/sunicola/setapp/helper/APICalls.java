@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 25. 2. 2018. Orber Soares Bom Jesus
+ */
+
 package com.sunicola.setapp.helper;
 
 import android.content.Context;
@@ -9,9 +13,11 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.sunicola.setapp.app.AppConfig;
 import com.sunicola.setapp.app.AppController;
 import com.sunicola.setapp.objects.Group;
+import com.sunicola.setapp.objects.GroupType;
 import com.sunicola.setapp.objects.Photon;
 import com.sunicola.setapp.storage.SQLiteHandler;
 
@@ -21,14 +27,12 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static android.widget.Toast.LENGTH_SHORT;
 
 
-/**
- * Created by soaresbo on 05/02/2018.
- */
 
 public class APICalls {
     private static final String TAG = APICalls.class.getSimpleName();
@@ -46,6 +50,58 @@ public class APICalls {
         db = new SQLiteHandler(_context);
         HashMap<String, String> user = db.getUserDetails();
         sessionToken = user.get("session_token");
+    }
+
+    /***********************************
+     * Photon Calls
+     **********************************/
+    /**
+     * Updates all photons table in SQLite with data received from server
+     */
+    public void updateAllDevices() {
+        // Tag used to cancel the request
+        String tag_string_req = "req_allDevices";
+        JsonObjectRequest objectRequest = new JsonObjectRequest(Request.Method.GET,AppConfig.URL_DEVICES, null,
+                new Response.Listener<JSONObject>()
+                {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        db.deletePhotonData();
+                        try{
+                            JSONArray jsonArray = response.getJSONArray("results");
+                            for (int i=0; i<jsonArray.length(); i++) {
+                                int id = jsonArray.getJSONObject(i).getInt("id");
+                                String deviceId = jsonArray.getJSONObject(i).getString("deviceId");
+                                String deviceType = jsonArray.getJSONObject(i).getString("deviceType");
+                                String deviceName = jsonArray.getJSONObject(i).getString("deviceName");
+                                String deviceGroup = jsonArray.getJSONObject(i).getString("group");
+                                db.addPhoton(new Photon(Integer.toString(id),deviceId,deviceType,deviceName,deviceGroup));
+                                Toast.makeText(_context,
+                                        "Photons List Updated", Toast.LENGTH_SHORT).show();
+                                Log.d(TAG,"Saved Photon with id: " + deviceId);
+                            }
+                        }catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.e(TAG, "Server Error: " + error.getMessage());
+                        Toast.makeText(_context,
+                                "Issue getting all photons data from server", Toast.LENGTH_LONG).show();
+                    }
+                }
+        )
+        {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                return setHeaders();
+            }
+        };
+        // Adding request to request queue
+        AppController.getInstance().addToRequestQueue(objectRequest, tag_string_req);
     }
 
     /**
@@ -91,7 +147,6 @@ public class APICalls {
     }
 
     /**
-     * DONE
      * Registers a new photon under this users account
      * @param devID
      * @param devType
@@ -141,31 +196,40 @@ public class APICalls {
         AppController.getInstance().addToRequestQueue(objectRequest, tag_string_req);
     }
 
+    /***********************************
+     * Group Calls
+     **********************************/
+
     /**
-     * Updates all photons table in SQLite with data received from server
+     * Registers new Group
+     * @param groupName
+     * @param groupType
+     * @param devices
      */
-    public void updateAllPhotons() {
+    public void registerGroup(String groupName, int groupType, ArrayList<String> devices, int state) {
         // Tag used to cancel the request
-        String tag_string_req = "req_allDevices";
-        JsonObjectRequest objectRequest = new JsonObjectRequest(Request.Method.GET,AppConfig.URL_DEVICES, null,
+        String tag_string_req = "req_newDeviceGroup";
+        JSONObject jsonBody = new JSONObject();
+        try {
+            jsonBody.put("name", groupName);
+            jsonBody.put("groupType", groupType);
+            jsonBody.put("devices", devices);
+            jsonBody.put("state", devices);
+        }catch (JSONException e) {
+            e.printStackTrace();
+        }
+        JsonObjectRequest objectRequest = new JsonObjectRequest(Request.Method.POST,AppConfig.URL_GROUPS, jsonBody,
                 new Response.Listener<JSONObject>()
                 {
                     @Override
                     public void onResponse(JSONObject response) {
-                        db.deletePhotonData();
                         try{
-                            JSONArray jsonArray = response.getJSONArray("results");
-                            for (int i=0; i<jsonArray.length(); i++) {
-                                int id = jsonArray.getJSONObject(i).getInt("id");
-                                String deviceId = jsonArray.getJSONObject(i).getString("deviceId");
-                                String deviceType = jsonArray.getJSONObject(i).getString("deviceType");
-                                String deviceName = jsonArray.getJSONObject(i).getString("deviceName");
-                                String deviceGroup = jsonArray.getJSONObject(i).getString("group");
-                                db.addPhoton(new Photon(Integer.toString(id),deviceId,deviceType,deviceName,deviceGroup));
-                                Toast.makeText(_context,
-                                        "Photons List Updated", Toast.LENGTH_SHORT).show();
-                                Log.d(TAG,"Saved Photon with id: " + deviceId);
-                            }
+                            String groupName = response.getString("name");
+                            int groupId = response.getInt("id");
+                            int groupType = response.getInt("groupType");
+                            int state = response.getInt("state");
+                            db.addNewGroup(new Group(groupId,groupName,groupType,state));
+                            Log.e(TAG, groupName + " ADDED");
                         }catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -174,9 +238,9 @@ public class APICalls {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Log.e(TAG, "Server Error: " + error.getMessage());
+                        Log.e(TAG, "Registration Group Error: " + error.getMessage());
                         Toast.makeText(_context,
-                                "Issue getting all photons data from server", Toast.LENGTH_LONG).show();
+                                "Issue adding photon data from server", Toast.LENGTH_LONG).show();
                     }
                 }
         )
@@ -190,6 +254,110 @@ public class APICalls {
         AppController.getInstance().addToRequestQueue(objectRequest, tag_string_req);
     }
 
+    /**
+     * Updates GroupTypes Database Table in SQLite
+     */
+    public void updateAllGroups(){
+        String tag_string_req = "req_all_group";
+        JsonObjectRequest strReq = new JsonObjectRequest(Request.Method.GET, AppConfig.URL_GROUPS,null,
+                new Response.Listener<JSONObject>()
+                {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try{
+                            db.deleteGroupData();
+                            JSONArray jsonArray = response.getJSONArray("results");
+                            for (int i=0; i<jsonArray.length(); i++) {
+                                int id = jsonArray.getJSONObject(i).getInt("id");
+                                String value = jsonArray.getJSONObject(i).getString("name");
+                                int type = jsonArray.getJSONObject(i).getInt("groupType");
+                                int state = jsonArray.getJSONObject(i).getInt("state");
+                                db.addNewGroup(new Group(id,value,type,state));
+                            }
+                        } catch (JSONException e){
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                new Response.ErrorListener()
+                {
+                    @Override
+                    public void onErrorResponse(VolleyError error){
+                        Log.e(TAG, "getting device Error: " + error.getMessage());
+                        Toast.makeText(_context,
+                                "Issue getting data from server", Toast.LENGTH_LONG).show();
+                    }
+                }
+        )
+        {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                return setHeaders();
+            }
+        };
+        AppController.getInstance().addToRequestQueue(strReq, tag_string_req);
+    }
+
+    //FIXME: Needsto be looked at because it adds to db but might need changing since current way can't be read back
+    /**
+     * Updates GrouTypes Database Table in SQLite
+     */
+    public void updateAllGroupTypes(){
+        String tag_string_req = "req_all_group_types";
+        JsonObjectRequest strReq = new JsonObjectRequest(Request.Method.GET, AppConfig.URL_GROUPS_TYPES,null,
+                new Response.Listener<JSONObject>()
+                {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try{
+                            db.deleteGroupType();
+                            JSONArray jsonArray = response.getJSONArray("results");
+                            for (int i=0; i<jsonArray.length(); i++) {
+                                int id = jsonArray.getJSONObject(i).getInt("id");
+                                String name = jsonArray.getJSONObject(i).getString("name");
+                                JSONArray states = jsonArray.getJSONObject(i).getJSONArray("states");
+                                JSONArray variables = jsonArray.getJSONObject(i).getJSONArray("variables");
+
+                                HashMap<String,String> statesMap = new HashMap<>();
+                                for (int j = 0; j <states.length() ; j++) {
+                                    statesMap.put(Integer.toString(states.getJSONObject(j).getInt("id")),states.getJSONObject(j).getString("state"));
+                                }
+
+                                HashMap<String,String> variablesMap = new HashMap<>();
+                                for (int b = 0; b <variables.length() ; b++) {
+                                    variablesMap.put(Integer.toString(variables.getJSONObject(b).getInt("id")),variables.getJSONObject(b).getString("variable"));
+                                }
+                                db.addNewGroupType(new GroupType(id,name,statesMap,variablesMap));
+                            }
+                        } catch (JSONException e){
+                            e.printStackTrace();
+                        } catch (JsonProcessingException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                new Response.ErrorListener()
+                {
+                    @Override
+                    public void onErrorResponse(VolleyError error){
+                        Log.e(TAG, "getting group types Error: " + error.getMessage());
+                        Toast.makeText(_context,
+                                "Issue getting data from server", Toast.LENGTH_LONG).show();
+                    }
+                }
+        )
+        {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                return setHeaders();
+            }
+        };
+        AppController.getInstance().addToRequestQueue(strReq, tag_string_req);
+    }
+
+    /***********************************
+     * Triggers
+     **********************************/
     /**
      * Creates Trigger for this group of photons
      * @param groupID
@@ -245,102 +413,17 @@ public class APICalls {
         };
         // Adding request to request queue
         AppController.getInstance().addToRequestQueue(objectRequest, tag_string_req);
-
-
     }
+
+
+    /***********************************
+     * Firebase Calls
+     **********************************/
 
     /**
-     * NEEDS WORK
-     * Returns Photon object with photon requested
+     * Creates firebase token on the server
+     * @param fToken
      */
-    public void getPhotonById(int id) {
-        // Tag used to cancel the request
-        String tag_string_req = "req_allDevices";
-        JsonObjectRequest objectRequest = new JsonObjectRequest(Request.Method.GET,AppConfig.URL_DEVICES+id+"/", null,
-                new Response.Listener<JSONObject>()
-                {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        try{
-                            String deviceId = response.getString("deviceId");
-                            String deviceType = response.getString("deviceType");
-                            String deviceName = response.getString("deviceName");
-                        }catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Log.e(TAG, "Server Error: " + error.getMessage());
-                        Toast.makeText(_context,
-                                "Issue getting all photons data from server", Toast.LENGTH_LONG).show();
-                    }
-                }
-        )
-        {
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                return setHeaders();
-            }
-        };
-        // Adding request to request queue
-        AppController.getInstance().addToRequestQueue(objectRequest, tag_string_req);
-    }
-
-    /**
-     * Registers new Group
-     * @param groupName
-     * @param groupType
-     * @param devices
-     */
-    public void registerGroup(String groupName, int groupType, ArrayList<String> devices) {
-        // Tag used to cancel the request
-        String tag_string_req = "req_newDeviceGroup";
-        JSONObject jsonBody = new JSONObject();
-        try {
-            jsonBody.put("name", groupName);
-            jsonBody.put("groupType", groupType);
-            jsonBody.put("devices", devices);
-        }catch (JSONException e) {
-            e.printStackTrace();
-        }
-        JsonObjectRequest objectRequest = new JsonObjectRequest(Request.Method.POST,AppConfig.URL_GROUPS, jsonBody,
-                new Response.Listener<JSONObject>()
-                {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        try{
-                            String groupName = response.getString("name");
-                            int groupId = response.getInt("id");
-                            int groupType = response.getInt("groupType");
-                            db.addNewGroup(new Group(groupName,groupId,groupType));
-                            Log.e(TAG, groupName + " ADDED");
-                        }catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Log.e(TAG, "Registration Group Error: " + error.getMessage());
-                        Toast.makeText(_context,
-                                "Issue adding photon data from server", Toast.LENGTH_LONG).show();
-                    }
-                }
-        )
-        {
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                return setHeaders();
-            }
-        };
-        // Adding request to request queue
-        AppController.getInstance().addToRequestQueue(objectRequest, tag_string_req);
-    }
-
     public void sendFirebaseToken(String fToken){
         //TODO: add functionality to send firebase token to server on this endpoint: POST /api/v1/accounts/notifytoken (when it exists)
         //need to make sure the user is logged in, so the server knows who the token belongs to.
@@ -378,6 +461,10 @@ public class APICalls {
         AppController.getInstance().addToRequestQueue(objectRequest, tag_string_req);
     }
 
+    /**
+     * Patches Firebase Token in case of expiry
+     * @param fToken
+     */
     public void patchFirebaseToken(String fToken){
         //TODO: add functionality to be able to PATCH (update) a token in case its refreshed on this endpoint:  PATCH /api/v1/accounts/notifytoken (to update) (when it exists)
         //need to make sure the user is logged in, so the server knows who the token belongs to.

@@ -1,5 +1,7 @@
 package com.sunicola.setapp.objects;
 
+import org.json.JSONArray;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -7,49 +9,49 @@ import java.util.HashMap;
  * Created by soaresbo on 15/02/2018.
  */
 
+//FIXME: Not working
 public class GroupType {
     int id;
     String name;
-    ArrayList<HashMap<Integer, String>> statesList = new ArrayList<>();
-    ArrayList<HashMap<Integer, String>> variablesList = new ArrayList<>();
-    HashMap<Integer,String> states = new HashMap<>();
-    HashMap<Integer,String> variables = new HashMap<>();
+    HashMap<String,String> states = new HashMap<>();
+    HashMap<String,String> variables = new HashMap<>();
 
-    public GroupType() {
-        id = 1;
-        name = "Burglar Alarm";
-
-        states.put(1,"ARMED");
-        states.put(2,"DISARMED");
-        statesList.add(states);
-
-        variables.put(4,"light");
-        variables.put(5,"sound");
-        variables.put(6,"motion");
-        variablesList.add(variables);
+    public GroupType(int id, String name, HashMap<String,String> states, HashMap<String,String> variables) {
+        this.id = id;
+        this.name = name;
+        this.states = states;
+        this.variables = variables;
     }
 
     public int getId() {
         return id;
     }
 
+    public void setId(int id) {
+        this.id = id;
+    }
+
     public String getName() {
         return name;
     }
 
-    public ArrayList<HashMap<Integer, String>> getStatesList() {
-        return statesList;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public ArrayList<HashMap<Integer, String>> getVariablesList() {
-        return variablesList;
-    }
-
-    public HashMap<Integer, String> getStates() {
+    public HashMap<String, String> getStates() {
         return states;
     }
 
-    public HashMap<Integer, String> getVariables() {
+    public void setStates(HashMap<String, String> states) {
+        this.states = states;
+    }
+
+    public HashMap<String, String> getVariables() {
         return variables;
+    }
+
+    public void setVariables(HashMap<String, String> variables) {
+        this.variables = variables;
     }
 }

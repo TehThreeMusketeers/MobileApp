@@ -8,7 +8,7 @@ android:padding="7dp">
 
     <ImageView
         android:id="@+id/photonImg"
-        android:layout_width="206dp"
+        android:layout_width="122dp"
         android:layout_height="85dp"
         android:contentDescription="@string/photon_logo"
         android:src="@drawable/photon" />
@@ -44,10 +44,19 @@ android:padding="7dp">
 
             <TextView
                 android:id="@+id/devGroup"
-                android:layout_width="wrap_content"
+                android:layout_width="84dp"
                 android:layout_height="wrap_content"
                 android:paddingTop="5dp"
                 android:text="@string/devGroup"
+                android:textAlignment="center"
+                android:textSize="12sp" />
+
+            <TextView
+                android:id="@+id/devState"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingTop="5dp"
+                android:text="@string/devState"
                 android:textAlignment="center"
                 android:textSize="12sp" />
         </LinearLayout>

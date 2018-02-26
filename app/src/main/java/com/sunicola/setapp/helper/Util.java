@@ -1,6 +1,7 @@
 package com.sunicola.setapp.helper;
 
 import android.content.Context;
+import android.nfc.Tag;
 import android.util.Log;
 
 import com.sunicola.setapp.objects.Group;
@@ -35,13 +36,14 @@ public class Util {
         return allTypes.get(id);
     }
 
-    //TODO: Needs to be completed
+    //TODO:Needs to be implemented so that it converts the int to a group name
     /**
      * Return String with name of group type
      * @param id
      * @return
      */
     public String convertGroupId(String id){
+        //Log.e("UTIL","GROUP ID CONVERSION NOT IMPLEMENTED");
         //api.updateAllDeviceGroups();
         return id;
     }

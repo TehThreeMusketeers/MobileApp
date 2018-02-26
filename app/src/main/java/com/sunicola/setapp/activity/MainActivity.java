@@ -47,7 +47,6 @@ public class MainActivity extends AppCompatActivity
     private HashMap<String, String> user;
     private SessionManager session;
     private String accessToken;
-
     private ParticleCloud cloud;
 
     private ParticleDeviceSetupLibrary.DeviceSetupCompleteReceiver receiver;

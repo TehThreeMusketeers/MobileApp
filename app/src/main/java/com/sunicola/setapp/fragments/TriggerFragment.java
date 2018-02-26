@@ -83,7 +83,7 @@ public class TriggerFragment extends Fragment implements AdapterView.OnItemSelec
 
         View v = inflater.inflate(R.layout.fragment_trigger, container, false);
 
-        Button b = (Button) v.findViewById(R.id.button);
+        Button b = v.findViewById(R.id.button);
         b.setOnClickListener(this);
 
         Spinner spinnerState = v.findViewById(R.id.spinner_state);
@@ -91,7 +91,7 @@ public class TriggerFragment extends Fragment implements AdapterView.OnItemSelec
         Spinner spinnerOperator = v.findViewById(R.id.spinner_operator);
         Spinner spinnerAction = v.findViewById(R.id.spinner_action);
 
-        edit_text = (EditText)v.findViewById(R.id.editText4);
+        edit_text = v.findViewById(R.id.editText4);
 
         //populate spinners here
         String[] stateVal = {"ARMED", "DISARMED"};

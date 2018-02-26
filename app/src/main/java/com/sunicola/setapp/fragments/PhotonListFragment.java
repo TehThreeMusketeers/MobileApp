@@ -1,5 +1,9 @@
 package com.sunicola.setapp.fragments;
 
+import android.app.Fragment;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ListFragment;
@@ -10,16 +14,24 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
+import android.widget.TextView;
 
 import com.sunicola.setapp.R;
 import com.sunicola.setapp.helper.APICalls;
 import com.sunicola.setapp.helper.Util;
+import com.sunicola.setapp.objects.GroupType;
 import com.sunicola.setapp.objects.Photon;
 import com.sunicola.setapp.storage.SQLiteHandler;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+
+import io.particle.android.sdk.cloud.ParticleCloud;
+import io.particle.android.sdk.cloud.ParticleCloudException;
+import io.particle.android.sdk.cloud.ParticleCloudSDK;
+import io.particle.android.sdk.cloud.ParticleDevice;
 
 /**
  * Created by soaresbo on 09/02/2018.
@@ -31,6 +43,10 @@ public class PhotonListFragment
     private static final String TAG = PhotonListFragment.class.getSimpleName();
     int[] images = {R.drawable.photon, R.drawable.boardphoton};
     ArrayList<HashMap<String, String>> data = new ArrayList<>();
+    private ParticleCloud cloud;
+    private SQLiteHandler db;
+
+
 
     @Nullable
     @Override
@@ -41,18 +57,35 @@ public class PhotonListFragment
     }
 
     @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        db = new SQLiteHandler(getContext());
+        cloud = ParticleCloudSDK.getCloud();
+        String accessToken = db.getUserDetails().get("access_token");
+        cloud.setAccessToken(accessToken);
+    }
+
+    @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        //loadListView();
         loadDualList();
         super.onViewCreated(view, savedInstanceState);
     }
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        Log.e(TAG,"Clicked" + position);
+        TextView textView = view.findViewById(R.id.devId);
+        String txt = textView.getText().toString();
+        PhotonFragment nextFrag = PhotonFragment.newInstance(txt);
+        this.getFragmentManager().beginTransaction()
+                .replace(R.id.screen_area, nextFrag, null)
+                .addToBackStack(null)
+                .commit();
     }
 
-    public void loadDualList(){
+    /**
+     * Loads the list of all photons and displays it with photon id, groupID and photon type
+     */
+    public void loadDualList() {
         getActivity().setTitle("All Devices");
 
         // instantiates api, db and list objects
@@ -64,7 +97,7 @@ public class PhotonListFragment
         List<String> photonGroupList = new ArrayList<>();
 
         //updates db using api calls
-        apiCalls.updateAllPhotons();
+        apiCalls.updateAllDevices();
         apiCalls.updateAllDeviceTypes();
         List<Photon> photonList = db.getAllPhotons();
         for (Photon photon: photonList) {
