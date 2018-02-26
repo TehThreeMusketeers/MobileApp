@@ -24,6 +24,7 @@ import com.github.clans.fab.FloatingActionButton;
 import com.sunicola.setapp.R;
 import com.sunicola.setapp.app.SETNotifications;
 import com.sunicola.setapp.fragments.AccountDetails;
+import com.sunicola.setapp.fragments.LightControlFragment;
 import com.sunicola.setapp.fragments.PhotonListFragment;
 import com.sunicola.setapp.fragments.TriggerFragment;
 import com.sunicola.setapp.helper.APICalls;
@@ -213,6 +214,9 @@ public class MainActivity extends AppCompatActivity
                 break;
             case R.id.nav_allDevicesGroups:
                 //fragment = new TriggerFragment();
+                break;
+            case R.id.light_control:
+                fragment = new LightControlFragment();
                 break;
         }
 
