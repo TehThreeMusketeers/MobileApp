@@ -1,6 +1,8 @@
 package com.sunicola.setapp.fragments;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -33,7 +35,10 @@ public class EnvironmentFragment extends Fragment implements View.OnClickListene
     private OnFragmentInteractionListener mListener;
     private UserEnvironment ue;
     private Button btn;
+    private Button clearBtn;
     private boolean clicked = false;
+
+    private Bitmap drawing;
 
     public EnvironmentFragment() {
         // Required empty public constructor
@@ -78,6 +83,9 @@ public class EnvironmentFragment extends Fragment implements View.OnClickListene
 
         btn = (Button) v.findViewById(R.id.button4);
         btn.setOnClickListener(this);
+
+        clearBtn = (Button) v.findViewById(R.id.btn_clear);
+        clearBtn.setOnClickListener(this);
         return v;
     }
 
@@ -97,15 +105,31 @@ public class EnvironmentFragment extends Fragment implements View.OnClickListene
 
     @Override
     public void onClick(View view) {
-        if(!clicked){
-            btn.setText(R.string.ue_btn_done);
-            ue.setDrawing();
-            clicked = true;
-        }else if (clicked){
-            btn.setText(R.string.ue_btn_customize);
-            ue.unsetDrawing();
-            clicked = false;
+
+        switch (view.getId()){
+            case R.id.button4: {
+
+                if(!clicked){  //when the user clicks customize
+                    btn.setText(R.string.ue_btn_done);
+                    ue.setDrawing();
+                    clicked = true;
+                }else if (clicked){  //when the user clicks done
+                    btn.setText(R.string.ue_btn_customize);
+                    ue.setDrawingCacheEnabled(true);
+                    drawing = ue.getDrawingCache();
+                    ue.unsetDrawing();
+                    clicked = false;
+                }
+                break;
+            }
+
+            case R.id.btn_clear: {
+                ue.erase();
+
+            }
         }
+
+
     }
 
     /**

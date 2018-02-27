@@ -216,6 +216,8 @@ public class MainActivity extends AppCompatActivity
                 break;
             case R.id.nav_usr_Env:
                 fragment = new EnvironmentFragment();
+
+
                 break;
         }
 

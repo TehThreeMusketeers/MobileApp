@@ -28,7 +28,6 @@ public class UserEnvironment extends View{
     private final Paint blackPaint;
     private Path drawPath;
     private Context ctx;
-    private Bitmap cache;
 
     private boolean drawing;
     private boolean erasing;
@@ -38,10 +37,11 @@ public class UserEnvironment extends View{
         ctx = context;
         blackPaint = new Paint();
         blackPaint.setAntiAlias(true);
-        blackPaint.setStrokeWidth(5f);
+        blackPaint.setStrokeWidth(7f);
         blackPaint.setColor(Color.BLACK);
         blackPaint.setStyle(Paint.Style.STROKE);
         blackPaint.setStrokeJoin(Paint.Join.ROUND);
+
 
         drawing = false;
         erasing = false;
@@ -51,14 +51,19 @@ public class UserEnvironment extends View{
 
     @Override
     protected void onDraw(Canvas canvas) {
-        System.out.println("JOCKO" +drawing);
+
+
         if(drawing){
             canvas.drawPath(drawPath, blackPaint);
+
+            if(erasing){
+                Log.d("JOEY", "DIAZ");
+                canvas.drawColor(0, PorterDuff.Mode.CLEAR);
+                invalidate();
+                erasing = false;
+            }
         }
-        else if(erasing){
-            canvas.drawColor(0, PorterDuff.Mode.CLEAR);
-            erasing = false;
-        }
+
     }
 
     public void setDrawing(){
@@ -69,9 +74,13 @@ public class UserEnvironment extends View{
         drawing = false;
     }
 
+    //FIXME: This doesn't clear the canvas.
     public void erase(){
         erasing = true;
+        invalidate();
     }
+
+
 
 
     /*
@@ -82,26 +91,29 @@ public class UserEnvironment extends View{
     @Override
     public boolean onTouchEvent(MotionEvent event) {
 
-        // Get the coordinates of the touch event.
-        float eventX = event.getX();
-        float eventY = event.getY();
+        if(drawing){
+            // Get the coordinates of the touch event.
+            float eventX = event.getX();
+            float eventY = event.getY();
 
-        switch (event.getAction()) {
-            case MotionEvent.ACTION_DOWN:
-                // Set a new starting point
-                drawPath.moveTo(eventX, eventY);
-                return true;
-            case MotionEvent.ACTION_MOVE:
-                // Connect the points
-                drawPath.lineTo(eventX, eventY);
-                break;
-            default:
-                return false;
+            switch (event.getAction()) {
+                case MotionEvent.ACTION_DOWN:
+                    // Set a new starting point
+                    drawPath.moveTo(eventX, eventY);
+                    return true;
+                case MotionEvent.ACTION_MOVE:
+                    // Connect the points
+                    drawPath.lineTo(eventX, eventY);
+                    break;
+                default:
+                    return false;
+            }
+
+            // Makes our view repaint and call onDraw
+            invalidate();
+            return true;
         }
-
-        // Makes our view repaint and call onDraw
-        invalidate();
-        return true;
+        return false;
     }
 
 
