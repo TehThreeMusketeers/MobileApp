@@ -2,24 +2,121 @@
   ~ Copyright (c) 26. 2. 2018. Orber Soares Bom Jesus
   -->
 
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.sunicola.setapp.fragments.PhotonFragment">
-
-    <!-- TODO: Update blank fragment layout -->
-
-    <com.jjoe64.graphview.GraphView
-        android:layout_width="match_parent"
-        android:layout_height="200dip"
-        android:id="@+id/graph" />
+    tools:context="com.sunicola.setapp.fragments.PhotonFragment"
+    android:orientation="vertical">
 
     <TextView
-        android:id="@+id/photonFragId"
+        android:id="@+id/photonId"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment"
-        android:textAlignment="center" />
+        android:layout_height="wrap_content"
+        android:text="@string/photon_id"
+        android:textAlignment="textStart"
+        android:textSize="18sp" />
 
-</FrameLayout>
+    <TextView
+        android:id="@+id/photonStatus"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/status"
+        android:textAlignment="textStart"
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/photonLastHeard"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/last_heard"
+        android:textAlignment="textStart"
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/photonCurrentCode"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/currentCode"
+        android:textAlignment="textStart"
+        android:textSize="18sp" />
+
+    <RadioGroup
+        android:id="@+id/radioGroup"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <RadioButton
+            android:id="@+id/radioButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/view_weekly_data"
+            android:textAlignment="textStart"
+            android:textSize="12sp" />
+
+        <RadioButton
+            android:id="@+id/radioButton2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/view_monthly_data"
+            android:textAlignment="textStart"
+            android:textSize="12sp" />
+    </RadioGroup>
+    <TabHost
+        android:id="@+id/tabHost"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <TabWidget
+                android:id="@android:id/tabs"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <FrameLayout
+                android:id="@android:id/tabcontent"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <LinearLayout
+                    android:id="@+id/tab1"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+                    <com.jjoe64.graphview.GraphView
+                        android:id="@+id/graphTemp"
+                        android:layout_width="match_parent"
+                        android:layout_height="200dip"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/tab2"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+                    <com.jjoe64.graphview.GraphView
+                        android:id="@+id/graphSound"
+                        android:layout_width="match_parent"
+                        android:layout_height="200dip"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/tab3"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+                    <com.jjoe64.graphview.GraphView
+                        android:id="@+id/graphHumid"
+                        android:layout_width="match_parent"
+                        android:layout_height="200dip"/>
+                </LinearLayout>
+            </FrameLayout>
+        </LinearLayout>
+    </TabHost>
+
+</LinearLayout>

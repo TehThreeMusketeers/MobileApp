@@ -51,5 +51,11 @@
     <string name="photon_logo">Photon Logo</string>
     <string name="devGroup">Device Group</string>
     <string name="devState">Device State</string>
+    <string name="photon_id">Photon ID:</string>
+    <string name="last_heard">Last Heard:</string>
+    <string name="status">Status:</string>
+    <string name="currentCode">Current Code:</string>
+    <string name="view_weekly_data">View Weekly Data</string>
+    <string name="view_monthly_data">View Monthly Data</string>
 
 </resources>

@@ -5,8 +5,6 @@
     android:layout_height="match_parent"
     tools:context="com.sunicola.setapp.fragments.TriggerFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -25,7 +23,7 @@
 
         <SeekBar
             android:id="@+id/seek_colour"
-            android:layout_width="466dp"
+            android:layout_width="0dp"
             android:layout_height="50dp"
             android:layout_marginTop="8dp"
             app:layout_constraintLeft_toLeftOf="parent"
@@ -34,7 +32,7 @@
 
         <TextView
             android:id="@+id/text_brightness"
-            android:layout_width="96dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
             android:layout_marginStart="8dp"
@@ -47,7 +45,7 @@
 
         <SeekBar
             android:id="@+id/seek_brightness"
-            android:layout_width="466dp"
+            android:layout_width="0dp"
             android:layout_height="50dp"
             android:layout_marginTop="24dp"
             app:layout_constraintLeft_toLeftOf="parent"
@@ -78,7 +76,7 @@
 
         <Button
             android:id="@+id/button_bulb_one"
-            android:layout_width="150dp"
+            android:layout_width="wrap_content"
             android:layout_height="43dp"
             android:layout_marginEnd="8dp"
             android:layout_marginStart="100dp"
@@ -91,7 +89,7 @@
 
         <Button
             android:id="@+id/button_bulb_three"
-            android:layout_width="150dp"
+            android:layout_width="wrap_content"
             android:layout_height="44dp"
             android:layout_marginEnd="100dp"
             android:layout_marginStart="8dp"
@@ -105,7 +103,7 @@
 
         <Button
             android:id="@+id/button_bulb_two"
-            android:layout_width="150dp"
+            android:layout_width="wrap_content"
             android:layout_height="44dp"
             android:layout_marginEnd="8dp"
             android:layout_marginStart="8dp"
