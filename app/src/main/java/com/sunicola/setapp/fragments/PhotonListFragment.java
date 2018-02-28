@@ -1,9 +1,5 @@
 package com.sunicola.setapp.fragments;
 
-import android.app.Fragment;
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ListFragment;
@@ -14,39 +10,28 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
-import android.widget.TextView;
 
 import com.sunicola.setapp.R;
 import com.sunicola.setapp.helper.APICalls;
 import com.sunicola.setapp.helper.Util;
-import com.sunicola.setapp.objects.GroupType;
 import com.sunicola.setapp.objects.Photon;
 import com.sunicola.setapp.storage.SQLiteHandler;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-
-import io.particle.android.sdk.cloud.ParticleCloud;
-import io.particle.android.sdk.cloud.ParticleCloudException;
-import io.particle.android.sdk.cloud.ParticleCloudSDK;
-import io.particle.android.sdk.cloud.ParticleDevice;
 
 /**
  * Created by soaresbo on 09/02/2018.
  */
 
+// TODO: Fix the entire class to ensure it works properly as user increases number of phtons
 public class PhotonListFragment
         extends ListFragment
         implements AdapterView.OnItemClickListener {
     private static final String TAG = PhotonListFragment.class.getSimpleName();
     int[] images = {R.drawable.photon, R.drawable.boardphoton};
     ArrayList<HashMap<String, String>> data = new ArrayList<>();
-    private ParticleCloud cloud;
-    private SQLiteHandler db;
-
-
 
     @Nullable
     @Override
@@ -57,35 +42,18 @@ public class PhotonListFragment
     }
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        db = new SQLiteHandler(getContext());
-        cloud = ParticleCloudSDK.getCloud();
-        String accessToken = db.getUserDetails().get("access_token");
-        cloud.setAccessToken(accessToken);
-    }
-
-    @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        //loadListView();
         loadDualList();
         super.onViewCreated(view, savedInstanceState);
     }
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        TextView textView = view.findViewById(R.id.devId);
-        String txt = textView.getText().toString();
-        PhotonFragment nextFrag = PhotonFragment.newInstance(txt);
-        this.getFragmentManager().beginTransaction()
-                .replace(R.id.screen_area, nextFrag, null)
-                .addToBackStack(null)
-                .commit();
+        Log.e(TAG,"Clicked" + position);
     }
 
-    /**
-     * Loads the list of all photons and displays it with photon id, groupID and photon type
-     */
-    public void loadDualList() {
+    public void loadDualList(){
         getActivity().setTitle("All Devices");
 
         // instantiates api, db and list objects
@@ -94,16 +62,14 @@ public class PhotonListFragment
         Util util = new Util(getContext());
         List<String> photonIdList = new ArrayList<>();
         List<String> photonTypeList = new ArrayList<>();
-        List<String> photonGroupList = new ArrayList<>();
 
         //updates db using api calls
-        apiCalls.updateAllDevices();
+        apiCalls.updateAllPhotons();
         apiCalls.updateAllDeviceTypes();
         List<Photon> photonList = db.getAllPhotons();
         for (Photon photon: photonList) {
             photonIdList.add(photon.getDeviceId());
             photonTypeList.add(photon.getDeviceType());
-            photonGroupList.add(photon.getDeviceGroup());
         }
 
         //MAP
@@ -117,16 +83,15 @@ public class PhotonListFragment
             else {
                 map.put("image", Integer.toString(images[1]));
             }
-            map.put("devType", util.convertDevId(photonTypeList.get(i)));
-            map.put("devGroup", util.convertGroupId(photonGroupList.get(i)));
+            map.put("devType", util.convertId(photonTypeList.get(i)));
             data.add(map);
         }
 
         //KEYS IN MAP
-        String[] from = {"devId","image","devType","devGroup"};
+        String[] from = {"devId","image","devType"};
 
         //IDS OF VIEWS
-        int[] to = {R.id.devId,R.id.photonImg,R.id.devType,R.id.devGroup};
+        int[] to = {R.id.devId,R.id.photonImg,R.id.devType};
 
         //ADAPTER
         SimpleAdapter adapter = new SimpleAdapter(getActivity(), data, R.layout.photon_list_fragment, from, to);
@@ -135,5 +100,6 @@ public class PhotonListFragment
         ListView list = getListView();
         list.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
         list.setOnItemClickListener(this);
+
     }
 }
