@@ -6,13 +6,25 @@ import android.graphics.Canvas;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.SimpleAdapter;
 
 import com.sunicola.setapp.R;
+import com.sunicola.setapp.app.MyAdapter;
 import com.sunicola.setapp.app.UserEnvironment;
+import com.sunicola.setapp.helper.APICalls;
+import com.sunicola.setapp.helper.Util;
+import com.sunicola.setapp.objects.Photon;
+import com.sunicola.setapp.storage.SQLiteHandler;
+
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -37,6 +49,9 @@ public class EnvironmentFragment extends Fragment implements View.OnClickListene
     private Button btn;
     private Button clearBtn;
     private boolean clicked = false;
+    private RecyclerView mRecyclerView;
+    private RecyclerView.Adapter mAdapter;
+    private RecyclerView.LayoutManager mLayoutManager;
 
     private Bitmap drawing;
 
@@ -86,6 +101,29 @@ public class EnvironmentFragment extends Fragment implements View.OnClickListene
 
         clearBtn = (Button) v.findViewById(R.id.btn_clear);
         clearBtn.setOnClickListener(this);
+
+        mRecyclerView = (RecyclerView) v.findViewById(R.id.recycler_view);
+
+        mLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
+        mRecyclerView.setLayoutManager(mLayoutManager);
+
+        // instantiates api, db and list objects
+        APICalls apiCalls = new APICalls(getContext());
+        SQLiteHandler db = new SQLiteHandler(getContext());
+        Util util = new Util(getContext());
+        List<String> photonNameList = new ArrayList<>();
+
+        //updates db using api calls
+        apiCalls.updateAllPhotons();
+        apiCalls.updateAllDeviceTypes();
+
+
+        Photon[] photonArray = db.getAllPhotonsArr();
+
+
+        mAdapter = new MyAdapter(photonArray);
+        mRecyclerView.setAdapter(mAdapter);
+
         return v;
     }
 
