@@ -6,13 +6,13 @@ android:layout_height="match_parent"
 android:orientation="horizontal"
 android:padding="7dp">
 
-<ImageView
-    android:id="@+id/photonImg"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:contentDescription="@string/app_name"
-    android:src="@drawable/photon" />
-    />
+    <ImageView
+        android:id="@+id/photonImg"
+        android:layout_width="122dp"
+        android:layout_height="85dp"
+        android:contentDescription="@string/photon_logo"
+        android:src="@drawable/photon" />
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -28,13 +28,37 @@ android:padding="7dp">
             android:textSize="15sp"
             android:textStyle="bold" />
 
-        <TextView
-            android:id="@+id/devType"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingTop="5dp"
-            android:text="@string/list_device_type"
-            android:textAlignment="center"
-            android:textSize="12sp" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/devType"
+                android:layout_width="81dp"
+                android:layout_height="wrap_content"
+                android:paddingTop="5dp"
+                android:text="@string/list_device_type"
+                android:textAlignment="center"
+                android:textSize="12sp" />
+
+            <TextView
+                android:id="@+id/devGroup"
+                android:layout_width="84dp"
+                android:layout_height="wrap_content"
+                android:paddingTop="5dp"
+                android:text="@string/devGroup"
+                android:textAlignment="center"
+                android:textSize="12sp" />
+
+            <TextView
+                android:id="@+id/devState"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingTop="5dp"
+                android:text="@string/devState"
+                android:textAlignment="center"
+                android:textSize="12sp" />
+        </LinearLayout>
     </LinearLayout>
 </LinearLayout>

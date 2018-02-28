@@ -6,6 +6,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
@@ -21,6 +22,7 @@ import android.widget.Toast;
 
 import com.github.clans.fab.FloatingActionButton;
 import com.sunicola.setapp.R;
+import com.sunicola.setapp.app.SETNotifications;
 import com.sunicola.setapp.fragments.AccountDetails;
 import com.sunicola.setapp.fragments.LightControlFragment;
 import com.sunicola.setapp.fragments.PhotonListFragment;
@@ -46,7 +48,6 @@ public class MainActivity extends AppCompatActivity
     private HashMap<String, String> user;
     private SessionManager session;
     private String accessToken;
-
     private ParticleCloud cloud;
 
     private ParticleDeviceSetupLibrary.DeviceSetupCompleteReceiver receiver;
@@ -64,6 +65,11 @@ public class MainActivity extends AppCompatActivity
 
         cloud = ParticleCloudSDK.getCloud();
 
+        //Add notification support
+        SETNotifications notifications = new SETNotifications(getApplicationContext());
+
+        notifications.issueNotification("Test", "This is a test notification", null);
+
         //Used to receive device ID after claiming process completes
         receiver = new ParticleDeviceSetupLibrary.DeviceSetupCompleteReceiver() {
             //This starts DeviceType activity and passes it the device ID and name of the photon that was just claimed using photon setup
@@ -74,11 +80,13 @@ public class MainActivity extends AppCompatActivity
                 Intent i = new Intent(MainActivity.this, DeviceType.class);
 
                 i.putExtra("deviceID", configuredDeviceId);
+
+                //FIXME this causes an exception with the cloud sdk, fix.
                 try {
                     i.putExtra("name", cloud.getDevice(configuredDeviceId).getName());
                 } catch (ParticleCloudException e) {
                     e.printStackTrace();
-                    System.out.println("Particle cloud Exception while trying to put device name in Inent at MainActivity");
+                    System.out.println("Particle cloud Exception while trying to put device name in Intent at MainActivity");
                 }
 
                 startActivity(i);
@@ -136,10 +144,16 @@ public class MainActivity extends AppCompatActivity
         fab1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Snackbar.make(view, "Create your own trigger rules", Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();
+
                 Fragment fragment = new TriggerFragment();
                 FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
                 ft.replace(R.id.screen_area, fragment);
                 ft.commit();
+
+
+
             }
         });
     }
