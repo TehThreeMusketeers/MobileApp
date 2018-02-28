@@ -101,7 +101,6 @@ public class LightControlFragment extends Fragment {
         off.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                sendMessage(currentBulb);
                 switch (currentBulb){
                     case BULB_1_ON:
                         sendMessage(BULB_1_OFF);
@@ -249,7 +248,4 @@ public class LightControlFragment extends Fragment {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
     }
-
-
-
 }
