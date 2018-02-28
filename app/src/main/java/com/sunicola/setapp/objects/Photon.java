@@ -29,7 +29,7 @@ public class Photon {
         if (deviceGroup!=null)
             return deviceGroup;
         else{
-            return "Not Grouped";
+            return "Not Assigned To Group";
         }
     }
     public void setId(String id) {this.id = id;}
