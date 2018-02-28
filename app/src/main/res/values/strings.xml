@@ -57,5 +57,6 @@
     <string name="currentCode">Current Code:</string>
     <string name="view_weekly_data">View Weekly Data</string>
     <string name="view_monthly_data">View Monthly Data</string>
+    <string name="device_id">Device id:</string>
 
 </resources>

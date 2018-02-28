@@ -13,16 +13,36 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RadioGroup.OnCheckedChangeListener;
 import android.widget.TabHost;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.jjoe64.graphview.GraphView;
+import com.jjoe64.graphview.LegendRenderer;
 import com.jjoe64.graphview.series.BarGraphSeries;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
 import com.sunicola.setapp.R;
+import com.sunicola.setapp.app.AppConfig;
+import com.sunicola.setapp.app.AppController;
+import com.sunicola.setapp.storage.SQLiteHandler;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import static com.sunicola.setapp.helper.Util.setHeaders;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -33,25 +53,49 @@ import com.sunicola.setapp.R;
  * create an instance of this fragment.
  */
 public class PhotonFragment extends Fragment {
-    private static final String ARG_PARAM1 = "param1";
+    private static final String ARG_DEV_ID = "param1";
+    private static final String ARG_SRV_DEV_ID = "param2";
+    private int WEEK = 7;
+    private int MONTH = 30;
+    private static final String TAG = PhotonFragment.class.getSimpleName();
+    private static String sessionToken;
+
     private String mPhotonId;
     private OnFragmentInteractionListener mListener;
+
+    /**
+     * Constructor needed empty
+     */
     public PhotonFragment() {}
 
-    public static PhotonFragment newInstance(String photonId) {
+    /**
+     * Method used to generate instances of photons
+     * @param photonId
+     * @param srvDevId
+     * @return
+     */
+    public static PhotonFragment newInstance(String photonId, String srvDevId) {
         PhotonFragment fragment = new PhotonFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, photonId);
+        args.putString(ARG_DEV_ID, photonId);
+        args.putString(ARG_SRV_DEV_ID, srvDevId);
         fragment.setArguments(args);
         return fragment;
     }
 
+    /**
+     * On creation of view get sessiontoken
+     * @param savedInstanceState
+     */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mPhotonId = getArguments().getString(ARG_PARAM1);
+            mPhotonId = getArguments().getString(ARG_DEV_ID);
         }
+        SQLiteHandler db = new SQLiteHandler(getContext());
+        HashMap<String, String> user = db.getUserDetails();
+        sessionToken = user.get("session_token");
     }
 
     @Override
@@ -62,6 +106,11 @@ public class PhotonFragment extends Fragment {
         return inflater.inflate(R.layout.fragment_photon, container, false);
     }
 
+    /**
+     * Once the view is created add elements
+     * @param view
+     * @param savedInstanceState
+     */
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         //TextViews Setup
@@ -69,22 +118,27 @@ public class PhotonFragment extends Fragment {
         photonID.append(mPhotonId);
 
         //Radio Button Setup
+        RadioButton rb;
+        rb = getView().findViewById(R.id.weekRadioBtn);
+        if (rb.isChecked()){
+            loadData(WEEK);
+        }
+
+        // Radio Group
         RadioGroup radioGroup = getView().findViewById(R.id.radioGroup);
         radioGroup.setOnCheckedChangeListener(new OnCheckedChangeListener() {
                     @Override
                     public void onCheckedChanged(RadioGroup group, int checkedId) {
-                        if (checkedId == 2131230921){
-                            loadTemp(1);
-                            loadSound(1);
-                            loadHumid(1);
+                        if (checkedId == 2131231025){
+                            //Load Week
+                            loadData(WEEK);
                         }
-                        if (checkedId == 2131230922){
-                            loadTemp(2);
-                            loadSound(2);
-                            loadHumid(2);
+                        else if (checkedId == 2131230889){
+                            //Load Month
+                            loadData(MONTH);
                         }
+                        Log.e("CLICKED",Integer.toString(checkedId));
                     }
-
                 });
 
         //Tabs Setup
@@ -101,12 +155,10 @@ public class PhotonFragment extends Fragment {
         spec.setIndicator("Sound");
         tabHost.addTab(spec);
         //Tab 3
-        spec = tabHost.newTabSpec("Humidity");
+        spec = tabHost.newTabSpec("Light");
         spec.setContent(R.id.tab3);
-        spec.setIndicator("Humidity");
+        spec.setIndicator("Light");
         tabHost.addTab(spec);
-
-        loadTemp(1);
     }
 
 
@@ -125,154 +177,85 @@ public class PhotonFragment extends Fragment {
 
 
     /**
-     * Loads Temperature graph and data
-     * @param i
+     * Gets data from server and creates graph
+     * @param days
+     * @return
      */
-    private void loadTemp(int i){
-        GraphView graphView = getView().findViewById(R.id.graphTemp);
-        // Month Data
-        if (i == 1){
-            DataPoint[] values = new DataPoint[30];
-            for (int xi=1; xi<=30; xi++) {
-                Integer yi = 30; // data to be added
-                DataPoint v = new DataPoint(xi, yi);
-                values[xi-1] = v;
-            }
-            graphView.removeAllSeries();
-            //BarGraphSeries<DataPoint> monthData = new BarGraphSeries<>(values);
-            BarGraphSeries<DataPoint> monthData = new BarGraphSeries<>(new DataPoint[] {
-                    new DataPoint(0, 1),
-                    new DataPoint(1, 5),
-                    new DataPoint(2, 3),
-                    new DataPoint(3, 2),
-                    new DataPoint(4, 6)
-            });
-            graphView.addSeries(monthData);
+    public void loadData(int days) {
+        // Tag used to cancel the request
+        String tag_string_req = "req_allDevices";
+        // Url used during request
+        String[] dataTypes = {"/temp", "/sound", "/light"};
+        for (String type: dataTypes) {
+            String url = AppConfig.URL_DEVICES+getArguments().getString(ARG_SRV_DEV_ID)+type+"?since="+days;
+            JsonObjectRequest objectRequest = new JsonObjectRequest(Request.Method.GET, url, null,
+                    new Response.Listener<JSONObject>()
+                    {
+                        @Override
+                        public void onResponse(JSONObject response) {
+                            try{
+                                GraphView graphView = null;
+                                if (type .equals("/temp")){
+                                    graphView = getView().findViewById(R.id.graphTemp);
+                                }
+                                else if (type .equals("/sound")){
+                                    graphView = getView().findViewById(R.id.graphSound);
+                                }
+                                else if (type .equals("/light")){
+                                    graphView = getView().findViewById(R.id.graphLight);
+                                }
+                                graphView.removeAllSeries();
 
-            monthData.setSpacing(10);
-            monthData.setTitle("Month View");
+                                int count = response.getInt("count");
+                                Log.e(TAG,"Count from Server: " + count);
+                                DataPoint[] values = new DataPoint[count];
+
+                                // Gets data from results and populates Data Point
+                                JSONArray jsonArray = response.getJSONArray("results");
+                                for (int i=0; i<jsonArray.length(); i++) {
+                                    double result = jsonArray.getJSONObject(i).getDouble("result");
+                                    DataPoint v = new DataPoint(i, result);
+                                    values[i] = v;
+                                }
+
+                                if (days == 7){
+                                    BarGraphSeries<DataPoint> nodes = new BarGraphSeries<>(values);
+                                    graphView.addSeries(nodes);
+                                    // Sets spacing and title
+                                    nodes.setSpacing(10);
+                                    nodes.setTitle("Week View");
+                                }
+                                else if (days == 30){
+                                    LineGraphSeries<DataPoint> nodes = new LineGraphSeries<>(values);
+                                    graphView.addSeries(nodes);
+                                    nodes.setTitle("Month View");
+                                }
+                                //General settings for graph view
+                                graphSettings(graphView);
+
+                            }catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    },
+                    new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            Log.e(TAG, "Server Error: " + error.getMessage());
+                            Toast.makeText(getContext(),
+                                    "Issue getting all temp data from server", Toast.LENGTH_LONG).show();
+                        }
+                    }
+            )
+            {
+                @Override
+                public Map<String, String> getHeaders() throws AuthFailureError {
+                    return setHeaders(sessionToken);
+                }
+            };
+            // Adding request to request queue
+            AppController.getInstance().addToRequestQueue(objectRequest, tag_string_req);
         }
-
-        //Week Data
-        else if (i==2){
-            DataPoint[] values = new DataPoint[7];
-            for (int xi=1; xi<=7; xi++) {
-                Integer yi = 7; // data to be added
-                DataPoint v = new DataPoint(xi, yi);
-                values[xi-1] = v;
-            }
-            graphView.removeAllSeries();
-            //BarGraphSeries<DataPoint> weekData = new BarGraphSeries<>(values);
-            LineGraphSeries<DataPoint> weekData = new LineGraphSeries<>(new DataPoint[] {
-                    new DataPoint(0, 1),
-                    new DataPoint(1, 5),
-                    new DataPoint(2, 3),
-                    new DataPoint(3, 2),
-                    new DataPoint(4, 6)
-            });
-            graphView.addSeries(weekData);
-
-            //weekData.setSpacing(10);
-            weekData.setTitle("Week View");
-        }
-        graphSettings(graphView);
-    }
-
-    private void loadSound(int i) {
-        GraphView graphView = getView().findViewById(R.id.graphSound);
-        // Month Data
-        if (i == 1){
-            DataPoint[] values = new DataPoint[30];
-            for (int xi=1; xi<=30; xi++) {
-                Integer yi = 30; // data to be added
-                DataPoint v = new DataPoint(xi, yi);
-                values[xi-1] = v;
-            }
-            graphView.removeAllSeries();
-            //BarGraphSeries<DataPoint> monthData = new BarGraphSeries<>(values);
-            BarGraphSeries<DataPoint> monthData = new BarGraphSeries<>(new DataPoint[] {
-                    new DataPoint(0, 1),
-                    new DataPoint(1, 5),
-                    new DataPoint(2, 3),
-                    new DataPoint(3, 2),
-                    new DataPoint(4, 6)
-            });graphView.addSeries(monthData);
-
-            monthData.setSpacing(10);
-            monthData.setTitle("Month View");
-        }
-
-        //Week Data
-        else if (i==2){
-            DataPoint[] values = new DataPoint[7];
-            for (int xi=1; xi<=7; xi++) {
-                Integer yi = 7; // data to be added
-                DataPoint v = new DataPoint(xi, yi);
-                values[xi-1] = v;
-            }
-            graphView.removeAllSeries();
-            //BarGraphSeries<DataPoint> weekData = new BarGraphSeries<>(values);
-            LineGraphSeries<DataPoint> weekData = new LineGraphSeries<>(new DataPoint[] {
-                    new DataPoint(0, 1),
-                    new DataPoint(1, 5),
-                    new DataPoint(2, 3),
-                    new DataPoint(3, 2),
-                    new DataPoint(4, 6)
-            });graphView.addSeries(weekData);
-
-            //weekData.setSpacing(10);
-            weekData.setTitle("Week View");
-        }
-        graphSettings(graphView);
-    }
-
-    private void loadHumid(int i) {
-        GraphView graphView = getView().findViewById(R.id.graphHumid);
-        // Month Data
-        if (i == 1){
-            DataPoint[] values = new DataPoint[30];
-            for (int xi=1; xi<=30; xi++) {
-                Integer yi = 30; // data to be added
-                DataPoint v = new DataPoint(xi, yi);
-                values[xi-1] = v;
-            }
-            graphView.removeAllSeries();
-            //BarGraphSeries<DataPoint> monthData = new BarGraphSeries<>(values);
-            BarGraphSeries<DataPoint> monthData = new BarGraphSeries<>(new DataPoint[] {
-                    new DataPoint(0, 1),
-                    new DataPoint(1, 5),
-                    new DataPoint(2, 3),
-                    new DataPoint(3, 2),
-                    new DataPoint(4, 6)
-            });
-            graphView.addSeries(monthData);
-
-            monthData.setSpacing(10);
-            monthData.setTitle("Month View");
-        }
-
-        //Week Data
-        else if (i==2){
-            DataPoint[] values = new DataPoint[7];
-            for (int xi=1; xi<=7; xi++) {
-                Integer yi = 7; // data to be added
-                DataPoint v = new DataPoint(xi, yi);
-                values[xi-1] = v;
-            }
-            graphView.removeAllSeries();
-            //BarGraphSeries<DataPoint> weekData = new BarGraphSeries<>(values);
-            LineGraphSeries<DataPoint> weekData = new LineGraphSeries<>(new DataPoint[] {
-                    new DataPoint(0, 1),
-                    new DataPoint(1, 5),
-                    new DataPoint(2, 3),
-                    new DataPoint(3, 2),
-                    new DataPoint(4, 6)
-            });graphView.addSeries(weekData);
-
-            //weekData.setSpacing(10);
-            weekData.setTitle("Week View");
-        }
-        graphSettings(graphView);
     }
 
     /**
@@ -288,5 +271,8 @@ public class PhotonFragment extends Fragment {
         graphView.getViewport().setScalableY(true);
         // activate vertical scrolling
         graphView.getViewport().setScrollableY(true);
+        // add a legend
+        graphView.getLegendRenderer().setVisible(true);
+        graphView.getLegendRenderer().setAlign(LegendRenderer.LegendAlign.TOP);
     }
 }

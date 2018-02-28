@@ -12,21 +12,21 @@ public class AppConfig {
     private static String addressCloud = "http://setapp.cloud/api/v1/";
 
     // Server user register url
-    public static String URL_ACCOUNTS = address+ "accounts/";
+    public static String URL_ACCOUNTS = addressCloud+ "accounts/";
     // Server user login url
-    public static String URL_SESSION = address + "accounts/session/";
+    public static String URL_SESSION = addressCloud + "accounts/session/";
     //Server urser NotifyToken
-    public static String URL_NOTIFICATION= address+ "accounts/notifytoken";
+    public static String URL_NOTIFICATION= addressCloud+ "accounts/notifytoken";
 
     // Server devices for this user url
-    public static String URL_DEVICES = address+ "devices/";
+    public static String URL_DEVICES = addressCloud+ "devices/";
     // Server all device types url
-    public static String URL_DEVICES_TYPES = address+ "devices/types/";
+    public static String URL_DEVICES_TYPES = addressCloud+ "devices/types/";
     // Server groups for this user url
-    public static String URL_GROUPS = address+ "devices/groups/";
+    public static String URL_GROUPS = addressCloud+ "devices/groups/";
     // Server group types for this user url
-    public static String URL_GROUPS_TYPES = address+ "devices/groups/types/";
+    public static String URL_GROUPS_TYPES = addressCloud+ "devices/groups/types/";
 
     //Test URL
-    //public static String URL_TEST = "https://requestb.in/";
+    public static String URL_TEST = "https://requestb.in/1cl5rd41";
 }

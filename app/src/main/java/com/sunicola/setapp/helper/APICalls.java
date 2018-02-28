@@ -31,7 +31,7 @@ import java.util.List;
 import java.util.Map;
 
 import static android.widget.Toast.LENGTH_SHORT;
-
+import static com.sunicola.setapp.helper.Util.setHeaders;
 
 
 public class APICalls {
@@ -97,7 +97,7 @@ public class APICalls {
         {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
-                return setHeaders();
+                return setHeaders(sessionToken);
             }
         };
         // Adding request to request queue
@@ -140,7 +140,7 @@ public class APICalls {
         {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
-                return setHeaders();
+                return setHeaders(sessionToken);
             }
         };
         AppController.getInstance().addToRequestQueue(strReq, tag_string_req);
@@ -189,7 +189,7 @@ public class APICalls {
         {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
-                return setHeaders();
+                return setHeaders(sessionToken);
             }
         };
         // Adding request to request queue
@@ -247,7 +247,7 @@ public class APICalls {
         {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
-                return setHeaders();
+                return setHeaders(sessionToken);
             }
         };
         // Adding request to request queue
@@ -292,7 +292,7 @@ public class APICalls {
         {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
-                return setHeaders();
+                return setHeaders(sessionToken);
             }
         };
         AppController.getInstance().addToRequestQueue(strReq, tag_string_req);
@@ -349,7 +349,7 @@ public class APICalls {
         {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
-                return setHeaders();
+                return setHeaders(sessionToken);
             }
         };
         AppController.getInstance().addToRequestQueue(strReq, tag_string_req);
@@ -408,7 +408,7 @@ public class APICalls {
         {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
-                return setHeaders();
+                return setHeaders(sessionToken);
             }
         };
         // Adding request to request queue
@@ -454,7 +454,7 @@ public class APICalls {
         {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
-                return setHeaders();
+                return setHeaders(sessionToken);
             }
         };
         // Adding request to request queue
@@ -495,22 +495,10 @@ public class APICalls {
         {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
-                return setHeaders();
+                return setHeaders(sessionToken);
             }
         };
         // Adding request to request queue
         AppController.getInstance().addToRequestQueue(objectRequest, tag_string_req);
-    }
-
-    /**
-     * Sets Headers for request
-     * @return
-     */
-    private Map<String,String> setHeaders(){
-        Map<String, String> headers= new HashMap<>();
-        headers.put("Accept", "application/json");
-        headers.put("Authorization", "Token " + sessionToken);
-        Log.d("Session Token Stored: ", "Token " + sessionToken);
-        return headers;
     }
 }

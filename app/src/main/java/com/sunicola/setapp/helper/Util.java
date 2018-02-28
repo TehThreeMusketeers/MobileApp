@@ -9,6 +9,7 @@ import com.sunicola.setapp.storage.SQLiteHandler;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by soaresbo on 14/02/2018.
@@ -46,5 +47,19 @@ public class Util {
         //Log.e("UTIL","GROUP ID CONVERSION NOT IMPLEMENTED");
         //api.updateAllDeviceGroups();
         return id;
+    }
+
+    /**
+     * Sets Headers for request
+     * @return
+     */
+    public static Map<String,String> setHeaders(String sessionToken){
+        Map<String, String> headers= new HashMap<>();
+        headers.put("Accept", "application/json");
+        headers.put("Accept-Language", "application/json");
+        headers.put("Content-Type", "application/json");
+        headers.put("Authorization", "Token " + sessionToken);
+        Log.d("Session Token Stored: ", "Token " + sessionToken);
+        return headers;
     }
 }

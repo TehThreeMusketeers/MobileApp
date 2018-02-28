@@ -47,8 +47,14 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
+        <Space
+            android:layout_width="wrap_content"
+            android:layout_height="12dp"
+            android:layout_weight="1" />
+
         <RadioButton
-            android:id="@+id/radioButton"
+            android:id="@+id/weekRadioBtn"
+            android:checked="true"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/view_weekly_data"
@@ -56,12 +62,17 @@
             android:textSize="12sp" />
 
         <RadioButton
-            android:id="@+id/radioButton2"
+            android:id="@+id/monthRadioBtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/view_monthly_data"
             android:textAlignment="textStart"
             android:textSize="12sp" />
+
+        <Space
+            android:layout_width="wrap_content"
+            android:layout_height="12dp"
+            android:layout_weight="1" />
     </RadioGroup>
     <TabHost
         android:id="@+id/tabHost"
@@ -111,7 +122,7 @@
                     android:layout_height="match_parent"
                     android:orientation="vertical">
                     <com.jjoe64.graphview.GraphView
-                        android:id="@+id/graphHumid"
+                        android:id="@+id/graphLight"
                         android:layout_width="match_parent"
                         android:layout_height="200dip"/>
                 </LinearLayout>

@@ -73,9 +73,11 @@ public class PhotonListFragment
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        TextView textView = view.findViewById(R.id.devId);
-        String txt = textView.getText().toString();
-        PhotonFragment nextFrag = PhotonFragment.newInstance(txt);
+        TextView longIdView = view.findViewById(R.id.devId);
+        String longDevId = longIdView.getText().toString();
+        TextView srvIdView = view.findViewById(R.id.serverDevId);
+        String srvDevId= srvIdView.getText().toString();
+        PhotonFragment nextFrag = PhotonFragment.newInstance(longDevId,srvDevId);
         this.getFragmentManager().beginTransaction()
                 .replace(R.id.screen_area, nextFrag, null)
                 .addToBackStack(null)
@@ -94,7 +96,7 @@ public class PhotonListFragment
         Util util = new Util(getContext());
         List<String> photonIdList = new ArrayList<>();
         List<String> photonTypeList = new ArrayList<>();
-        List<String> photonGroupList = new ArrayList<>();
+        List<String> serverDevId = new ArrayList<>();
 
         //updates db using api calls
         apiCalls.updateAllDevices();
@@ -103,7 +105,7 @@ public class PhotonListFragment
         for (Photon photon: photonList) {
             photonIdList.add(photon.getDeviceId());
             photonTypeList.add(photon.getDeviceType());
-            photonGroupList.add(photon.getDeviceGroup());
+            serverDevId.add(photon.getId());
         }
 
         //MAP
@@ -118,15 +120,15 @@ public class PhotonListFragment
                 map.put("image", Integer.toString(images[1]));
             }
             map.put("devType", util.convertDevId(photonTypeList.get(i)));
-            map.put("devGroup", util.convertGroupId(photonGroupList.get(i)));
+            map.put("serverDevId", serverDevId.get(i));
             data.add(map);
         }
 
         //KEYS IN MAP
-        String[] from = {"devId","image","devType","devGroup"};
+        String[] from = {"devId","image","devType","serverDevId"};
 
         //IDS OF VIEWS
-        int[] to = {R.id.devId,R.id.photonImg,R.id.devType,R.id.devGroup};
+        int[] to = {R.id.devId,R.id.photonImg,R.id.devType,R.id.serverDevId};
 
         //ADAPTER
         SimpleAdapter adapter = new SimpleAdapter(getActivity(), data, R.layout.photon_list_fragment, from, to);
