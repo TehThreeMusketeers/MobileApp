@@ -188,7 +188,12 @@ public class PhotonFragment extends Fragment {
             public Object callApi(@NonNull ParticleCloud sparkCloud) throws ParticleCloudException, IOException {
                 sparkCloud.setAccessToken(accessToken);
                 mDevice = sparkCloud.getDevice(mPhotonId);
-                photonStatus.append(mDevice.getStatus());
+                if (!mDevice.getStatus().equals("normal")){
+                    photonStatus.append("OFF");
+                }else {
+                    photonStatus.append("ON");
+                }
+                //photonStatus.append(mDevice.getStatus());
                 photonLastHeard.append(mDevice.getLastHeard().toString());
                 return -1;
             }

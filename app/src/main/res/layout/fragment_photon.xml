@@ -74,10 +74,11 @@
             android:layout_height="12dp"
             android:layout_weight="1" />
     </RadioGroup>
+
     <TabHost
         android:id="@+id/tabHost"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="258dp">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -99,10 +100,11 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:orientation="vertical">
+
                     <com.jjoe64.graphview.GraphView
                         android:id="@+id/graphTemp"
                         android:layout_width="match_parent"
-                        android:layout_height="200dip"/>
+                        android:layout_height="200dip" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -110,10 +112,11 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:orientation="vertical">
+
                     <com.jjoe64.graphview.GraphView
                         android:id="@+id/graphSound"
                         android:layout_width="match_parent"
-                        android:layout_height="200dip"/>
+                        android:layout_height="200dip" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -121,13 +124,45 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:orientation="vertical">
+
                     <com.jjoe64.graphview.GraphView
                         android:id="@+id/graphLight"
                         android:layout_width="match_parent"
-                        android:layout_height="200dip"/>
+                        android:layout_height="200dip" />
                 </LinearLayout>
             </FrameLayout>
         </LinearLayout>
     </TabHost>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <EditText
+            android:id="@+id/liveTemp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:ems="10"
+            android:inputType="textPersonName"
+            android:text="Name" />
+
+        <EditText
+            android:id="@+id/liveSound"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:ems="10"
+            android:inputType="textPersonName"
+            android:text="Name" />
+
+        <EditText
+            android:id="@+id/liveLight"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:ems="10"
+            android:inputType="textPersonName"
+            android:text="Name" />
+    </LinearLayout>
 
 </LinearLayout>
