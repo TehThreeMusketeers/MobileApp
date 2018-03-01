@@ -235,6 +235,24 @@ public class SQLiteHandler extends SQLiteOpenHelper {
         return photonList;
     }
 
+    public Photon[] getAllPhotonsArr() {
+        ArrayList<Photon> photonList = new ArrayList<>();
+        String selectQuery = "SELECT * FROM " + TABLE_PHOTON;
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        if(cursor.moveToFirst()) {
+            String[] names  = cursor.getColumnNames();
+            do {
+                Photon photon = new Photon();
+                for (String name : names){
+                    photon.globalSetter(name,cursor.getString(cursor.getColumnIndex(name)));
+                }
+                photonList.add(photon);
+            } while(cursor.moveToNext());
+        }
+        Photon[] arr = photonList.toArray(new Photon[photonList.size()]);
+        Log.d(TAG, "Fetching photons from SQLite");
+        return arr;
 
     /**
      * Adds new Device Type to DB

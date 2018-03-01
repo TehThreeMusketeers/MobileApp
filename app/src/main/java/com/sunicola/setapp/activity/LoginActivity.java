@@ -18,6 +18,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.sunicola.setapp.R;
 import com.sunicola.setapp.app.AppConfig;
 import com.sunicola.setapp.app.AppController;
+import com.sunicola.setapp.app.UserEnvironment;
 import com.sunicola.setapp.objects.User;
 import com.sunicola.setapp.storage.SQLiteHandler;
 import com.sunicola.setapp.helper.SessionManager;
@@ -193,5 +194,12 @@ public class LoginActivity extends Activity {
     private String encodeHeaders( String email, String password) {
         String credentials = email + ":" + password;
         return Base64.encodeToString(credentials.getBytes(), Base64.DEFAULT).replace("\n", "");
+    }
+
+    public void onDevModeClick(View view){
+
+        UserEnvironment ue = new UserEnvironment(getApplicationContext(), null);
+        setContentView(ue);
+
     }
 }

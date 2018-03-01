@@ -24,6 +24,7 @@ import com.github.clans.fab.FloatingActionButton;
 import com.sunicola.setapp.R;
 import com.sunicola.setapp.app.SETNotifications;
 import com.sunicola.setapp.fragments.AccountDetails;
+import com.sunicola.setapp.fragments.EnvironmentFragment;
 import com.sunicola.setapp.fragments.LightControlFragment;
 import com.sunicola.setapp.fragments.PhotonListFragment;
 import com.sunicola.setapp.fragments.TriggerFragment;
@@ -99,6 +100,7 @@ public class MainActivity extends AppCompatActivity
 
             }
         };
+
 
         //Initialise Navigation Drawer
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
@@ -212,8 +214,10 @@ public class MainActivity extends AppCompatActivity
             case R.id.nav_logOut:
                 logoutUser();
                 break;
-            case R.id.nav_allDevicesGroups:
-                //fragment = new TriggerFragment();
+            case R.id.nav_usr_Env:
+                fragment = new EnvironmentFragment();
+
+
                 break;
             case R.id.light_control:
                 fragment = new LightControlFragment();
@@ -272,4 +276,6 @@ public class MainActivity extends AppCompatActivity
         });
         receiver.register(this);
     }
+
+
 }
