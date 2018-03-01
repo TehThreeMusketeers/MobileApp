@@ -1,5 +1,6 @@
 package com.sunicola.setapp.fragments;
 
+import android.content.ClipData;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -8,7 +9,9 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -18,6 +21,7 @@ import com.sunicola.setapp.R;
 import com.sunicola.setapp.app.MyAdapter;
 import com.sunicola.setapp.app.UserEnvironment;
 import com.sunicola.setapp.helper.APICalls;
+import com.sunicola.setapp.helper.MyTouchListener;
 import com.sunicola.setapp.helper.Util;
 import com.sunicola.setapp.objects.Photon;
 import com.sunicola.setapp.storage.SQLiteHandler;
@@ -52,6 +56,7 @@ public class EnvironmentFragment extends Fragment implements View.OnClickListene
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
+
 
     private Bitmap drawing;
 
@@ -91,8 +96,11 @@ public class EnvironmentFragment extends Fragment implements View.OnClickListene
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_environment, container, false);
+
 
         ue = (UserEnvironment)v.findViewById(R.id.userEnvironment);
 
@@ -103,6 +111,8 @@ public class EnvironmentFragment extends Fragment implements View.OnClickListene
         clearBtn.setOnClickListener(this);
 
         mRecyclerView = (RecyclerView) v.findViewById(R.id.recycler_view);
+
+        mRecyclerView.setOnTouchListener(new MyTouchListener());
 
         mLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
         mRecyclerView.setLayoutManager(mLayoutManager);
@@ -167,7 +177,6 @@ public class EnvironmentFragment extends Fragment implements View.OnClickListene
             }
         }
 
-
     }
 
     /**
@@ -187,3 +196,4 @@ public class EnvironmentFragment extends Fragment implements View.OnClickListene
 
 
 }
+
