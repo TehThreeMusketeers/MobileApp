@@ -25,6 +25,7 @@ import com.sunicola.setapp.R;
 import com.sunicola.setapp.app.SETNotifications;
 import com.sunicola.setapp.fragments.AccountDetails;
 import com.sunicola.setapp.fragments.EnvironmentFragment;
+import com.sunicola.setapp.fragments.LightControlFragment;
 import com.sunicola.setapp.fragments.PhotonListFragment;
 import com.sunicola.setapp.fragments.TriggerFragment;
 import com.sunicola.setapp.helper.APICalls;
@@ -48,7 +49,6 @@ public class MainActivity extends AppCompatActivity
     private HashMap<String, String> user;
     private SessionManager session;
     private String accessToken;
-
     private ParticleCloud cloud;
 
     private ParticleDeviceSetupLibrary.DeviceSetupCompleteReceiver receiver;
@@ -218,6 +218,9 @@ public class MainActivity extends AppCompatActivity
                 fragment = new EnvironmentFragment();
 
 
+                break;
+            case R.id.light_control:
+                fragment = new LightControlFragment();
                 break;
         }
 

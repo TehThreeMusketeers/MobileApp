@@ -51,7 +51,7 @@ public class SETNotifications {
 
         //construct notification channel
 
-        mNotificationManager = (NotificationManager) getSystemService(ctx, Context.NOTIFICATION_SERVICE);
+        mNotificationManager = getSystemService(ctx, Context.NOTIFICATION_SERVICE);
 
         int importance = NotificationManager.IMPORTANCE_HIGH;
         NotificationChannel mChannel = new NotificationChannel(chn_ID, name, importance);
