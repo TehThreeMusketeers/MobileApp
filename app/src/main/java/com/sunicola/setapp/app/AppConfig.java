@@ -16,7 +16,7 @@ public class AppConfig {
     // Server user login url
     public static String URL_SESSION = addressCloud + "accounts/session/";
     //Server urser NotifyToken
-    public static String URL_NOTIFICATION= addressCloud+ "accounts/notifytoken";
+    public static String URL_NOTIFICATION= addressCloud+ "accounts/notifytoken/";
 
     // Server devices for this user url
     public static String URL_DEVICES = addressCloud+ "devices/";

@@ -29,6 +29,8 @@ import com.sunicola.setapp.fragments.LightControlFragment;
 import com.sunicola.setapp.fragments.PhotonListFragment;
 import com.sunicola.setapp.fragments.TriggerFragment;
 import com.sunicola.setapp.helper.APICalls;
+import com.sunicola.setapp.helper.FirebaseMessagingService;
+import com.sunicola.setapp.helper.FirebaseService;
 import com.sunicola.setapp.helper.SessionManager;
 import com.sunicola.setapp.storage.SQLiteHandler;
 
@@ -120,6 +122,13 @@ public class MainActivity extends AppCompatActivity
 
         // API calls handler
         api = new APICalls(getApplicationContext());
+
+        //TODO Send firebase token to server, and replace old token with new one if needed
+        FirebaseService fs = new FirebaseService();
+
+
+        api.sendFirebaseToken(fs.getToken());
+        api.patchFirebaseToken(fs.getToken());
 
         // session manager
         session = new SessionManager(getApplicationContext());

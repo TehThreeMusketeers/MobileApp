@@ -425,12 +425,11 @@ public class APICalls {
      * @param fToken
      */
     public void sendFirebaseToken(String fToken){
-        //TODO: add functionality to send firebase token to server on this endpoint: POST /api/v1/accounts/notifytoken (when it exists)
         //need to make sure the user is logged in, so the server knows who the token belongs to.
         String tag_string_req = "req_newNotification";
         JSONObject jsonBody = new JSONObject();
         try {
-            jsonBody.put("notificationToken", fToken);
+            jsonBody.put("token", fToken);
         }catch (JSONException e) {
             e.printStackTrace();
         }

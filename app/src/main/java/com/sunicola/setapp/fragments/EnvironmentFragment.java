@@ -114,7 +114,7 @@ public class EnvironmentFragment extends Fragment implements View.OnClickListene
         List<String> photonNameList = new ArrayList<>();
 
         //updates db using api calls
-        apiCalls.updateAllPhotons();
+        apiCalls.updateAllDevices();
         apiCalls.updateAllDeviceTypes();
 
 

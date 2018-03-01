@@ -17,13 +17,12 @@ public class FirebaseService extends FirebaseInstanceIdService {
     //This refreshes the token. The callback fires whenever a new token is generated. Use the getToken() methods to retrieve token.
     @Override
     public void onTokenRefresh(){
-        System.out.println("nonsense");
+        Log.d("FIREBASE", "TOKEN REFRESHED");
         refreshedToken = FirebaseInstanceId.getInstance().getToken();
+        System.out.println("FIREBASE TOKEN IS: " +refreshedToken);
         //TODO: Test and confirm these api calls work correctly and are received by the server.
 
         APICalls api = new APICalls(getApplicationContext());
-
-        api.sendFirebaseToken(refreshedToken);
         api.patchFirebaseToken(refreshedToken);
 
     }
