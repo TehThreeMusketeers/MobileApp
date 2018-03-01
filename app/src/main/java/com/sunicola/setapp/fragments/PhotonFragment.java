@@ -39,8 +39,15 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+
+import io.particle.android.sdk.cloud.ParticleCloud;
+import io.particle.android.sdk.cloud.ParticleCloudException;
+import io.particle.android.sdk.cloud.ParticleCloudSDK;
+import io.particle.android.sdk.cloud.ParticleDevice;
+import io.particle.android.sdk.utils.Async;
 
 import static com.sunicola.setapp.helper.Util.setHeaders;
 
@@ -53,12 +60,14 @@ import static com.sunicola.setapp.helper.Util.setHeaders;
  * create an instance of this fragment.
  */
 public class PhotonFragment extends Fragment {
+    private ParticleCloud cloud;
     private static final String ARG_DEV_ID = "param1";
     private static final String ARG_SRV_DEV_ID = "param2";
     private int WEEK = 7;
     private int MONTH = 30;
     private static final String TAG = PhotonFragment.class.getSimpleName();
     private static String sessionToken;
+    private static String accessToken;
 
     private String mPhotonId;
     private OnFragmentInteractionListener mListener;
@@ -95,7 +104,9 @@ public class PhotonFragment extends Fragment {
         }
         SQLiteHandler db = new SQLiteHandler(getContext());
         HashMap<String, String> user = db.getUserDetails();
+        ParticleCloudSDK.init(getContext());
         sessionToken = user.get("session_token");
+        accessToken = user.get("access_token");
     }
 
     @Override
@@ -117,6 +128,8 @@ public class PhotonFragment extends Fragment {
         TextView photonID = getView().findViewById(R.id.photonId);
         photonID.append(mPhotonId);
 
+        loadParticle();
+
         //Radio Button Setup
         RadioButton rb;
         rb = getView().findViewById(R.id.weekRadioBtn);
@@ -127,19 +140,19 @@ public class PhotonFragment extends Fragment {
         // Radio Group
         RadioGroup radioGroup = getView().findViewById(R.id.radioGroup);
         radioGroup.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-                    @Override
-                    public void onCheckedChanged(RadioGroup group, int checkedId) {
-                        if (checkedId == 2131231025){
-                            //Load Week
-                            loadData(WEEK);
-                        }
-                        else if (checkedId == 2131230889){
-                            //Load Month
-                            loadData(MONTH);
-                        }
-                        Log.e("CLICKED",Integer.toString(checkedId));
-                    }
-                });
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                if (checkedId == 2131231025){
+                    //Load Week
+                    loadData(WEEK);
+                }
+                else if (checkedId == 2131230889){
+                    //Load Month
+                    loadData(MONTH);
+                }
+                Log.e("CLICKED",Integer.toString(checkedId));
+            }
+        });
 
         //Tabs Setup
         TabHost tabHost = getView().findViewById(R.id.tabHost);
@@ -161,6 +174,36 @@ public class PhotonFragment extends Fragment {
         tabHost.addTab(spec);
     }
 
+    /**
+     * Uses Particle Cloud Api to get specific photon data
+     */
+    private void loadParticle() {
+        TextView photonStatus = getView().findViewById(R.id.photonStatus);
+        TextView photonLastHeard = getView().findViewById(R.id.photonLastHeard);
+        Async.executeAsync(ParticleCloudSDK.getCloud(), new Async.ApiWork<ParticleCloud, Object>() {
+
+            private ParticleDevice mDevice;
+
+            @Override
+            public Object callApi(@NonNull ParticleCloud sparkCloud) throws ParticleCloudException, IOException {
+                sparkCloud.setAccessToken(accessToken);
+                mDevice = sparkCloud.getDevice(mPhotonId);
+                photonStatus.append(mDevice.getStatus());
+                photonLastHeard.append(mDevice.getLastHeard().toString());
+                return -1;
+            }
+
+            @Override
+            public void onSuccess(@NonNull Object value) {
+
+            }
+
+            @Override
+            public void onFailure(@NonNull ParticleCloudException e) {
+
+            }
+        });
+    }
 
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -208,6 +251,8 @@ public class PhotonFragment extends Fragment {
 
                                 int count = response.getInt("count");
                                 Log.e(TAG,"Count from Server: " + count);
+                                if (count<1)
+                                    Toast.makeText(getContext(), "This Photon Isn't Collecting Data", Toast.LENGTH_SHORT).show();
                                 DataPoint[] values = new DataPoint[count];
 
                                 // Gets data from results and populates Data Point

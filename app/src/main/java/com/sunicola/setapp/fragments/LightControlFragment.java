@@ -189,6 +189,7 @@ public class LightControlFragment extends Fragment {
         //Log.d(msg, command);
         List<String> lst = new ArrayList<String>();
         lst.add(command);
+        Log.e("Light Command ", command);
 
         Async.executeAsync(cloud, new Async.ApiProcedure<ParticleCloud>() {
             @Override

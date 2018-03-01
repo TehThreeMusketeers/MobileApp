@@ -9,7 +9,7 @@ package com.sunicola.setapp.app;
 public class AppConfig {
     // API location
     private static String address = "http://sccug-330-04.lancs.ac.uk:80/api/v1/";
-    private static String addressCloud = "http://setapp.cloud/api/v1/";
+    private static String addressCloud = "http://setapp.cloud:80/api/v1/";
 
     // Server user register url
     public static String URL_ACCOUNTS = addressCloud+ "accounts/";
