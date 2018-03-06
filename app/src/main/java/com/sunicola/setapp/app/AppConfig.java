@@ -28,5 +28,5 @@ public class AppConfig {
     public static String URL_GROUPS_TYPES = addressCloud+ "devices/groups/types/";
 
     //Test URL
-    public static String URL_TEST = "https://requestb.in/1cl5rd41";
+    public static String URL_TEST = "https://requestb.in/u6u74fu6";
 }

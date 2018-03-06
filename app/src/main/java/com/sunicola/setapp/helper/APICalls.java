@@ -470,11 +470,11 @@ public class APICalls {
         String tag_string_req = "req_patchNotification";
         JSONObject jsonBody = new JSONObject();
         try {
-            jsonBody.put("notificationToken", fToken);
+            jsonBody.put("token", fToken);
         }catch (JSONException e) {
             e.printStackTrace();
         }
-        JsonObjectRequest objectRequest = new JsonObjectRequest(Request.Method.PATCH,AppConfig.URL_NOTIFICATION, jsonBody,
+        JsonObjectRequest objectRequest = new JsonObjectRequest(Request.Method.PUT,AppConfig.URL_NOTIFICATION, jsonBody,
                 new Response.Listener<JSONObject>()
                 {
                     @Override

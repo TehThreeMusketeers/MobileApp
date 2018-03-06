@@ -14,6 +14,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -21,6 +22,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.github.clans.fab.FloatingActionButton;
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.sunicola.setapp.R;
 import com.sunicola.setapp.app.SETNotifications;
 import com.sunicola.setapp.fragments.AccountDetails;
@@ -123,18 +125,16 @@ public class MainActivity extends AppCompatActivity
         // API calls handler
         api = new APICalls(getApplicationContext());
 
-        //TODO Send firebase token to server, and replace old token with new one if needed
-        FirebaseService fs = new FirebaseService();
-
-
-        api.sendFirebaseToken(fs.getToken());
-        api.patchFirebaseToken(fs.getToken());
-
         // session manager
         session = new SessionManager(getApplicationContext());
         if (!session.isLoggedIn()) {
             logoutUser();
         }
+
+        //TODO Send firebase token to server, and replace old token with new one if needed
+        api.sendFirebaseToken(FirebaseInstanceId.getInstance().getToken());
+        api.patchFirebaseToken(FirebaseInstanceId.getInstance().getToken());
+        Log.d("FIREBASE", "Sending initial token " +FirebaseInstanceId.getInstance().getToken());
 
         // Fetching user details from SQLite
         user = db.getUserDetails();
