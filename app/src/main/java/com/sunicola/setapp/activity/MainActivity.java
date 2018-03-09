@@ -1,6 +1,7 @@
 package com.sunicola.setapp.activity;
 
 
+import android.app.FragmentManager;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -22,7 +23,7 @@ import android.widget.Toast;
 import com.github.clans.fab.FloatingActionButton;
 import com.sunicola.setapp.R;
 import com.sunicola.setapp.fragments.AccountDetails;
-import com.sunicola.setapp.fragments.LightControlFragment;
+import com.sunicola.setapp.fragments.ActuatorsFragment;
 import com.sunicola.setapp.fragments.PhotonListFragment;
 import com.sunicola.setapp.fragments.TriggerFragment;
 import com.sunicola.setapp.helper.APICalls;
@@ -54,7 +55,17 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_main);// find the retained fragment on activity restarts
+
+        /*String tag = "ActuatorsFragment";
+        FragmentManager fragmentManager = getFragmentManager();
+        if(fragmentManager.findFragmentByTag(tag) != null) {
+            FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+            ActuatorsFragment homeFragment = new ActuatorsFragment();
+            fragmentTransaction.add(R.id.screen_area, homeFragment, tag);
+            fragmentTransaction.commit();
+        }*/
+
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -92,7 +103,8 @@ public class MainActivity extends AppCompatActivity
             }
         };
 
-        //Initialise Navigation Drawer
+
+            //Initialise Navigation Drawer
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -201,8 +213,8 @@ public class MainActivity extends AppCompatActivity
             case R.id.nav_allDevicesGroups:
                 //fragment = new TriggerFragment();
                 break;
-            case R.id.light_control:
-                fragment = new LightControlFragment();
+            case R.id.actuators_control:
+                fragment = new ActuatorsFragment();
                 break;
         }
 
@@ -258,4 +270,14 @@ public class MainActivity extends AppCompatActivity
         });
         receiver.register(this);
     }
+/*
+    @Override
+    protected void onSaveInstanceState(final Bundle outState) {
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(final Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+    }*/
 }
