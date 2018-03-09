@@ -46,8 +46,8 @@ public class ActuatorsFragment extends Fragment {
     private static final String GR_2_ON = "470";
     private static final String GR_3_OFF = "4a0";
     private static final String GR_3_ON = "490";
-    private static final String GR_4_OFF = "4b0";
-    private static final String GR_4_ON = "4c0";
+    private static final String GR_4_OFF = "4c0";
+    private static final String GR_4_ON = "4b0";
     private static final String COLOR_PREFIX = "40";
     private static final String BRIGHTNESS_PREFIX = "4e";
 
@@ -77,7 +77,8 @@ public class ActuatorsFragment extends Fragment {
 
     // UI elements for Kettle control
     private Button kettle_on, kettle_off, kettle_65, kettle_80, kettle_95, kettle_100, kettle_w5, kettle_w10, kettle_w20;
-
+    private boolean warmOn = false;
+    private boolean boilOn = false;
     // required constructor
     public ActuatorsFragment() {}
 
@@ -184,9 +185,13 @@ public class ActuatorsFragment extends Fragment {
         kettle_on.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                tellKettle(K_HELLOKETTLE);
+                //tellKettle(K_HELLOKETTLE);
                 tellKettle(K_ON);
-                kettle_on.setBackgroundColor(Color.parseColor("#ffff0000"));
+                if(!boilOn) {
+                    kettle_on.setBackgroundColor(Color.parseColor("#ffff0000")); // red
+                    kettle_100.setBackgroundColor(Color.parseColor("#ffff0000")); // red
+                }
+                boilOn = true;
             }
         });
         kettle_off = view.findViewById(R.id.button_kettle_off);
@@ -194,7 +199,18 @@ public class ActuatorsFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 tellKettle(K_OFF);
+                boilOn = false;
                 kettle_on.setBackgroundColor(Color.parseColor("#ff00ddff"));
+                kettle_65.setBackgroundColor(Color.parseColor("#ff00ddff"));
+                kettle_80.setBackgroundColor(Color.parseColor("#ff00ddff"));
+                kettle_95.setBackgroundColor(Color.parseColor("#ff00ddff"));
+                kettle_100.setBackgroundColor(Color.parseColor("#ff00ddff"));
+                if(warmOn) {
+                    kettle_w5.setBackgroundColor(Color.parseColor("#ff00ddff"));
+                    kettle_w10.setBackgroundColor(Color.parseColor("#ff00ddff"));
+                    kettle_w20.setBackgroundColor(Color.parseColor("#ff00ddff"));
+                    warmOn = false;
+                }
             }
         });
         kettle_65 = view.findViewById(R.id.button_65);
@@ -203,6 +219,12 @@ public class ActuatorsFragment extends Fragment {
             public void onClick(View view) {
                 tellKettle(K_ON);
                 tellKettle(K_65);
+                boilOn = true;
+                kettle_on.setBackgroundColor(Color.parseColor("#ffff0000")); // red
+                kettle_65.setBackgroundColor(Color.parseColor("#ffff0000")); //red
+                kettle_80.setBackgroundColor(Color.parseColor("#ff00ddff"));
+                kettle_95.setBackgroundColor(Color.parseColor("#ff00ddff"));
+                kettle_100.setBackgroundColor(Color.parseColor("#ff00ddff"));
             }
         });
         kettle_80 = view.findViewById(R.id.button_80);
@@ -211,6 +233,12 @@ public class ActuatorsFragment extends Fragment {
             public void onClick(View view) {
                 tellKettle(K_ON);
                 tellKettle(K_80);
+                boilOn = true;
+                kettle_on.setBackgroundColor(Color.parseColor("#ffff0000")); // red
+                kettle_65.setBackgroundColor(Color.parseColor("#ff00ddff"));
+                kettle_80.setBackgroundColor(Color.parseColor("#ffff0000")); //red
+                kettle_95.setBackgroundColor(Color.parseColor("#ff00ddff"));
+                kettle_100.setBackgroundColor(Color.parseColor("#ff00ddff"));
             }
         });
         kettle_95 = view.findViewById(R.id.button_95);
@@ -219,6 +247,12 @@ public class ActuatorsFragment extends Fragment {
             public void onClick(View view) {
                 tellKettle(K_ON);
                 tellKettle(K_95);
+                boilOn = true;
+                kettle_on.setBackgroundColor(Color.parseColor("#ffff0000")); // red
+                kettle_65.setBackgroundColor(Color.parseColor("#ff00ddff"));
+                kettle_80.setBackgroundColor(Color.parseColor("#ff00ddff"));
+                kettle_95.setBackgroundColor(Color.parseColor("#ffff0000")); //red
+                kettle_100.setBackgroundColor(Color.parseColor("#ff00ddff"));
             }
         });
         kettle_100 = view.findViewById(R.id.button_100);
@@ -227,6 +261,12 @@ public class ActuatorsFragment extends Fragment {
             public void onClick(View view) {
                 tellKettle(K_ON);
                 tellKettle(K_100);
+                boilOn = true;
+                kettle_on.setBackgroundColor(Color.parseColor("#ffff0000")); // red
+                kettle_65.setBackgroundColor(Color.parseColor("#ff00ddff"));
+                kettle_80.setBackgroundColor(Color.parseColor("#ff00ddff"));
+                kettle_95.setBackgroundColor(Color.parseColor("#ff00ddff"));
+                kettle_100.setBackgroundColor(Color.parseColor("#ffff0000")); // red
             }
         });
         kettle_w5 = view.findViewById(R.id.button_w5);
@@ -235,6 +275,19 @@ public class ActuatorsFragment extends Fragment {
             public void onClick(View view) {
                 tellKettle(K_WARM);
                 tellKettle(K_WARM5);
+                if(boilOn) {
+                    if (warmOn) {
+                        kettle_w5.setBackgroundColor(Color.parseColor("#ff00ddff"));
+                        kettle_w10.setBackgroundColor(Color.parseColor("#ff00ddff"));
+                        kettle_w20.setBackgroundColor(Color.parseColor("#ff00ddff"));
+                        warmOn = false;
+                    } else if (!warmOn) {
+                        kettle_w5.setBackgroundColor(Color.parseColor("#ffff0000")); // red
+                        kettle_w10.setBackgroundColor(Color.parseColor("#ff00ddff"));
+                        kettle_w20.setBackgroundColor(Color.parseColor("#ff00ddff"));
+                        warmOn = true;
+                    }
+                }
             }
         });
         kettle_w10 = view.findViewById(R.id.button_w10);
@@ -243,6 +296,19 @@ public class ActuatorsFragment extends Fragment {
             public void onClick(View view) {
                 tellKettle(K_WARM);
                 tellKettle(K_WARM10);
+                if(boilOn) {
+                    if (warmOn) {
+                        kettle_w5.setBackgroundColor(Color.parseColor("#ff00ddff"));
+                        kettle_w10.setBackgroundColor(Color.parseColor("#ff00ddff"));
+                        kettle_w20.setBackgroundColor(Color.parseColor("#ff00ddff"));
+                        warmOn = false;
+                    } else if (!warmOn) {
+                        kettle_w5.setBackgroundColor(Color.parseColor("#ff00ddff"));
+                        kettle_w10.setBackgroundColor(Color.parseColor("#ffff0000")); // red
+                        kettle_w20.setBackgroundColor(Color.parseColor("#ff00ddff"));
+                        warmOn = true;
+                    }
+                }
             }
         });
         kettle_w20 = view.findViewById(R.id.button_w20);
@@ -251,6 +317,19 @@ public class ActuatorsFragment extends Fragment {
             public void onClick(View view) {
                 tellKettle(K_WARM);
                 tellKettle(K_WARM20);
+                if(boilOn) {
+                    if (warmOn) {
+                        kettle_w5.setBackgroundColor(Color.parseColor("#ff00ddff"));
+                        kettle_w10.setBackgroundColor(Color.parseColor("#ff00ddff"));
+                        kettle_w20.setBackgroundColor(Color.parseColor("#ff00ddff"));
+                        warmOn = false;
+                    } else if (!warmOn) {
+                        kettle_w5.setBackgroundColor(Color.parseColor("#ff00ddff"));
+                        kettle_w10.setBackgroundColor(Color.parseColor("#ff00ddff"));
+                        kettle_w20.setBackgroundColor(Color.parseColor("#ffff0000")); // red
+                        warmOn = true;
+                    }
+                }
             }
         }); // end of kettle UI section
 
@@ -259,11 +338,11 @@ public class ActuatorsFragment extends Fragment {
 
     // kettle click handler
     private void tellKettle(String command) {
-        Log.d(msg, command);
+        //Log.d(msg, command);
         List<String> lst = new ArrayList<String>();
         lst.add(command);
 
-      /*  Async.executeAsync(cloud, new Async.ApiProcedure<ParticleCloud>() {
+        Async.executeAsync(cloud, new Async.ApiProcedure<ParticleCloud>() {
             @Override
             public Void callApi(@NonNull ParticleCloud particleCloud) throws ParticleCloudException, IOException {
                 ParticleDevice myDevice = ParticleCloudSDK.getCloud().getDevice("1c0036001447343433313338");
@@ -280,7 +359,7 @@ public class ActuatorsFragment extends Fragment {
             public void onFailure(@NonNull ParticleCloudException exception) {
                 Log.d(msg, "Call failed.");
             }
-        }); */
+        });
     }
 
     // light control listener
@@ -331,7 +410,7 @@ public class ActuatorsFragment extends Fragment {
 
     // light control command handler
     private void sendMessage(String command){
-        Log.d(msg, command);
+        //Log.d(msg, command);
         List<String> lst = new ArrayList<String>();
         lst.add(command);
 
