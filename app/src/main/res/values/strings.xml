@@ -47,8 +47,7 @@
     <string name="button_group_four_text">Group 4</string>
     <!-- Strings for the Kettle Control -->
     <string name="kettle_control_heading">Kettle Control</string>
-    <string name="button_kettle_on">On</string>
-    <string name="button_kettle_off">Off</string>
+    <string name="button_kettle_on_off">On/Off</string>
     <string name="button_kettle_65">Boil 65</string>
     <string name="button_kettle_80">Boil 80</string>
     <string name="button_kettle_95">Boil 95</string>
@@ -58,6 +57,7 @@
     <string name="button_kettle_w20">Warm 20</string>
     <!-- Strings for the Smart Plug Control -->
     <string name="smart_plug_heading">Smart Plug</string>
+    <string name="button_smart_plug">On/Off</string>
 
 
     <!-- TODO: Remove or change this placeholder text -->
