@@ -47,13 +47,11 @@ public class PhotonListFragment
     private SQLiteHandler db;
 
 
-
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         //returning our layout file
         return super.onCreateView(inflater, container, savedInstanceState);
-
     }
 
     @Override
@@ -67,8 +65,8 @@ public class PhotonListFragment
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        loadDualList();
         super.onViewCreated(view, savedInstanceState);
+        loadDualList();
     }
 
     @Override
@@ -77,7 +75,8 @@ public class PhotonListFragment
         String longDevId = longIdView.getText().toString();
         TextView srvIdView = view.findViewById(R.id.serverDevId);
         String srvDevId= srvIdView.getText().toString();
-        PhotonFragment nextFrag = PhotonFragment.newInstance(longDevId,srvDevId);
+
+        PhotonFragment nextFrag = PhotonFragment.newInstance(longDevId,srvDevId,getContext());
         this.getFragmentManager().beginTransaction()
                 .replace(R.id.screen_area, nextFrag, null)
                 .addToBackStack(null)

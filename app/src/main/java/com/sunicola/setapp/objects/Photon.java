@@ -8,7 +8,6 @@ import com.sunicola.setapp.R;
 
 public class Photon {
     private String id, deviceId, deviceType, deviceName, deviceGroup;
-    public int imageID;
 
     public Photon(){}
     public Photon(String id, String deviceId, String deviceType, String deviceName, String deviceGroup){
@@ -17,7 +16,6 @@ public class Photon {
         this.deviceType = deviceType;
         this.deviceName = deviceName;
         this.deviceGroup = deviceGroup;
-        imageID = R.drawable.photon_vector_small; //this is the default photon Image.
     }
 
     public String getId() {

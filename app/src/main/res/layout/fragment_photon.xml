@@ -33,14 +33,6 @@
         android:textAlignment="textStart"
         android:textSize="18sp" />
 
-    <TextView
-        android:id="@+id/photonCurrentCode"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/currentCode"
-        android:textAlignment="textStart"
-        android:textSize="18sp" />
-
     <RadioGroup
         android:id="@+id/radioGroup"
         android:layout_width="match_parent"
@@ -134,9 +126,9 @@
         </LinearLayout>
     </TabHost>
     <LinearLayout
+        android:id="@+id/liveData"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-
         <EditText
             android:id="@+id/liveTemp"
             android:layout_width="wrap_content"
@@ -144,7 +136,7 @@
             android:layout_weight="1"
             android:ems="10"
             android:inputType="textPersonName"
-            android:text="Name" />
+            android:text="@string/live_temp" />
 
         <EditText
             android:id="@+id/liveSound"
@@ -153,7 +145,7 @@
             android:layout_weight="1"
             android:ems="10"
             android:inputType="textPersonName"
-            android:text="Name" />
+            android:text="@string/live_sound" />
 
         <EditText
             android:id="@+id/liveLight"
@@ -162,7 +154,7 @@
             android:layout_weight="1"
             android:ems="10"
             android:inputType="textPersonName"
-            android:text="Name" />
+            android:text="@string/live_humid" />
     </LinearLayout>
 
 </LinearLayout>

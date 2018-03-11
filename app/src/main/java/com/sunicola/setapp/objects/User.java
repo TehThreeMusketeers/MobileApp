@@ -5,8 +5,8 @@ package com.sunicola.setapp.objects;
  */
 
 public class User {
-    String email, first_name, last_name, session_token;
-    String id, refresh_token, access_token;
+    private String email, first_name, last_name, session_token;
+    private String id, refresh_token, access_token;
 
     public User(String first_name, String last_name, String email, String session_token) {
         this.first_name = first_name;

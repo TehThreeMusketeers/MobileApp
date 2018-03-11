@@ -15,7 +15,6 @@
     <string name="action_settings">Settings</string>
     <string name="title_activity_main">MainActivity</string>
 
-    <string name="btn_dev">Developer mode</string>
     <string name="title_activity_device_type">Choose device type</string>
     <string name="select_device_type">Select desired device type:</string>
     <string name="confirm_btn">Confirm</string>
@@ -24,7 +23,6 @@
     <string name="view_all_devices">View All Devices</string>
     <string name="settings">Settings</string>
     <string name="advanced">Advanced</string>
-    <string name="share">Share</string>
     <string name="log_out">Log Out</string>
     <string name="list_device_id">Device ID</string>
     <string name="list_device_type">Device Type</string>
@@ -37,8 +35,6 @@
     <string name="light_control_fragment">Light Control</string>
     <string name="colour_text">Colour</string>
     <string name="brightness_text">Brightness</string>
-    <string name="button_white_text">White</string>
-    <string name="button_on_text">On</string>
     <string name="button_off_text">Off</string>
     <string name="button_all_text">All Bulbs</string>
     <string name="button_bulb_one_text">Bulb 1</string>
@@ -46,21 +42,19 @@
     <string name="button_bulb_three_text">Bulb 3</string>
 
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="user_env">User Environment</string>
-    <string name="title_activity_draw">DrawActivity</string>
 
     <string name="ue_btn_customize">Customize</string>
     <string name="ue_btn_done">Done</string>
-    <string name="view_all_device_groups">View All Device Groups</string>
     <string name="photon_logo">Photon Logo</string>
-    <string name="devGroup">Device Group</string>
     <string name="devState">Device State</string>
-    <string name="photon_id">Photon ID:</string>
-    <string name="last_heard">Last Heard:</string>
-    <string name="status">Status:</string>
-    <string name="currentCode">Current Code:</string>
+    <string name="photon_id">Photon ID: </string>
+    <string name="last_heard">Last Heard: </string>
+    <string name="status">Status: </string>
+    <string name="device_id">Device id: </string>
     <string name="view_weekly_data">View Weekly Data</string>
     <string name="view_monthly_data">View Monthly Data</string>
-    <string name="device_id">Device id:</string>
+    <string name="live_temp">Live Temp</string>
+    <string name="live_sound">Live Sound</string>
+    <string name="live_humid">Live Humid</string>
 </resources>

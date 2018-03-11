@@ -18,10 +18,8 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+    buildToolsVersion '26.0.2'
 }
-
-
-
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')

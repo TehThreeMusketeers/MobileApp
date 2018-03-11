@@ -76,8 +76,6 @@ public class APICalls {
                                 String deviceName = jsonArray.getJSONObject(i).getString("deviceName");
                                 String deviceGroup = jsonArray.getJSONObject(i).getString("group");
                                 db.addPhoton(new Photon(Integer.toString(id),deviceId,deviceType,deviceName,deviceGroup));
-                                Toast.makeText(_context,
-                                        "Photons List Updated", Toast.LENGTH_SHORT).show();
                                 Log.d(TAG,"Saved Photon with id: " + deviceId);
                             }
                         }catch (JSONException e) {
@@ -420,6 +418,7 @@ public class APICalls {
      * Firebase Calls
      **********************************/
 
+    //TODO: don't know why but it keeps returning an error needs to be fixed
     /**
      * Creates firebase token on the server
      * @param fToken
@@ -445,8 +444,7 @@ public class APICalls {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         Log.e(TAG, "Notification Post Error" + error.getMessage());
-                        Toast.makeText(_context,
-                                "Issue adding notification token", Toast.LENGTH_LONG).show();
+                        //Toast.makeText(_context,"Issue adding notification token", Toast.LENGTH_LONG).show();
                     }
                 }
         )
@@ -460,6 +458,7 @@ public class APICalls {
         AppController.getInstance().addToRequestQueue(objectRequest, tag_string_req);
     }
 
+    //TODO: don't know why but it keeps returning an error needs to be fixed
     /**
      * Patches Firebase Token in case of expiry
      * @param fToken
@@ -486,8 +485,7 @@ public class APICalls {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         Log.e(TAG, "Notification Patch Error" + error.getMessage());
-                        Toast.makeText(_context,
-                                "Issue patching notification token", Toast.LENGTH_LONG).show();
+                        //Toast.makeText(_context,"Issue patching notification token", Toast.LENGTH_LONG).show();
                     }
                 }
         )

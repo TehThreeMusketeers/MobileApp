@@ -1,6 +1,7 @@
 package com.sunicola.setapp.activity;
 
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -12,6 +13,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -25,14 +27,11 @@ import com.github.clans.fab.FloatingActionButton;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.sunicola.setapp.R;
 import com.sunicola.setapp.app.SETNotifications;
-import com.sunicola.setapp.fragments.AccountDetails;
 import com.sunicola.setapp.fragments.EnvironmentFragment;
 import com.sunicola.setapp.fragments.LightControlFragment;
 import com.sunicola.setapp.fragments.PhotonListFragment;
 import com.sunicola.setapp.fragments.TriggerFragment;
 import com.sunicola.setapp.helper.APICalls;
-import com.sunicola.setapp.helper.FirebaseMessagingService;
-import com.sunicola.setapp.helper.FirebaseService;
 import com.sunicola.setapp.helper.SessionManager;
 import com.sunicola.setapp.storage.SQLiteHandler;
 
@@ -105,7 +104,6 @@ public class MainActivity extends AppCompatActivity
             }
         };
 
-
         //Initialise Navigation Drawer
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -148,6 +146,7 @@ public class MainActivity extends AppCompatActivity
         // Displaying the user details on the screen
         userName.setText(String.format("%s %s", firstName, lastName));
         userEmail.setText(email);
+
         //Displays first Fragment at login
         displaySelectedScreen(R.id.nav_allDevices);
 
@@ -157,14 +156,10 @@ public class MainActivity extends AppCompatActivity
             public void onClick(View view) {
                 Snackbar.make(view, "Create your own trigger rules", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
-
                 Fragment fragment = new TriggerFragment();
                 FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
                 ft.replace(R.id.screen_area, fragment);
                 ft.commit();
-
-
-
             }
         });
     }
@@ -176,10 +171,20 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onBackPressed() {
+        // closes nav drawer if open on back press
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
+            super.onBackPressed();
+        }
+
+        //TODO: but sometimes back pressing may cause the app to close
+        //Fixes fragment stacking issue
+        if (getFragmentManager().getBackStackEntryCount() > 0) {
+            getFragmentManager().popBackStack();
+        }
+        else {
             super.onBackPressed();
         }
     }
@@ -194,11 +199,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         Fragment fragment = null;
-
         int id = item.getItemId();
-        if (id == R.id.action_settings) {
-            fragment = new AccountDetails();
-        }
         return super.onOptionsItemSelected(item);
     }
 
@@ -225,8 +226,6 @@ public class MainActivity extends AppCompatActivity
                 break;
             case R.id.nav_usr_Env:
                 fragment = new EnvironmentFragment();
-
-
                 break;
             case R.id.light_control:
                 fragment = new LightControlFragment();
@@ -236,7 +235,7 @@ public class MainActivity extends AppCompatActivity
         //replacing the fragment
         if (fragment != null) {
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-            ft.replace(R.id.screen_area, fragment);
+            ft.replace(R.id.screen_area, fragment).addToBackStack("my_fragment");
             ft.commit();
         }
 

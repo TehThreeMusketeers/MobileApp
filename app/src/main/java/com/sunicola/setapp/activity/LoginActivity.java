@@ -49,7 +49,6 @@ public class LoginActivity extends Activity {
         inputPassword = findViewById(R.id.password);
         Button btnLogin = findViewById(R.id.btnLogin);
         Button btnLinkToRegister = findViewById(R.id.btnLinkToRegisterScreen);
-        Button devMode = findViewById(R.id.btnDev);
 
         // Progress dialog
         pDialog = new ProgressDialog(this);
