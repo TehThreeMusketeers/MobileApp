@@ -1,15 +1,30 @@
 package com.sunicola.setapp.activity;
 
 
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothManager;
+import android.bluetooth.le.BluetoothLeScanner;
+import android.bluetooth.le.ScanCallback;
+import android.bluetooth.le.ScanResult;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.nfc.Tag;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.RemoteException;
 import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -25,6 +40,7 @@ import android.widget.Toast;
 
 import com.github.clans.fab.FloatingActionButton;
 import com.google.firebase.iid.FirebaseInstanceId;
+import com.sunicola.setapp.Manifest;
 import com.sunicola.setapp.R;
 import com.sunicola.setapp.app.SETNotifications;
 import com.sunicola.setapp.fragments.EnvironmentFragment;
@@ -32,11 +48,18 @@ import com.sunicola.setapp.fragments.LightControlFragment;
 import com.sunicola.setapp.fragments.PhotonListFragment;
 import com.sunicola.setapp.fragments.TriggerFragment;
 import com.sunicola.setapp.helper.APICalls;
+import com.sunicola.setapp.helper.BlScanCallback;
 import com.sunicola.setapp.helper.SessionManager;
 import com.sunicola.setapp.storage.SQLiteHandler;
 
+import org.altbeacon.beacon.BeaconConsumer;
+import org.altbeacon.beacon.BeaconManager;
+import org.altbeacon.beacon.MonitorNotifier;
+import org.altbeacon.beacon.Region;
+
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 
 import io.particle.android.sdk.cloud.ParticleCloud;
 import io.particle.android.sdk.cloud.ParticleCloudException;
@@ -45,8 +68,11 @@ import io.particle.android.sdk.devicesetup.ParticleDeviceSetupLibrary;
 import io.particle.android.sdk.utils.Async;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, TriggerFragment.OnFragmentInteractionListener{
+        implements NavigationView.OnNavigationItemSelectedListener, TriggerFragment.OnFragmentInteractionListener, BeaconConsumer {
 
+
+
+    private static final int REQUEST_ENABLE_BT = 1;
     private SQLiteHandler db;
     private APICalls api;
     private HashMap<String, String> user;
@@ -56,6 +82,9 @@ public class MainActivity extends AppCompatActivity
 
     private ParticleDeviceSetupLibrary.DeviceSetupCompleteReceiver receiver;
 
+    private BeaconManager beaconManager;
+
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR2)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -67,12 +96,50 @@ public class MainActivity extends AppCompatActivity
         ParticleDeviceSetupLibrary.init(this.getApplicationContext());
         ParticleCloudSDK.init(this.getApplicationContext());
 
+        //init beacon manager
+        beaconManager = BeaconManager.getInstanceForApplication(this);
+        beaconManager.bind(this);
+
         cloud = ParticleCloudSDK.getCloud();
 
         //Add notification support
         SETNotifications notifications = new SETNotifications(getApplicationContext());
 
+        // Use this check to determine whether BLE is supported on the device. Then
+        // you can selectively disable BLE-related features.
+        if (!getPackageManager().hasSystemFeature(PackageManager.FEATURE_BLUETOOTH_LE)) {
+            Toast.makeText(this, R.string.ble_not_supported, Toast.LENGTH_SHORT).show();
+            finish();
+        }
+
+
+
+
+        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+            // Permission is not granted
+            ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, 2);
+        }else{
+            //Permission already granted
+            System.out.println("Fine location perm  granted");
+        }
+
+
+        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.BLUETOOTH_ADMIN)
+                != PackageManager.PERMISSION_GRANTED) {
+            // Permission is not granted
+            ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.BLUETOOTH_ADMIN}, 3);
+
+        }else{
+            //Permission already granted
+            System.out.println("Bluetooth admin perm  granted");
+        }
+
+
+
         notifications.issueNotification("Test", "This is a test notification", null);
+
+
 
         //Used to receive device ID after claiming process completes
         receiver = new ParticleDeviceSetupLibrary.DeviceSetupCompleteReceiver() {
@@ -285,5 +352,41 @@ public class MainActivity extends AppCompatActivity
         receiver.register(this);
     }
 
+    @Override
+    public void onBeaconServiceConnect() {
+        beaconManager.addMonitorNotifier(new MonitorNotifier() {
+            @Override
+            public void didEnterRegion(Region region) {
+                Log.i("BLUETOOTH", "I just saw an beacon for the first time!");
+            }
 
+            @Override
+            public void didExitRegion(Region region) {
+                Log.i("BLUETOOTH", "I no longer see an beacon");
+            }
+
+            @Override
+            public void didDetermineStateForRegion(int state, Region region) {
+
+                Log.i("BLUETOOTH", "I have just switched from seeing/not seeing beacons: "+state);
+            }
+        });
+
+
+        try {
+            beaconManager.startMonitoringBeaconsInRegion(new Region("myMonitoringUniqueId", null, null, null));
+        } catch (RemoteException e) {    }
+
+    }
+
+
+    @Override
+    public void onDestroy(){
+        super.onDestroy();
+        beaconManager.unbind(this);
+    }
 }
+
+
+
+

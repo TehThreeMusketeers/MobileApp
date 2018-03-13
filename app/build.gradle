@@ -4,7 +4,7 @@ android {
     compileSdkVersion 26
     defaultConfig {
         applicationId "com.sunicola.setapp"
-        minSdkVersion 17
+        minSdkVersion 21
         targetSdkVersion 26
         multiDexEnabled true
     }
@@ -43,5 +43,6 @@ dependencies {
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.5.3'
     implementation 'com.jjoe64:graphview:4.2.1'
     implementation 'com.github.madrapps:pikolo:1.1.6'
+    compile 'org.altbeacon:android-beacon-library:2+'
 }
 apply plugin: 'com.google.gms.google-services'
