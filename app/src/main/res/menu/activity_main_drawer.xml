@@ -21,6 +21,9 @@
             android:id="@+id/light_control"
             android:icon="@drawable/ic_menu_light_control"
             android:title="@string/light_control_fragment" />
+        <item
+            android:id="@+id/actuators_control"
+            android:title="@string/actuators" />
     </group>
 
     <item android:title="@string/advanced">

@@ -27,19 +27,34 @@
     <string name="list_device_id">Device ID</string>
     <string name="list_device_type">Device Type</string>
 
-
     <string name="btn_if">IF</string>
     <string name="btn_then">THEN</string>
 
-    <!-- Strings for the Lights Control Fragment -->
-    <string name="light_control_fragment">Light Control</string>
+    <!-- Strings for the Lights Control -->
+    <string name="light_control_heading">Light Control</string>
+    <string name="actuators">Actuators</string>
     <string name="colour_text">Colour</string>
     <string name="brightness_text">Brightness</string>
     <string name="button_off_text">Off</string>
     <string name="button_all_text">All Bulbs</string>
-    <string name="button_bulb_one_text">Bulb 1</string>
-    <string name="button_bulb_two_text">Bulb 2</string>
-    <string name="button_bulb_three_text">Bulb 3</string>
+    <string name="button_group_one_text">Group 1</string>
+    <string name="button_group_two_text">Group 2</string>
+    <string name="button_group_three_text">Group 3</string>
+    <string name="button_group_four_text">Group 4</string>
+    <!-- Strings for the Kettle Control -->
+    <string name="kettle_control_heading">Kettle Control</string>
+    <string name="button_kettle_on_off">On/Off</string>
+    <string name="button_kettle_65">Boil 65</string>
+    <string name="button_kettle_80">Boil 80</string>
+    <string name="button_kettle_95">Boil 95</string>
+    <string name="button_kettle_100">Boil 100</string>
+    <string name="button_kettle_w5">Warm 5</string>
+    <string name="button_kettle_w10">Warm 10</string>
+    <string name="button_kettle_w20">Warm 20</string>
+    <!-- Strings for the Smart Plug Control -->
+    <string name="smart_plug_heading">Smart Plug</string>
+    <string name="button_smart_plug">On/Off</string>
+
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="user_env">User Environment</string>
