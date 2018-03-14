@@ -1,6 +1,7 @@
 package com.sunicola.setapp.activity;
 
 
+import android.app.Notification;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothManager;
@@ -52,12 +53,20 @@ import com.sunicola.setapp.helper.BlScanCallback;
 import com.sunicola.setapp.helper.SessionManager;
 import com.sunicola.setapp.storage.SQLiteHandler;
 
+import org.altbeacon.beacon.Beacon;
 import org.altbeacon.beacon.BeaconConsumer;
 import org.altbeacon.beacon.BeaconManager;
+import org.altbeacon.beacon.BeaconParser;
 import org.altbeacon.beacon.MonitorNotifier;
+import org.altbeacon.beacon.RangeNotifier;
 import org.altbeacon.beacon.Region;
+import org.altbeacon.beacon.powersave.BackgroundPowerSaver;
+import org.altbeacon.beacon.utils.UrlBeaconUrlCompressor;
+import org.spongycastle.util.encoders.Hex;
+import org.spongycastle.util.encoders.HexEncoder;
 
 import java.io.IOException;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 
@@ -83,6 +92,13 @@ public class MainActivity extends AppCompatActivity
     private ParticleDeviceSetupLibrary.DeviceSetupCompleteReceiver receiver;
 
     private BeaconManager beaconManager;
+    private BackgroundPowerSaver backgroundPowerSaver;
+    //the following represent each zone (zones[0] == Zone 1).
+    private String[] zones = {"23003f00194734343", "29002600144734333", "430032000f4735313"};
+    private double closest = 1000;
+    private String currentZone ="Default";
+
+    private SETNotifications notifications;
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR2)
     @Override
@@ -96,14 +112,30 @@ public class MainActivity extends AppCompatActivity
         ParticleDeviceSetupLibrary.init(this.getApplicationContext());
         ParticleCloudSDK.init(this.getApplicationContext());
 
-        //init beacon manager
-        beaconManager = BeaconManager.getInstanceForApplication(this);
-        beaconManager.bind(this);
-
         cloud = ParticleCloudSDK.getCloud();
 
         //Add notification support
-        SETNotifications notifications = new SETNotifications(getApplicationContext());
+        notifications = new SETNotifications(getApplicationContext());
+        notifications.issueNotification("Test", "This is a test notification", null);
+
+        beaconManager = BeaconManager.getInstanceForApplication(this.getApplicationContext());
+        // Detect the main identifier (UID) frame:
+                beaconManager.getBeaconParsers().add(new BeaconParser().
+                        setBeaconLayout(BeaconParser.EDDYSTONE_UID_LAYOUT));
+        // Detect the telemetry (TLM) frame:
+                beaconManager.getBeaconParsers().add(new BeaconParser().
+                        setBeaconLayout(BeaconParser.EDDYSTONE_TLM_LAYOUT));
+        // Detect the URL frame:
+                beaconManager.getBeaconParsers().add(new BeaconParser().
+                        setBeaconLayout(BeaconParser.EDDYSTONE_URL_LAYOUT));
+
+
+        //init beacon manager
+        beaconManager.bind(this);
+
+        // Simply constructing this class and holding a reference to it in your custom Application class
+        // enables auto battery saving of about 60%
+        backgroundPowerSaver = new BackgroundPowerSaver(this);
 
         // Use this check to determine whether BLE is supported on the device. Then
         // you can selectively disable BLE-related features.
@@ -111,9 +143,6 @@ public class MainActivity extends AppCompatActivity
             Toast.makeText(this, R.string.ble_not_supported, Toast.LENGTH_SHORT).show();
             finish();
         }
-
-
-
 
         if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
@@ -135,9 +164,6 @@ public class MainActivity extends AppCompatActivity
             System.out.println("Bluetooth admin perm  granted");
         }
 
-
-
-        notifications.issueNotification("Test", "This is a test notification", null);
 
 
 
@@ -352,17 +378,23 @@ public class MainActivity extends AppCompatActivity
         receiver.register(this);
     }
 
+    /**
+     * Callback that handle beacon detection
+     */
     @Override
     public void onBeaconServiceConnect() {
         beaconManager.addMonitorNotifier(new MonitorNotifier() {
+
             @Override
             public void didEnterRegion(Region region) {
-                Log.i("BLUETOOTH", "I just saw an beacon for the first time!");
+                Log.i("BLUETOOTH", "I just saw a beacon for the first time!");
+                //TODO: Notify server user is home
             }
 
             @Override
             public void didExitRegion(Region region) {
-                Log.i("BLUETOOTH", "I no longer see an beacon");
+                Log.i("BLUETOOTH", "I no longer see a beacon");
+                //TODO: Notify server user left home
             }
 
             @Override
@@ -372,10 +404,60 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
+        beaconManager.addRangeNotifier(new RangeNotifier() {
+            @Override
+            public void didRangeBeaconsInRegion(Collection<Beacon> beacons, Region region) {
+                Log.d("ZONE", "CLOSEST RESET");
+                closest = 1000;
+                String closestZone = "Default";
+                for (Beacon beacon: beacons) {
+
+                    String str = beacon.getId1().toString();
+                    String cmp = decodeStr(str);
+
+                    double compare = beacon.getDistance();
+                    String zoneCmp = "Default";
+
+
+                    if(cmp.equals(zones[0])){
+                        //im in zone 1
+                        zoneCmp = "Zone1";
+
+                    }
+                    else if(cmp.equals(zones[1])){
+                        //im in zone 2
+                        zoneCmp = "Zone2";
+                    }
+                    else if(cmp.equals(zones[2])){
+                        //im in zone 3
+                        zoneCmp = "Zone3";
+                    }
+
+                    Log.d("BLUETOOTH", "I see " + cmp +
+                            " approx. " + beacon.getDistance() + " meters away.");
+
+                    if(compare < closest){
+                        closest = compare;
+                        closestZone = zoneCmp;
+                    }
+                }
+
+                Log.d("ZONES", "I'm in " +closestZone);
+                if(!(currentZone.equals(closestZone))){
+                    currentZone = closestZone;
+                    notifications.issueNotification("Location", "You're entering " +currentZone, null);
+                    //TODO: Notify server user zone has changed.
+                }
+
+
+            }
+        });
+
 
         try {
             beaconManager.startMonitoringBeaconsInRegion(new Region("myMonitoringUniqueId", null, null, null));
-        } catch (RemoteException e) {    }
+            beaconManager.startRangingBeaconsInRegion(new Region("myRangingUniqueId", null, null, null));
+        } catch (RemoteException e) {e.printStackTrace();}
 
     }
 
@@ -385,6 +467,22 @@ public class MainActivity extends AppCompatActivity
         super.onDestroy();
         beaconManager.unbind(this);
     }
+
+    /** This is used for bluetooth beacon functionality
+     * This takes a string generated from beacon.getID and decodes it from hex to normal string
+     * @param s - the string returned from calling getID1()
+     * @return
+     */
+    private String decodeStr(String s){
+
+        s = s.substring(2);
+        byte[] b = s.getBytes();
+        byte[] c = Hex.decode(b);
+        String decoded = new String(c);
+        return decoded.substring(0, decoded.length()-1);
+    }
+
+
 }
 
 
