@@ -13,7 +13,7 @@ import com.sunicola.setapp.objects.Photon;
 
 import org.w3c.dom.Text;
 
-/**
+/** ADAPTER PATTERN
  * Created by kolev on 28/02/2018.
  */
 
