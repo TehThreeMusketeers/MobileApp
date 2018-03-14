@@ -1,22 +1,11 @@
 package com.sunicola.setapp.activity;
 
 
-import android.app.Notification;
-import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothDevice;
-import android.bluetooth.BluetoothManager;
-import android.bluetooth.le.BluetoothLeScanner;
-import android.bluetooth.le.ScanCallback;
-import android.bluetooth.le.ScanResult;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
-import android.nfc.Tag;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.RemoteException;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
@@ -29,7 +18,6 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -41,7 +29,6 @@ import android.widget.Toast;
 
 import com.github.clans.fab.FloatingActionButton;
 import com.google.firebase.iid.FirebaseInstanceId;
-import com.sunicola.setapp.Manifest;
 import com.sunicola.setapp.R;
 import com.sunicola.setapp.app.SETNotifications;
 import com.sunicola.setapp.fragments.EnvironmentFragment;
@@ -49,7 +36,6 @@ import com.sunicola.setapp.fragments.LightControlFragment;
 import com.sunicola.setapp.fragments.PhotonListFragment;
 import com.sunicola.setapp.fragments.TriggerFragment;
 import com.sunicola.setapp.helper.APICalls;
-import com.sunicola.setapp.helper.BlScanCallback;
 import com.sunicola.setapp.helper.SessionManager;
 import com.sunicola.setapp.storage.SQLiteHandler;
 
@@ -61,14 +47,11 @@ import org.altbeacon.beacon.MonitorNotifier;
 import org.altbeacon.beacon.RangeNotifier;
 import org.altbeacon.beacon.Region;
 import org.altbeacon.beacon.powersave.BackgroundPowerSaver;
-import org.altbeacon.beacon.utils.UrlBeaconUrlCompressor;
 import org.spongycastle.util.encoders.Hex;
-import org.spongycastle.util.encoders.HexEncoder;
 
 import java.io.IOException;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 
 import io.particle.android.sdk.cloud.ParticleCloud;
 import io.particle.android.sdk.cloud.ParticleCloudException;
@@ -96,7 +79,7 @@ public class MainActivity extends AppCompatActivity
     //the following represent each zone (zones[0] == Zone 1).
     private String[] zones = {"23003f00194734343", "29002600144734333", "430032000f4735313"};
     private double closest = 1000;
-    private String currentZone ="Default";
+    private String currentZone ="Not home";
 
     private SETNotifications notifications;
 
@@ -116,7 +99,6 @@ public class MainActivity extends AppCompatActivity
 
         //Add notification support
         notifications = new SETNotifications(getApplicationContext());
-        notifications.issueNotification("Test", "This is a test notification", null);
 
         beaconManager = BeaconManager.getInstanceForApplication(this.getApplicationContext());
         // Detect the main identifier (UID) frame:
@@ -389,12 +371,15 @@ public class MainActivity extends AppCompatActivity
             public void didEnterRegion(Region region) {
                 Log.i("BLUETOOTH", "I just saw a beacon for the first time!");
                 //TODO: Notify server user is home
+                notifications.issueNotification("Location", "Welcome home!", null);
             }
 
             @Override
             public void didExitRegion(Region region) {
                 Log.i("BLUETOOTH", "I no longer see a beacon");
+                notifications.issueNotification("Location", "Now leaving home.", null);
                 //TODO: Notify server user left home
+                api.patchUserLocation("Not home");
             }
 
             @Override
@@ -443,10 +428,11 @@ public class MainActivity extends AppCompatActivity
                 }
 
                 Log.d("ZONES", "I'm in " +closestZone);
-                if(!(currentZone.equals(closestZone))){
+                if(!(currentZone.equals(closestZone)) ){
                     currentZone = closestZone;
                     notifications.issueNotification("Location", "You're entering " +currentZone, null);
-                    //TODO: Notify server user zone has changed.
+                    api.patchUserLocation(currentZone.substring(currentZone.length()-1));
+                    System.out.println("LOOK: " +currentZone.substring(currentZone.length()-1));
                 }
 
 
