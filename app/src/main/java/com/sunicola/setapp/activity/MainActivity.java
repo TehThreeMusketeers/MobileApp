@@ -156,11 +156,11 @@ public class MainActivity extends AppCompatActivity
             public void onSetupSuccess(@NonNull String configuredDeviceId) {
                 Toast.makeText(MainActivity.this, "Setup successful.", Toast.LENGTH_SHORT).show();
 
-                Intent i = new Intent(MainActivity.this, DeviceType.class);
+                /*Intent i = new Intent(MainActivity.this, DeviceType.class);
 
                 i.putExtra("deviceID", configuredDeviceId);
 
-                //FIXME this causes an exception with the cloud sdk, fix.
+                //FIXME this causes weird exception, something to do with array spinner
                 try {
                     i.putExtra("name", cloud.getDevice(configuredDeviceId).getName());
                 } catch (ParticleCloudException e) {
@@ -170,6 +170,13 @@ public class MainActivity extends AppCompatActivity
 
                 startActivity(i);
                 receiver.unregister(getApplicationContext());
+                */
+
+                try {
+                    api.registerPhoton(configuredDeviceId,1, cloud.getDevice(configuredDeviceId).getName()); //TEMPORARY
+                } catch (ParticleCloudException e) {
+                    e.printStackTrace();
+                }
             }
 
             @Override

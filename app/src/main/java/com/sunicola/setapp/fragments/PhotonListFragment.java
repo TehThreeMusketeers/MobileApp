@@ -32,6 +32,7 @@ import io.particle.android.sdk.cloud.ParticleCloud;
 import io.particle.android.sdk.cloud.ParticleCloudException;
 import io.particle.android.sdk.cloud.ParticleCloudSDK;
 import io.particle.android.sdk.cloud.ParticleDevice;
+import io.particle.android.sdk.devicesetup.ParticleDeviceSetupLibrary;
 
 /**
  * Created by soaresbo on 09/02/2018.
@@ -57,6 +58,10 @@ public class PhotonListFragment
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        //Initialise particle SDKs
+        ParticleDeviceSetupLibrary.init(getContext());
+        ParticleCloudSDK.init(getContext());
         db = new SQLiteHandler(getContext());
         cloud = ParticleCloudSDK.getCloud();
         String accessToken = db.getUserDetails().get("access_token");
