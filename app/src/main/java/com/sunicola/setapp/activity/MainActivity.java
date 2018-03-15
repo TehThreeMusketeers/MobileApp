@@ -89,6 +89,7 @@ public class MainActivity extends AppCompatActivity
     private String[] zones = {"1e002500114735", "1b002a00124734", "240042000b5135"};
     private double closest = 1000;
     private String currentZone ="Not home";
+    private String closestZone = "Default";
 
     private SETNotifications notifications;
 
@@ -418,11 +419,8 @@ public class MainActivity extends AppCompatActivity
         beaconManager.addRangeNotifier(new RangeNotifier() {
             @Override
             public void didRangeBeaconsInRegion(Collection<Beacon> beacons, Region region) {
-                Log.d("ZONE", "CLOSEST RESET");
                 closest = 1000;
-                String closestZone = "Default";
                 for (Beacon beacon: beacons) {
-
                     String str = beacon.getId1().toString();
                     String cmp = decodeStr(str);
 
