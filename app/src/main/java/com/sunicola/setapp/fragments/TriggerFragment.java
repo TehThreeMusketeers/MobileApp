@@ -99,7 +99,7 @@ public class TriggerFragment extends Fragment implements AdapterView.OnItemSelec
         String[] stateVal = {"ARMED", "DISARMED"};
         String[] varVal = {"Motion", "Light level", "Sound level"};
         String[] opVal = {"<", ">", "="};
-        String[] actionVal = {"Blink LED", "function2", "function3"};
+        String[] actionVal = {"Light on", "Sound Alarm", "Stop Alarm"};
 
         ArrayAdapter<String> stateAdapter = new ArrayAdapter<String>(this.getActivity(), android.R.layout.simple_spinner_item, stateVal);
         ArrayAdapter<String> varAdapter = new ArrayAdapter<String>(this.getActivity(), android.R.layout.simple_spinner_item, varVal);
@@ -155,6 +155,15 @@ public class TriggerFragment extends Fragment implements AdapterView.OnItemSelec
             case R.id.spinner_action:
                 actSelect = parent.getItemAtPosition(i).toString();
                 Log.e("action", actSelect);
+                if(i==0){
+                    actSelect = "setLight";
+                }
+                if(i==1){
+                    actSelect = "soundAlarm";
+                }
+                if(i==2){
+                    actSelect = "stopAlarm";
+                }
                 break;
             case R.id.spinner_operator:
                 if(i==2){
