@@ -293,6 +293,7 @@ public class SQLiteHandler extends SQLiteOpenHelper {
         return devTypes;
     }
 
+
     /**
      * Adds photon data to the db in the according key
      * @param group

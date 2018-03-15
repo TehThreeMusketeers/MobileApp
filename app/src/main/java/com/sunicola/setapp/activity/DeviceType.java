@@ -60,8 +60,8 @@ public class DeviceType extends AppCompatActivity implements AdapterView.OnItemS
             arraySpinner[i] = deviceTypes.get(String.valueOf(i+1));
         }
         //Use array to populate spinner object
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, arraySpinner);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, arraySpinner);
+        //adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
 
         spinner.setOnItemSelectedListener(this);

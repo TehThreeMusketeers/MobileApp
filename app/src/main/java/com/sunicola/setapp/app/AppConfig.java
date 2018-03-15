@@ -27,6 +27,7 @@ public class AppConfig {
     // Server group types for this user url
     public static String URL_GROUPS_TYPES = addressCloud+ "devices/groups/types/";
 
+    public static String URL_LOCATION = addressCloud+ "zones/myzone/";
     //Test URL
     public static String URL_TEST = "https://requestb.in/u6u74fu6";
 }

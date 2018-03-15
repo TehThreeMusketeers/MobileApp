@@ -498,4 +498,43 @@ public class APICalls {
         // Adding request to request queue
         AppController.getInstance().addToRequestQueue(objectRequest, tag_string_req);
     }
+
+    /**
+     * User location call
+     */
+    public void patchUserLocation(String location){
+
+        //need to make sure the user is logged in, so the server knows who the token belongs to.
+        String tag_string_req = "req_patchLocation";
+        JSONObject jsonBody = new JSONObject();
+        try {
+            jsonBody.put("zone", location);
+        }catch (JSONException e) {
+            e.printStackTrace();
+        }
+        JsonObjectRequest objectRequest = new JsonObjectRequest(Request.Method.PUT,AppConfig.URL_LOCATION, jsonBody,
+                new Response.Listener<JSONObject>()
+                {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Log.d(TAG,"Location Patched");
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.e(TAG, "Location patch error" + error.getMessage());
+                        //Toast.makeText(_context,"Issue patching notification token", Toast.LENGTH_LONG).show();
+                    }
+                }
+        )
+        {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                return setHeaders(sessionToken);
+            }
+        };
+        // Adding request to request queue
+        AppController.getInstance().addToRequestQueue(objectRequest, tag_string_req);
+    }
 }
