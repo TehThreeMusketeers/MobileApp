@@ -18,9 +18,9 @@
             android:icon="@drawable/ic_menu_plus_one"
             android:title="@string/setup_new_photon" />
         <item
-            android:id="@+id/light_control"
             android:icon="@drawable/ic_menu_light_control"
-            android:title="@string/light_control_fragment" />
+            android:id="@+id/actuators_control"
+            android:title="@string/actuators" />
     </group>
 
     <item android:title="@string/advanced">

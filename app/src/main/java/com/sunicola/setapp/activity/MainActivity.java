@@ -1,6 +1,15 @@
 package com.sunicola.setapp.activity;
 
 
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothManager;
+import android.bluetooth.le.BluetoothLeScanner;
+import android.bluetooth.le.ScanCallback;
+import android.bluetooth.le.ScanResult;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.app.FragmentManager;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
@@ -32,7 +41,7 @@ import com.google.firebase.iid.FirebaseInstanceId;
 import com.sunicola.setapp.R;
 import com.sunicola.setapp.app.SETNotifications;
 import com.sunicola.setapp.fragments.EnvironmentFragment;
-import com.sunicola.setapp.fragments.LightControlFragment;
+import com.sunicola.setapp.fragments.ActuatorsFragment;
 import com.sunicola.setapp.fragments.PhotonListFragment;
 import com.sunicola.setapp.fragments.TriggerFragment;
 import com.sunicola.setapp.helper.APICalls;
@@ -87,7 +96,17 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_main);// find the retained fragment on activity restarts
+
+        /*String tag = "ActuatorsFragment";
+        FragmentManager fragmentManager = getFragmentManager();
+        if(fragmentManager.findFragmentByTag(tag) != null) {
+            FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+            ActuatorsFragment homeFragment = new ActuatorsFragment();
+            fragmentTransaction.add(R.id.screen_area, homeFragment, tag);
+            fragmentTransaction.commit();
+        }*/
+
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -121,6 +140,7 @@ public class MainActivity extends AppCompatActivity
 
         // Use this check to determine whether BLE is supported on the device. Then
         // you can selectively disable BLE-related features.
+
         if (!getPackageManager().hasSystemFeature(PackageManager.FEATURE_BLUETOOTH_LE)) {
             Toast.makeText(this, R.string.ble_not_supported, Toast.LENGTH_SHORT).show();
             finish();
@@ -145,7 +165,6 @@ public class MainActivity extends AppCompatActivity
             //Permission already granted
             System.out.println("Bluetooth admin perm  granted");
         }
-
 
 
 
@@ -186,7 +205,7 @@ public class MainActivity extends AppCompatActivity
             }
         };
 
-        //Initialise Navigation Drawer
+            //Initialise Navigation Drawer
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -309,8 +328,8 @@ public class MainActivity extends AppCompatActivity
             case R.id.nav_usr_Env:
                 fragment = new EnvironmentFragment();
                 break;
-            case R.id.light_control:
-                fragment = new LightControlFragment();
+            case R.id.actuators_control:
+                fragment = new ActuatorsFragment();
                 break;
         }
 
@@ -454,11 +473,15 @@ public class MainActivity extends AppCompatActivity
 
     }
 
-
     @Override
     public void onDestroy(){
         super.onDestroy();
         beaconManager.unbind(this);
+    }
+
+    @Override
+    public void onAttachFragment(Fragment fragment) {
+        super.onAttachFragment(fragment);
     }
 
     /** This is used for bluetooth beacon functionality
