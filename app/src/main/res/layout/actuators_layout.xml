@@ -279,7 +279,7 @@
 
             <Button
                 android:id="@+id/button_plug_on_off"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="50dp"
                 android:layout_marginStart="32dp"
                 android:layout_marginTop="24dp"
@@ -287,6 +287,31 @@
                 android:text="@string/button_smart_plug"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/smart_plug_heading" />
+
+            <TextView
+                android:id="@+id/arm_disarm_heading"
+                android:layout_width="0dp"
+                android:layout_height="41dp"
+                android:layout_marginEnd="32dp"
+                android:layout_marginStart="32dp"
+                android:layout_marginTop="24dp"
+                android:text="@string/arm_or_disarm_system"
+                android:textSize="30sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/button_plug_on_off" />
+
+
+            <Button
+                android:id="@+id/button_arm_disarmed"
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                android:layout_marginStart="32dp"
+                android:layout_marginTop="24dp"
+                android:background="@android:color/holo_blue_bright"
+                android:text="@string/arm_disarm"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/arm_disarm_heading"/>
 
         </android.support.constraint.ConstraintLayout>
     </ScrollView>

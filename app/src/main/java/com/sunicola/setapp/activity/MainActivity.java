@@ -45,7 +45,6 @@ import com.sunicola.setapp.Manifest;
 import com.sunicola.setapp.R;
 import com.sunicola.setapp.app.SETNotifications;
 import com.sunicola.setapp.fragments.EnvironmentFragment;
-import com.sunicola.setapp.fragments.LightControlFragment;
 import com.sunicola.setapp.fragments.ActuatorsFragment;
 import com.sunicola.setapp.fragments.PhotonListFragment;
 import com.sunicola.setapp.fragments.TriggerFragment;
@@ -119,13 +118,11 @@ public class MainActivity extends AppCompatActivity
 
         // Use this check to determine whether BLE is supported on the device. Then
         // you can selectively disable BLE-related features.
+
         if (!getPackageManager().hasSystemFeature(PackageManager.FEATURE_BLUETOOTH_LE)) {
             Toast.makeText(this, R.string.ble_not_supported, Toast.LENGTH_SHORT).show();
             finish();
         }
-
-
-
 
         if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
@@ -147,11 +144,7 @@ public class MainActivity extends AppCompatActivity
             System.out.println("Bluetooth admin perm  granted");
         }
 
-
-
         notifications.issueNotification("Test", "This is a test notification", null);
-
-
 
         //Used to receive device ID after claiming process completes
         receiver = new ParticleDeviceSetupLibrary.DeviceSetupCompleteReceiver() {
@@ -182,7 +175,6 @@ public class MainActivity extends AppCompatActivity
 
             }
         };
-
 
             //Initialise Navigation Drawer
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
@@ -392,11 +384,15 @@ public class MainActivity extends AppCompatActivity
 
     }
 
-
     @Override
     public void onDestroy(){
         super.onDestroy();
         beaconManager.unbind(this);
+    }
+
+    @Override
+    public void onAttachFragment(Fragment fragment) {
+        super.onAttachFragment(fragment);
     }
 }
 

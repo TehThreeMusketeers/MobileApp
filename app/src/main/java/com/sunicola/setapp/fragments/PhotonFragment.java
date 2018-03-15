@@ -122,8 +122,7 @@ public class PhotonFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         getActivity().setTitle("Photon View");
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_photon, container, false);
@@ -155,11 +154,11 @@ public class PhotonFragment extends Fragment {
         radioGroup.setOnCheckedChangeListener(new OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
-                if (checkedId == 2131231032){
+                if (checkedId == 2131231045){
                     //Load Week
                     loadData(WEEK);
                 }
-                else if (checkedId == 2131230894){
+                else if (checkedId == 2131230906){
                     //Load Month
                     loadData(MONTH);
                 }
@@ -343,5 +342,10 @@ public class PhotonFragment extends Fragment {
         // add a legend
         graphView.getLegendRenderer().setVisible(true);
         graphView.getLegendRenderer().setAlign(LegendRenderer.LegendAlign.TOP);
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
     }
 }

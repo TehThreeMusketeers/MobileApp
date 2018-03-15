@@ -73,4 +73,6 @@
     <string name="live_sound">Live Sound</string>
     <string name="live_humid">Live Humid</string>
     <string name="ble_not_supported">BLE not supported. Location feature disabled.</string>
+    <string name="arm_disarm">Arm/Disarm</string>
+    <string name="arm_or_disarm_system">Arm or Disarm System</string>
 </resources>

@@ -83,6 +83,9 @@ public class ActuatorsFragment extends Fragment {
     // UI elements for smart plug
     private Button smartPlug;
     private boolean plugOn = false;
+
+    private Button alarmButton;
+    private boolean isArmed = false;
     // required constructor
     public ActuatorsFragment() {}
 
@@ -353,6 +356,23 @@ public class ActuatorsFragment extends Fragment {
             }
         });
 
+        // Ui section for Arming and Disarming System
+        alarmButton = view.findViewById(R.id.button_arm_disarmed);
+        alarmButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(!isArmed) {
+                    isArmed = true;
+                    setState("ARMED");
+                    alarmButton.setBackgroundColor(Color.parseColor("#ffff0000")); // red
+                } else {
+                    isArmed = false;
+                    setState("DISARMED");
+                    alarmButton.setBackgroundColor(Color.parseColor("#ff00ddff"));
+                }
+            }
+        });
+
         return view;
     }
 
@@ -395,6 +415,32 @@ public class ActuatorsFragment extends Fragment {
                 try {
                     int i = myDevice.callFunction("setKettle", lst);
                     //Log.d(msg, String.valueOf(i));
+                } catch (io.particle.android.sdk.cloud.ParticleDevice.FunctionDoesNotExistException e) {
+                    e.printStackTrace();
+                }
+                return null;
+            }
+
+            @Override
+            public void onFailure(@NonNull ParticleCloudException exception) {
+                Log.d(msg, "Call failed.");
+            }
+        });
+    }
+
+    // Set State
+    private void setState(String command) {
+        //Log.d(msg, command);
+        List<String> lst = new ArrayList<String>();
+        lst.add(command);
+
+        Async.executeAsync(cloud, new Async.ApiProcedure<ParticleCloud>() {
+            @Override
+            public Void callApi(@NonNull ParticleCloud particleCloud) throws ParticleCloudException, IOException {
+                ParticleDevice myDevice = ParticleCloudSDK.getCloud().getDevice("4e001f001951363036373538");
+                try {
+                    int i = myDevice.callFunction("setState", lst);
+                    Log.d("System has been :", command + " server response: " + Integer.toString(i));
                 } catch (io.particle.android.sdk.cloud.ParticleDevice.FunctionDoesNotExistException e) {
                     e.printStackTrace();
                 }
