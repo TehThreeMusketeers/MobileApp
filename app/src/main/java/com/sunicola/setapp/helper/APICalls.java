@@ -370,6 +370,11 @@ public class APICalls {
         String tag_string_req = "req_sendTrigger";
         JSONObject jsonBody = new JSONObject();
         JSONObject obj = new JSONObject();
+        String act = null;
+        if(function.equals("setLight") || function.equals("soundAlarm") || function.equals("stopAlarm")){
+            act = "9";
+        }
+
         try {
             obj.put("function", function);
         } catch (JSONException e) {
@@ -383,10 +388,12 @@ public class APICalls {
             jsonBody.put("operator", operator);
             jsonBody.put("value", value);
             jsonBody.put("localActions", jsonArray);
+            System.out.println("DEBUG" +jsonArray);
         }catch (JSONException e) {
             e.printStackTrace();
         }
-        JsonObjectRequest objectRequest = new JsonObjectRequest(Request.Method.POST,AppConfig.URL_GROUPS+groupID+"/triggers/", jsonBody,
+        //FIXME: THIS SHOULDNT BE HARDCODED
+        JsonObjectRequest objectRequest = new JsonObjectRequest(Request.Method.POST,AppConfig.URL_DEVICES+"9/triggers/", jsonBody,
                 new Response.Listener<JSONObject>()
                 {
                     @Override
