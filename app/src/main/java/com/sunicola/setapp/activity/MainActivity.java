@@ -77,7 +77,7 @@ public class MainActivity extends AppCompatActivity
     private BeaconManager beaconManager;
     private BackgroundPowerSaver backgroundPowerSaver;
     //the following represent each zone (zones[0] == Zone 1).
-    private String[] zones = {"23003f00194734343", "29002600144734333", "430032000f4735313"};
+    private String[] zones = {"1e002500114735", "1b002a00124734", "240042000b5135"};
     private double closest = 1000;
     private String currentZone ="Not home";
 
@@ -472,7 +472,8 @@ public class MainActivity extends AppCompatActivity
         byte[] b = s.getBytes();
         byte[] c = Hex.decode(b);
         String decoded = new String(c);
-        return decoded.substring(0, decoded.length()-1);
+        return decoded.substring(0, decoded.length());
+        //return decoded;
     }
 
 
